@@ -1,0 +1,3 @@
+# Dir Structure
+
+ModelName/ColumnName
