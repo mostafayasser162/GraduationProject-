@@ -1,18 +1,8 @@
 <?php
 
 namespace App\Models\Traits;
-
-use App\Enums\Company\Type;
 use App\Enums\User\Role;
-use App\Http\Resources\Driver\DriverResource;
-use App\Http\Resources\Supplier\SupplierResource;
-use App\Http\Resources\User\UserResource;
-use App\Models\Company;
-use App\Models\Offer;
-use App\Models\Rating;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Laravel\Sanctum\HasApiTokens;
 
