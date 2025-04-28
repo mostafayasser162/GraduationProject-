@@ -3,7 +3,8 @@
 namespace App\Enums;
 
 use Illuminate\Support\Str;
-use Spatie\Enum\Laravel\Enum as BaseEnum;
+
+use Spatie\Enum\Enum as BaseEnum;
 
 class Enum extends BaseEnum
 {
