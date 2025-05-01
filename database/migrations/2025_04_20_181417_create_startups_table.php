@@ -23,9 +23,8 @@ return new class extends Migration
             $table->string('phone')->nullable();
 
             $table->string('status')->default(Status::PENDING());
-            $table->foreignId('package_id')->constrained('packages')->onDelete('set null');
-            $table->foreignId('categories_id')->constrained()->onDelete('set null')->nullable();
-
+            $table->foreignId('package_id')->nullable()->constrained()->nullOnDelete();
+            $table->foreignId('categories_id')->nullable()->constrained()->nullOnDelete();
 
             $table->timestamps();
         });
