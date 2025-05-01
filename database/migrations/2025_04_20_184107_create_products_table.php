@@ -18,7 +18,7 @@ return new class extends Migration
                 ->onDelete('cascade')
                 ->onUpdate('cascade');
             $table->string('name');
-            $table->text('description')->nullable();
+             $table->text('description')->nullable();
             $table->decimal('price', 10, 2);
             $table->integer('stock');
             $table->foreignId('sub_category_id')->constrained('sub_categories')
