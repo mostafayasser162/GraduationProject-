@@ -18,13 +18,13 @@ return new class extends Migration
             $table->string('name');
             $table->text('description')->nullable();
             $table->string('logo')->nullable();
-            $table->foreignId('categories_id')->constrained('categories')->onDelete('set null')->nullable();
 
             $table->json('social_media_links')->nullable(); // ممكن تبقى array (facebook, instagram, linkedin...)
             $table->string('phone')->nullable();
 
-            $table->string('status')->default(Status::PENDING());   
+            $table->string('status')->default(Status::PENDING());
             $table->foreignId('package_id')->constrained('packages')->onDelete('set null');
+            $table->foreignId('categories_id')->constrained()->onDelete('set null')->nullable();
 
 
             $table->timestamps();

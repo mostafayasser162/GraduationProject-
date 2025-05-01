@@ -21,7 +21,8 @@ return new class extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->string('role')->default(Role::USER());
-            $table->foreignId('startup_id')->nullable()->constrained('startups')->onDelete('cascade')->onUpdate('cascade');
+            // $table->foreignId('startup_id')->nullable()->constrained()->onDelete('cascade')->onUpdate('cascade');
+            $table->softDeletes();
             $table->rememberToken();
             $table->timestamps();
         });
