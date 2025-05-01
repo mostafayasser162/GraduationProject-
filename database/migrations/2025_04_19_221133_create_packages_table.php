@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('packages', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->text('desc'); // A longer description, so we use text
+            $table->text('description'); // A longer description, so we use text
             $table->decimal('price', 10, 2); // Price with decimal precision (e.g., 10.99)
             $table->timestamps();
         });
