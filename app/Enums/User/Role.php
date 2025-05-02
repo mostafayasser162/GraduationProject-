@@ -23,4 +23,9 @@ class Role extends Enum
             'INVESTOR' => 'INVESTOR',
         ];
     }
+    public static function allValues(): array
+    {
+        return array_values(static::values());
+    }
+    
 }

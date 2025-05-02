@@ -27,11 +27,10 @@ class AuthController extends Controller
         $responseData = [
             'user'  => $user,
             'token' => $token,
+            'email' => $masked_email,
         ];
 
-        return response()->success(('you have been register successfully'), $responseData, [
-            'email' => $masked_email,
-        ]);
+        return response()->success(('you have been register successfully'), $responseData);
     }
 
     public function login(LoginRequest $request)

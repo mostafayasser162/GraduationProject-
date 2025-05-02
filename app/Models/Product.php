@@ -12,16 +12,20 @@ class Product extends Model
         'description',
         'price',
         'stock',
-        'category',
-        'image'
-
+        'sub_category_id',
+        'size_id',
     ];
 
-    // public function startup()
-    // {
-    //     return $this->belongsTo(Startup::class);
-    // }
 
+    public function startup()
+    {
+        return $this->belongsTo(Startup::class);
+    }
+
+    public function images()
+    {
+        return $this->hasMany(Image::class);
+    }
     // public function variants()
     // {
     //     return $this->hasMany(ProductVariant::class);
