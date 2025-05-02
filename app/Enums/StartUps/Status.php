@@ -23,7 +23,10 @@ class Status extends Enum
             'BLOCKED' => 'BLOCKED',
         ];
     }
-
+    public static function allValues(): array
+    {
+        return array_values(static::values());
+    }
     // init status
     public static function init(): string
     {

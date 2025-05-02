@@ -36,7 +36,7 @@ class UniqueEmail implements InvokableRule
         }
         $validator = Validator::make([$attribute => $value], [$attribute => $uniqueEmail]);
         if ($validator->fails()) {
-            return $fail(__('auth.invalid_email'));
+            return $fail(('invalid_email'));
         }
 
         return true;

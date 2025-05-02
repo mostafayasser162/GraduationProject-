@@ -29,8 +29,8 @@ class RegisterRequest extends FormRequest
                 'required',
                 'unique:users,phone,',
             ],
-            'password' => ['required', 'confirmed', 'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/'],
             'email' => ['required', new UniqueEmail('users'), ...Rules::get('email')],
+            'password' => ['required', 'confirmed', 'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/'],
 
         ];
     }
