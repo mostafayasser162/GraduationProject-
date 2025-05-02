@@ -4,16 +4,16 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 
-use App\Models\Traits\Actor;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Tymon\JWTAuth\Contracts\JWTSubject;
 
-class User extends Authenticatable
+class User extends Authenticatable implements JWTSubject
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable , SoftDeletes , Actor;
+    use HasFactory, Notifiable , SoftDeletes , Traits\Actor;
 
     /**
      * The attributes that are mass assignable.
@@ -70,4 +70,5 @@ class User extends Authenticatable
     // {
     //     return $this->hasMany(Review::class);
     // }
+
 }
