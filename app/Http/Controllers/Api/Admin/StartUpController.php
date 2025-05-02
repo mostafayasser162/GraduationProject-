@@ -13,7 +13,7 @@ class StartUpController extends Controller
     public function index(Request $request)
     {
 
-        $query = Startup::query();
+        $query = Startup::with('user'); 
 
         if ($request->has('status')) {
             $status = $request->status;
