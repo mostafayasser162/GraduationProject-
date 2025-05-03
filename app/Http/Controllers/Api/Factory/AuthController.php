@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers\Api\Factory;
 
+use App\Enums\Factory\Status;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Factory\LoginRequest;
 use App\Models\Factory;
-use Illuminate\Http\Request;
 use JWTAuth;
 
 
@@ -16,7 +16,7 @@ class AuthController extends Controller
         $data = $request->validated();
 
         $factory = Factory::where('phone', $data['phone'])->first();
-        if ($factory->status == 'BLOCKED') {
+        if ($factory->status == Status::BLOCKED()) {
             return response()->errors('this factory have been blocked');
         }
 

@@ -14,7 +14,7 @@ class StartupRequestController extends Controller
         // $factory = auth('factory')->user();
         $query = \App\Models\Request::where('status' , Status::PENDING())->with('Startup')->paginate();
 
-        // e3ml dol lel admin
+        // Todo: dol lel admin
         // if ($request->filled('status') && in_array($request->status, \App\Enums\Request\Status::allValues())) {
         //     $query->where('status', $request->status);
         // }
@@ -24,6 +24,9 @@ class StartupRequestController extends Controller
 
     public function show(\App\Models\Request $request)
     {
+        $request->load('Startup');
         return response()->success($request);
     }
+
+
 }

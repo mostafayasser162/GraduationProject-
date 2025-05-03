@@ -31,6 +31,10 @@ class Factory extends Authenticatable implements JWTSubject
         'password',
     ];
 
+    public function isFactory(): bool
+    {
+        return class_basename($this) == 'Factory';
+    }
     public function getJWTIdentifier()
     {
         return $this->getKey();

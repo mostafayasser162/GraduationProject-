@@ -3,12 +3,13 @@
 use App\Http\Controllers\Api\Admin\CategoryController;
 use App\Http\Controllers\Api\Admin\FactoryController;
 use App\Http\Controllers\Api\Admin\ProductController;
+use App\Http\Controllers\Api\Admin\ResponseController as AdminResponseController;
 use App\Http\Controllers\Api\Admin\StartUpController;
 use App\Http\Controllers\Api\Admin\SubCategoryController;
 use App\Http\Controllers\Api\Admin\UserController;
+use App\Http\Controllers\Api\Factory\ResponseController as FactoryResponseController;
 use App\Http\Controllers\Api\Factory\StartupRequestController as FactoryStartupRequestController;
 use App\Http\Controllers\Api\User\AuthController;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 
@@ -28,6 +29,7 @@ Route::middleware('auth:api')->group(function () {
     Route::prefix('admin')->group(function () {
         Route::resource('user', UserController::class)->only(['index', 'show', 'destroy']);
         Route::get('user/{id}/checkDestroy', [UserController::class, 'checkDestroy']);
+        Route::put('user/{id}/block', [UserController::class, 'block']);
 
         Route::resource('startup', StartUpController::class)->only(['index', 'show', 'destroy']);
         Route::put('startup/{id}/block', [StartUpController::class, 'block']);
@@ -41,11 +43,17 @@ Route::middleware('auth:api')->group(function () {
         Route::put('factory/{id}/block', [FactoryController::class, 'block']);
 
         Route::resource('product', ProductController::class)->only(['index', 'show', 'destroy']);
+
+        Route::resource('response', AdminResponseController::class)->only(['index', 'show']);
     });
-    // factory routes
-    Route::middleware('auth:factory')->group(function () {
-        Route::prefix('factory')->group(function () {
-            Route::resource('request', FactoryStartupRequestController::class)->only(['index', 'show', 'destroy']);
-        });
+});
+
+// factory routes
+Route::middleware('auth:factory')->group(function () {
+    Route::prefix('factory')->group(function () {
+        Route::resource('request', FactoryStartupRequestController::class)->only(['index', 'show', 'destroy']);
+
+        Route::resource('response', FactoryResponseController::class)->only(['index', 'show', 'destroy']);
+        Route::post('response/send-offer', [FactoryResponseController::class, 'sendOffer']);
     });
 });
