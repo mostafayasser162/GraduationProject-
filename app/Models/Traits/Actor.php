@@ -33,15 +33,16 @@ trait Actor // Person who acts in the system
         return class_basename($this) == 'User'
             && $this->role == Role::EMPLOYEES();
     }
+
     public function isWorker(): bool
     {
         return $this->isOwner() || $this->isEmployee();
     }
-    public function isInvestor(): bool
-    {
-        return class_basename($this) == 'User'
-            && $this->role == Role::INVESTOR();
-    }
+    // public function isStartup(): bool
+    // {
+    //     return class_basename($this) == 'Startup';
+    // }
+
     // public function matchOTP(int $otp): bool
     // {
     //     return $this->otp == $otp

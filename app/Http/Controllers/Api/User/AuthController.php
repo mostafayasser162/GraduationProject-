@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\User;
 
+use App\Enums\User\Status;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\User\LoginRequest;
 use App\Http\Requests\User\RegisterRequest;
@@ -38,15 +39,19 @@ class AuthController extends Controller
         $validatedData = $request->validated();
         if (auth('api')->attempt($validatedData)) {
             $user = auth('api')->user();
+            
+            if ($user->status == Status::BLOCKED()) {
+                return response()->errors('Your Account have been blocked');
+            }
+
             $token = JWTAuth::fromUser($user);
             $type = match ($user->role) {
                 'ADMIN' => 'admin',
                 'USER' => 'user',
                 'OWNER' => 'owner',
                 'EMPLOYEES' => 'employee',
-                'INVESTOR' => 'investor',
             };
-                        $data = [
+            $data = [
                 $type => $user,
                 'role' => $user->role,
                 'token' => $token,
@@ -59,8 +64,9 @@ class AuthController extends Controller
     public function logout()
     {
         JWTAuth::invalidate(JWTAuth::getToken());
-        auth()->user()->logout();
 
-        return response()->success(('auth.logout_successfully'));
+        return response()->success('logout successfully');
     }
+
+
 }

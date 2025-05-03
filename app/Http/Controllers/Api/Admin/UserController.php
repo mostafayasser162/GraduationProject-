@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\Admin;
 
 use App\Enums\User\Role;
+use App\Enums\User\Status;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -43,7 +44,9 @@ class UserController extends Controller
                 ['key' => 'true']
             );
         }
-        return;
+
+        return response()->success('defult user');
+
     }
     public function destroy($id)
     {
@@ -66,5 +69,26 @@ class UserController extends Controller
 
             return response()->success('User deleted successfully');
         });
+    }
+
+    public function block($id)
+    {
+        $user = User::find($id);
+
+        if (!$user || $user->isAdmin()) {
+            return response()->errors('User not found');
+        }
+
+        if ($user->status == Status::APPROVED()) {
+            $user->status = Status::BLOCKED();
+        } elseif ($user->status == Status::BLOCKED()) {
+            $user->status = Status::APPROVED();
+        } else {
+            return response()->errors('You can only toggle status between APPROVED and BLOCKED');
+        }
+
+        $user->save();
+
+        return response()->success("User status changed to {$user->status}");
     }
 }

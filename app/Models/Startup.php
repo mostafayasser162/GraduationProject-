@@ -34,10 +34,14 @@ class Startup extends Model
         return $this->belongsTo(User::class);
     }
 
-    // public function requests()
-    // {
-    //     return $this->hasMany(StartupRequest::class);
-    // }
+    public function requests()
+    {
+        return $this->hasMany(Request::class);
+    }
+    public function isStartup(): bool
+    {
+        return class_basename($this) == 'Startup';
+    }
 
     // public function joinRequests()
     // {
@@ -48,5 +52,4 @@ class Startup extends Model
     // {
     //     return $this->hasMany(Product::class);
     // }
-    
 }
