@@ -13,7 +13,7 @@ class StartUpController extends Controller
     public function index(Request $request)
     {
 
-        $query = Startup::query();
+        $query = Startup::with('user');
 
         if ($request->has('status')) {
             $status = $request->status;
@@ -32,7 +32,7 @@ class StartUpController extends Controller
 
     public function show($id)
     {
-        $startUp = Startup::find($id);
+        $startUp = Startup::with('user')->find($id);
 
         if (!$startUp) {
             return response()->errors('startUp not found');
