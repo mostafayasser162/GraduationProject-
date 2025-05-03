@@ -44,7 +44,6 @@ class AuthController extends Controller
                 'USER' => 'user',
                 'OWNER' => 'owner',
                 'EMPLOYEES' => 'employee',
-                'INVESTOR' => 'investor',
             };
                         $data = [
                 $type => $user,

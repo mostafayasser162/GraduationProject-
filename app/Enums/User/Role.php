@@ -9,7 +9,6 @@ use App\Enums\Enum;
  * @method static self USER()
  * @method static self OWNER()
  * @method static self EMPLOYEES()
- * @method static self INVESTOR()
  */
 class Role extends Enum
 {
@@ -20,12 +19,11 @@ class Role extends Enum
             'USER' => 'USER',
             'OWNER' => 'OWNER',
             'EMPLOYEES' => 'EMPLOYEES',
-            'INVESTOR' => 'INVESTOR',
         ];
     }
     public static function allValues(): array
     {
         return array_values(static::values());
     }
-    
+
 }

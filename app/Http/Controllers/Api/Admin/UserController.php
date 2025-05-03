@@ -43,7 +43,9 @@ class UserController extends Controller
                 ['key' => 'true']
             );
         }
-        return;
+
+        return response()->success('defult user');
+
     }
     public function destroy($id)
     {
