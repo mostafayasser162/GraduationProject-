@@ -3,10 +3,11 @@
 namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Mail\RejectStartupMail;
 use App\Models\Startup;
 use Illuminate\Http\Request;
 use App\Enums\StartUps\Status;
-
+use Illuminate\Support\Facades\Mail;
 
 class StartUpController extends Controller
 {
@@ -89,15 +90,19 @@ class StartUpController extends Controller
     {
         $startup = Startup::find($id);
 
-        if (!$startup || $startup->status != Status::PENDING()) {
-            return response()->errors('Startup not found or its status not pending');
-        }
+        // if (!$startup || $startup->status != Status::PENDING()) {
+        //     return response()->errors('Startup not found or its status not pending');
+        // }
 
         $startup->status = Status::REJECTED();
         $startup->save();
-        $startup->delete();
 
+        if ($startup->user && $startup->user->email) {
+            Mail::to($startup->user->email)->send(new RejectStartupMail($startup));
+        }
 
-        return response()->success("Startup has been rejected");
+        // $startup->delete();
+
+        return response()->success("Startup has been rejected and email sent");
     }
 }
