@@ -48,8 +48,8 @@ class Startup extends Model
     //     return $this->hasMany(StartupJoinRequest::class);
     // }
 
-    // public function products()
-    // {
-    //     return $this->hasMany(Product::class);
-    // }
+    public function products()
+    {
+        return $this->hasMany(Product::class);
+    }
 }
