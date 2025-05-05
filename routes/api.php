@@ -50,7 +50,13 @@ Route::middleware('auth:api')->group(function () {
 
     
     Route::prefix('user')->group(function () {
-        Route::get('products', [UserProductController::class, 'index']);
+        // Route::get('products', [UserProductController::class, 'index']);
+        // Route::get('user/products/{id}', [ProductController::class,'show']);
+
+        Route::resource('products', UserProductController::class)->only(['index', 'show']);
+
+
+
 
     });
 });

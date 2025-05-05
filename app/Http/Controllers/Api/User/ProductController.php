@@ -51,8 +51,22 @@ class ProductController extends Controller
         return response()->success($products);
     }
 
-
+    public function show($id)
+    {
+        $product = Product::with(['startup', 'subCategory.category', 'images'])
+            ->where('id', $id)
+            ->whereHas('startup', function ($q) {
+                $q->where('status', Status::APPROVED());
+            })
+            ->firstOrFail(); // will return 404 if not found
+    
+        // Format response to match index() structure
+        $product->sub_category = $product->subCategory;
+        $product->sub_category->category = $product->sub_category->category;
+        unset($product->subCategory);
+    
+        return response()->success($product);
+    }
   
-
 
 }
