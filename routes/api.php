@@ -5,16 +5,19 @@ use App\Http\Controllers\Api\Admin\FactoryController;
 use App\Http\Controllers\Api\Admin\ProductController;
 use App\Http\Controllers\Api\Admin\ResponseController as AdminResponseController;
 use App\Http\Controllers\Api\Admin\StartUpController;
+use App\Http\Controllers\Api\User\CartController;
+use App\Http\Controllers\Api\User\StartUpController as UserStartUpController;
 use App\Http\Controllers\Api\Admin\SubCategoryController;
 use App\Http\Controllers\Api\Admin\UserController;
 use App\Http\Controllers\Api\Factory\ResponseController as FactoryResponseController;
 use App\Http\Controllers\Api\Factory\StartupRequestController as FactoryStartupRequestController;
+use App\Http\Controllers\Api\User\ProfileController as UserProfileController;
 use App\Http\Controllers\Api\User\AuthController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\User\ProductController as UserProductController;
 
 
-
+//login for user and admin
 Route::controller(AuthController::class)->group(function () {
     Route::post('register', 'register');
     Route::post('login', 'login');
@@ -48,9 +51,25 @@ Route::middleware('auth:api')->group(function () {
         Route::resource('response', AdminResponseController::class)->only(['index', 'show']);
     });
 
-    
     Route::prefix('user')->group(function () {
         Route::get('products', [UserProductController::class, 'index']);
+
+        //profile
+        Route::controller(UserProfileController::class)->group(function () {
+            Route::get('/profile', 'index');
+            Route::put('/profile', 'update');
+            Route::delete('/profile', 'destroy');
+        });
+
+        Route::resource('startup', UserStartUpController::class)->only(['index', 'show']);
+
+        Route::middleware('auth:api')->group(function () {
+            Route::get('/cart', [CartController::class, 'index']);
+            Route::post('/cart/add', [CartController::class, 'addToCart']);
+            // Route::put('/cart/update', [CartController::class, 'updateQuantity']);
+            Route::post('/cart/remove', [CartController::class, 'removeFromCart']);
+            Route::delete('/cart/clear', [CartController::class, 'clearCart']);
+        });
 
     });
 });

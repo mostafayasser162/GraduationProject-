@@ -7,7 +7,10 @@ use App\Models\User;
 
 trait HasUser
 {
-    protected ?User $user = null;
+    public function __construct(public ?User $user = null)
+    {
+        parent::__construct();
+    }
 
     // before validation
     protected function prepareForValidation(): void
