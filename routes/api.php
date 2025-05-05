@@ -11,6 +11,7 @@ use App\Http\Controllers\Api\Factory\ResponseController as FactoryResponseContro
 use App\Http\Controllers\Api\Factory\StartupRequestController as FactoryStartupRequestController;
 use App\Http\Controllers\Api\User\AuthController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\User\ProductController as UserProductController;
 
 
 
@@ -46,6 +47,12 @@ Route::middleware('auth:api')->group(function () {
 
         Route::resource('response', AdminResponseController::class)->only(['index', 'show']);
     });
+
+    
+    Route::prefix('user')->group(function () {
+        Route::get('products', [UserProductController::class, 'index']);
+
+    });
 });
 
 // factory routes
@@ -57,3 +64,4 @@ Route::middleware('auth:factory')->group(function () {
         Route::post('response/send-offer', [FactoryResponseController::class, 'sendOffer']);
     });
 });
+

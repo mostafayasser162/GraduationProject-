@@ -11,15 +11,18 @@ class Product extends Model
         'name',
         'description',
         'price',
-        'stock',
         'sub_category_id',
-        'size_id',
     ];
 
 
     public function startup()
     {
         return $this->belongsTo(Startup::class);
+    }
+
+    public function subCategory()
+    {
+        return $this->belongsTo(Sub_category::class, 'sub_category_id');
     }
 
     public function images()
