@@ -10,47 +10,44 @@ class ProductController extends Controller
 {
     public function index()
     {
-        $products = Product::with(['startup', 'subCategory.category', 'images'])->paginate(10);  
-             
-           // Customize the response
-    $products->getCollection()->transform(function ($product) {
-        // Merge 'subCategory' data into the product
-        $product->sub_category = $product->subCategory;
+        $products = Product::with(['startup', 'subCategory.category', 'images'])->paginate();
 
-        // Include category data inside sub_category
-        $product->sub_category->category = $product->sub_category->category;
-
-        // Remove the original 'subCategory' relationship (if needed)
-        unset($product->subCategory);
-
-        return $product;
-    });
-
+        // Transform the collection
+        $products->getCollection()->transform(function ($product) {
+            $product->sub_category = $product->subCategory;
+            $product->sub_category->category = $product->sub_category->category;
+            unset($product->subCategory);
+            return $product;
+        });
         return response()->success($products);
+
     }
 
     public function show($id)
     {
-        $product = Product::with(['startup', 'subCategory.category', 'images'])->findOrFail($id);
-    
-        // Merge 'subCategory' data into the product
+        $product = Product::with(['startup', 'subCategory.category', 'images'])->find($id);
+
+        if (!$product) {
+            return response()->errors('Product not found');
+        }
+
         $product->sub_category = $product->subCategory;
-    
-        // Include category data inside sub_category
         $product->sub_category->category = $product->sub_category->category;
-    
-        // Remove the original 'subCategory' relationship (if needed)
         unset($product->subCategory);
-    
+
         return response()->success($product);
     }
-    
 
     public function destroy($id)
     {
-        $product = Product::findOrFail($id);
+        $product = Product::find($id);
+
+        if (!$product) {
+            return response()->errors('Product not found');
+        }
+
         $product->delete();
 
-        return response()->success('product deleted successfully');
+        return response()->success('Product deleted successfully');
     }
 }
