@@ -13,6 +13,7 @@ class CartController extends Controller
     {
         $user = $request->user();
         $productId = $request->input('product_id');
+        
         $sizeId = $request->input('product_size_id');
 
         $product = Product::find($productId);
