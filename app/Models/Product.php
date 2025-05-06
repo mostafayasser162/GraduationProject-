@@ -33,8 +33,13 @@ class Product extends Model
     public function inCarts()
     {
         return $this->belongsToMany(User::class, 'cart_product')
-            ->withPivot('quantity')
+            ->withPivot('quantity' , 'product_size_id')
             ->withTimestamps();
+    }
+
+    public function productSizes()
+    {
+        return $this->hasMany(Product_size::class);
     }
     // public function variants()
     // {

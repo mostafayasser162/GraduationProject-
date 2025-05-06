@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\Admin\ProductController;
 use App\Http\Controllers\Api\Admin\ResponseController as AdminResponseController;
 use App\Http\Controllers\Api\Admin\StartUpController;
 use App\Http\Controllers\Api\User\CartController;
+use App\Http\Controllers\Api\User\OrderController as UserOrderController;
 use App\Http\Controllers\Api\User\StartUpController as UserStartUpController;
 use App\Http\Controllers\Api\Admin\SubCategoryController;
 use App\Http\Controllers\Api\Admin\UserController;
@@ -63,14 +64,13 @@ Route::middleware('auth:api')->group(function () {
 
         Route::resource('startup', UserStartUpController::class)->only(['index', 'show']);
 
-        Route::middleware('auth:api')->group(function () {
-            Route::get('/cart', [CartController::class, 'index']);
-            Route::post('/cart/add', [CartController::class, 'addToCart']);
-            // Route::put('/cart/update', [CartController::class, 'updateQuantity']);
-            Route::post('/cart/remove', [CartController::class, 'removeFromCart']);
-            Route::delete('/cart/clear', [CartController::class, 'clearCart']);
-        });
+        Route::get('/cart', [CartController::class, 'index']);
+        Route::post('/cart/add', [CartController::class, 'addToCart']);
+        // Route::put('/cart/update', [CartController::class, 'updateQuantity']);
+        Route::post('/cart/remove', [CartController::class, 'removeFromCart']);
+        Route::delete('/cart/clear', [CartController::class, 'clearCart']);
 
+        Route::post('orders/place', [UserOrderController::class, 'placeOrder']);
     });
 });
 
@@ -83,4 +83,3 @@ Route::middleware('auth:factory')->group(function () {
         Route::post('response/send-offer', [FactoryResponseController::class, 'sendOffer']);
     });
 });
-

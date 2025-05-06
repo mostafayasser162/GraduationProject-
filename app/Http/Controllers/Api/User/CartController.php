@@ -13,16 +13,20 @@ class CartController extends Controller
     {
         $user = $request->user();
         $productId = $request->input('product_id');
+        $sizeId = $request->input('product_size_id');
 
         $product = Product::find($productId);
         if (!$product) {
-            return response()->errors(__('Product not found'));
+            return response()->errors('Product not found');
         }
 
         $quantity = $request->input('quantity', 1);
 
         $user->cart()->syncWithoutDetaching([
-            $productId => ['quantity' => $quantity]
+            $productId => [
+                'quantity' => $quantity,
+                'product_size_id' => $sizeId,
+            ]
         ]);
 
         return response()->success('Product added to cart');
@@ -31,8 +35,12 @@ class CartController extends Controller
     public function index(Request $request)
     {
         $user = $request->user();
-        $cart = $user->cart()->with('subCategory', 'startup')->get();
+        $cart = $user->cart()->with('subCategory', 'startup', 'images')->get();
 
+        $cart->each(function ($product) {
+            $productSizeId = $product->pivot->product_size_id;
+            $product->pivot->productSize = \App\Models\Product_size::find($productSizeId);
+        });
         $data = CartProductResource::collection($cart);
 
         $totalPrice = $cart->sum(fn($product) => $product->price * $product->pivot->quantity);
@@ -49,8 +57,13 @@ class CartController extends Controller
     {
         $user = $request->user();
         $productId = $request->input('product_id');
+        $productSizeId = $request->input('product_size_id');
 
-        $product = $user->cart()->find($productId);
+        $product = $user->cart()
+            ->wherePivot('product_id', $productId)
+            ->wherePivot('product_size_id', $productSizeId)
+            ->first();
+
 
         if (!$product) {
             return response()->errors('Product not found in cart', 404);
@@ -77,7 +90,7 @@ class CartController extends Controller
         return response()->errors('Cart cleared');
     }
 
-            //msh mehtagh ahalian 3shan el remove by3ml minus one lel product
+    //msh mehtagh ahalian 3shan el remove by3ml minus one lel product
     // public function updateQuantity(Request $request)
     // {
     //     $user = $request->user();

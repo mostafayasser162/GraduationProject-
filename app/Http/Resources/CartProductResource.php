@@ -24,6 +24,7 @@ class CartProductResource extends JsonResource
             'startup_id'     => $this->startup_id,
             'startup'        => new StartupResource($this->startup),
             'images'         => $this->images->pluck('url'),
+            'product_size' => new ProductSizeResource($this->pivot->productSize),
         ];
     }
 }
