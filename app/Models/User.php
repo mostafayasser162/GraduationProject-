@@ -74,6 +74,12 @@ class User extends Authenticatable implements JWTSubject
                 ->orWhere('id', 'like', "%$term%");
         });
     }
+    public function cart()
+    {
+        return $this->belongsToMany(Product::class, 'cart_product')
+            ->withPivot('quantity')
+            ->withTimestamps();
+    }
     // public function wishlist()
     // {
     //     return $this->hasMany(Wishlist::class);
