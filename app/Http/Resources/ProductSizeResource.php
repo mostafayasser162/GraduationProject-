@@ -3,7 +3,11 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
+// use App\Http\Resources\ProductSizeResource;
+// use App\Http\Resources\ProductColorResource;
+// use App\Http\Resources\ColorProductResource; // Commented out as it may not exist
 use Illuminate\Http\Resources\Json\JsonResource;
+
 
 class ProductSizeResource extends JsonResource
 {
@@ -12,14 +16,50 @@ class ProductSizeResource extends JsonResource
      *
      * @return array<string, mixed>
      */
-    public function toArray($request)
-    {
-        return [
-            'id' => $this->id,
-            'color' => $this->color ? $this->color->name : null,
-            'size' => $this->size ? $this->size->name : null, 
-            'price' => $this->price,
-            'stock' => $this->stock,
-        ];
-    }
+
+    // ProductSizeResource.php
+        // public function toArray($request)
+        // {
+        //     return [
+        //         'id' => $this->id,
+        //         // 'size' => $this->size ? $this->size->size : 'N/A', // Ensure size data is returned
+        //         // 'color' => $this->color ? $this->color->color_name : 'N/A', // Ensure color data is returned
+        //         'size' => $this->size && is_object($this->size) ? new ProductSizeResource($this->size) : null,
+        //         'color' => $this->color && is_object($this->color) ? new ProductColorResource($this->color) : null,
+        //         'price' => $this->price,
+        //         'stock' => $this->stock,
+        //     ];
+        // }
+
+
+        // public function toArray($request)
+        // {
+        //     return [
+        //         'id' => $this->id,
+        //         'size_id' => $this->size_id,
+        //         'size' => optional($this->size)->name, // assuming relation `size`
+        //         'color' => $this->color ? $this->color->color_name : 'N/A', // Fallback to color_name if resource is missing
+        //         'price' => $this->price,
+        //         'stock' => $this->stock,
+        //     ];
+        // }
+
+        public function toArray($request)
+        {
+            return [
+                'id' => $this->id,
+                'price' => $this->price,
+                'stock' => $this->stock,
+                'size' => $this->size ? [
+                    'id' => $this->size->id,
+                    'name' => $this->size->name,
+                ] : null,
+                'color' => $this->color ? [
+                    'id' => $this->color->id,
+                    'name' => $this->color->color_name,
+                    'code' => $this->color->color_code,
+                ] : null,
+            ];
+        }
+
 }

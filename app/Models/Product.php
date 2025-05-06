@@ -30,6 +30,11 @@ class Product extends Model
         return $this->hasMany(Image::class);
     }
 
+    public function mainImage()
+{
+    return $this->hasOne(Image::class)->where('is_main', 1);
+}
+
     public function inCarts()
     {
         return $this->belongsToMany(User::class, 'cart_product')
@@ -37,10 +42,20 @@ class Product extends Model
             ->withTimestamps();
     }
 
-    public function productSizes()
-    {
-        return $this->hasMany(Product_size::class);
-    }
+    // public function productSizes()
+    // {
+    //     return $this->hasMany(Product_size::class);
+    // }
+
+    // In App\Models\Product.php
+public function productSize()
+{
+    return $this->belongsToMany(Product_size::class , 'cart_product')
+        ->withPivot('quantity' , 'product_size_id' , 'product_id' ) 
+        ->withTimestamps();
+        // ->withTimestamps();
+}
+
     // public function variants()
     // {
     //     return $this->hasMany(ProductVariant::class);

@@ -16,7 +16,9 @@ use App\Http\Controllers\Api\User\ProfileController as UserProfileController;
 use App\Http\Controllers\Api\User\AuthController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\User\ProductController as UserProductController;
+use App\Http\Controllers\Api\User\WishlistController as UserWishlistController;
 
+// use App\Http\Controllers\WishlistController as UserWishlistController;
 
 //login for user and admin
 Route::controller(AuthController::class)->group(function () {
@@ -36,7 +38,8 @@ Route::middleware('auth:api')->group(function () {
         Route::get('user/{id}/checkDestroy', [UserController::class, 'checkDestroy']);
         Route::put('user/{id}/block', [UserController::class, 'block']);
 
-        Route::resource('startup', StartUpController::class)->only(['index', 'show', 'destroy']);
+        Route::resource('startups', StartUpController::class)->only(['index', 'show', 'destroy']);
+
         Route::put('startup/{id}/block', [StartUpController::class, 'block']);
         Route::post('startup/{id}/accept', [StartUpController::class, 'accept']);
         Route::post('startup/{id}/reject', [StartUpController::class, 'reject']);
@@ -49,7 +52,7 @@ Route::middleware('auth:api')->group(function () {
 
         Route::resource('product', ProductController::class)->only(['index', 'show', 'destroy']);
 
-        Route::resource('response', AdminResponseController::class)->only(['index', 'show']);
+        Route::resource('responses', AdminResponseController::class)->only(['index', 'show']);
     });
 
     Route::prefix('user')->group(function () {
@@ -71,6 +74,18 @@ Route::middleware('auth:api')->group(function () {
         Route::delete('/cart/clear', [CartController::class, 'clearCart']);
 
         Route::post('orders/place', [UserOrderController::class, 'placeOrder']);
+        Route::get('/orders', [UserOrderController::class, 'index']);
+        Route::get('/orders/{orderId}', [UserOrderController::class, 'show']);
+
+//   Add product to wishlist
+        Route::post('/wishlist/{productId}', [UserWishlistController::class, 'addToWishlist']);
+            
+        // Get user's wishlist
+        Route::get('/wishlist', [UserWishlistController::class, 'getWishlist']);
+        
+        // Remove product from wishlist
+        Route::delete('/wishlist/{productId}', [UserWishlistController::class, 'removeFromWishlist']);
+
     });
 });
 
@@ -80,6 +95,7 @@ Route::middleware('auth:factory')->group(function () {
         Route::resource('request', FactoryStartupRequestController::class)->only(['index', 'show', 'destroy']);
 
         Route::resource('response', FactoryResponseController::class)->only(['index', 'show', 'destroy']);
+
         Route::post('response/send-offer', [FactoryResponseController::class, 'sendOffer']);
     });
 });

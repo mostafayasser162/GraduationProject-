@@ -20,6 +20,7 @@ class ProductSeeder extends Seeder
                 'description' => $faker->paragraph,
                 'price' => $faker->randomFloat(2, 100, 1000), // Random price between 100 and 1000
                 'sub_category_id' => rand(1, 20), // Random startup_id, assuming there are startups already created
+                'stock' => rand(1, 200), // Random startup_id, assuming there are startups already created
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);
