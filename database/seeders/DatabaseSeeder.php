@@ -22,7 +22,10 @@ class DatabaseSeeder extends Seeder
             CategorySeeder::class,
             SubCategorySeeder::class,
             ProductSeeder::class,
+            SizesTableSeeder::class,
+            ProductColorsTableSeeder::class,
         ]);
+        $this->call(ProductSizesTableSeeder::class);
 
 
     }

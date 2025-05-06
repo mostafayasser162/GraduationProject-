@@ -4,6 +4,8 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use App\Http\Resources\StartupResource;
+use App\Http\Resources\ProductSizeResource;
 
 class CartProductResource extends JsonResource
 {
@@ -12,18 +14,53 @@ class CartProductResource extends JsonResource
      *
      * @return array<string, mixed>
      */
-    public function toArray(Request $request): array
+    // public function toArray(Request $request): array
+    // {
+
+            
+    //     return [
+    //         'product_id'     => $this->id,
+    //         'name'           => $this->name,
+    //         'price'          => $this->price,
+    //         'quantity'       => $this->pivot->quantity,
+    //         'total'          => $this->price * $this->pivot->quantity,
+    //         'sub_category'   => optional($this->subCategory)->name,
+    //         'startup_id'     => $this->startup_id,
+    //         'startup'        => new StartupResource($this->startup),
+    //         'images'         => $this->images->pluck('url'),
+    //         'product_size'   => new ProductSizeResource($this->pivot->productSize),
+    //         'size'           => $this->pivot->productSize->size ?? 'N/A',
+    //         'color'          => $this->pivot->productSize->color ?? 'N/A',
+    //         'stock'          => $this->pivot->productSize->stock ?? 0,  // Add stock from product_size
+    //         'price'          => $this->pivot->productSize->price ?? 0,  // Add price from product_size
+    //         // 'size'           => $this->pivot->productSize->size ? $this->pivot->productSize->size : 'N/A', // Ensuring proper size handling
+    //         // 'color'          => $this->pivot->productSize->color ? $this->pivot->productSize->color->color_name : 'N/A', // Ensuring proper color handling
+    //     ];
+    // }
+    
+
+
+    public function toArray($request)
     {
         return [
-            'product_id'     => $this->id,
-            'name'           => $this->name,
-            'price'          => $this->price,
-            'quantity'       => $this->pivot->quantity,
-            'total'          => $this->price * $this->pivot->quantity,
-            'sub_category'   => optional($this->subCategory)->name,
-            'startup_id'     => $this->startup_id,
-            'startup'        => new StartupResource($this->startup),
-            'images'         => $this->images->pluck('url'),
+            'id' => $this->id,
+            'name' => $this->name,
+            'quantity' => $this->pivot->quantity,
+            'price' => $this->pivot->product_size_id
+                ? optional($this->pivot->productSize)->price
+                : $this->price,
+            'stock' => $this->pivot->product_size_id
+                ? optional($this->pivot->productSize)->stock
+                : $this->stock,
+            'product_size' => $this->pivot->product_size_id
+                ? new ProductSizeResource($this->pivot->productSize)
+                : null,
+            'startup' => new StartupResource($this->startup),
+            'image' => $this->mainImage
+                ? asset('storage/' . $this->mainImage->url)
+                : null,
+            // Alternatively, return all image URLs:
+            // 'images' => $this->images->pluck('url')->map(fn($url) => asset('storage/' . $url)),
         ];
     }
 }
