@@ -1,22 +1,23 @@
 <?php
 
-use App\Http\Controllers\Api\Admin\CategoryController;
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\User\AuthController;
+use App\Http\Controllers\Api\User\CartController;
+use App\Http\Controllers\Api\Admin\UserController;
+use App\Http\Controllers\Api\User\AddressController as UserAddressController;
 use App\Http\Controllers\Api\Admin\FactoryController;
 use App\Http\Controllers\Api\Admin\ProductController;
-use App\Http\Controllers\Api\Admin\ResponseController as AdminResponseController;
 use App\Http\Controllers\Api\Admin\StartUpController;
-use App\Http\Controllers\Api\User\CartController;
-use App\Http\Controllers\Api\User\OrderController as UserOrderController;
-use App\Http\Controllers\Api\User\StartUpController as UserStartUpController;
+use App\Http\Controllers\Api\Admin\CategoryController;
 use App\Http\Controllers\Api\Admin\SubCategoryController;
-use App\Http\Controllers\Api\Admin\UserController;
+use App\Http\Controllers\Api\User\OrderController as UserOrderController;
+use App\Http\Controllers\Api\User\ProductController as UserProductController;
+use App\Http\Controllers\Api\User\ProfileController as UserProfileController;
+use App\Http\Controllers\Api\User\StartUpController as UserStartUpController;
+use App\Http\Controllers\Api\User\WishlistController as UserWishlistController;
+use App\Http\Controllers\Api\Admin\ResponseController as AdminResponseController;
 use App\Http\Controllers\Api\Factory\ResponseController as FactoryResponseController;
 use App\Http\Controllers\Api\Factory\StartupRequestController as FactoryStartupRequestController;
-use App\Http\Controllers\Api\User\ProfileController as UserProfileController;
-use App\Http\Controllers\Api\User\AuthController;
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Api\User\ProductController as UserProductController;
-use App\Http\Controllers\Api\User\WishlistController as UserWishlistController;
 
 // use App\Http\Controllers\WishlistController as UserWishlistController;
 
@@ -53,6 +54,7 @@ Route::middleware('auth:api')->group(function () {
         Route::resource('product', ProductController::class)->only(['index', 'show', 'destroy']);
 
         Route::resource('responses', AdminResponseController::class)->only(['index', 'show']);
+
     });
 
     Route::prefix('user')->group(function () {
@@ -91,6 +93,9 @@ Route::middleware('auth:api')->group(function () {
         
         // Remove product from wishlist
         Route::delete('/wishlist/{productId}', [UserWishlistController::class, 'removeFromWishlist']);
+        Route::resource('/addresses', UserAddressController::class)->only(['index', 'store', 'destroy']);
+        // route to update address
+        Route::put('/addresses/{id}', [UserAddressController::class, 'update']);
 
     });
 });
