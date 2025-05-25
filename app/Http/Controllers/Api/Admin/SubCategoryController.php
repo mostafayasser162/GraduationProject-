@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\SubCategoryResource;
 use App\Models\Sub_category;
 use Illuminate\Http\Request;
 
@@ -11,7 +12,9 @@ class SubCategoryController extends Controller
     public function index()
     {
         $subCategories = Sub_category::with('category')->paginate();
-        return response()->success($subCategories);
+        $subCategories = SubCategoryResource::collection($subCategories);
+
+        return response()->paginate_resource($subCategories);
     }
 
     public function show($id)
@@ -21,6 +24,7 @@ class SubCategoryController extends Controller
         if (!$subCategory) {
             return response()->errors('Sub-category not found');
         }
+        $subCategory = new SubCategoryResource($subCategory);
 
         return response()->success($subCategory);
     }

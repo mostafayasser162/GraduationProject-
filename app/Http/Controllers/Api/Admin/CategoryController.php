@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\CategoryResource;
 use App\Models\Category;
 use Illuminate\Http\Request;
 
@@ -11,7 +12,8 @@ class CategoryController extends Controller
     public function index()
     {
         $categories = Category::paginate();
-        return response()->success($categories);
+        $categories = CategoryResource::collection($categories);
+        return response()->paginate_resource($categories);
     }
 
     public function show($id)
@@ -21,7 +23,8 @@ class CategoryController extends Controller
         if (!$category) {
             return response()->errors('Category not found');
         }
-        return response()->success($category );
+        $category = new CategoryResource($category);
+        return response()->success($category);
     }
 
     public function store(Request $request)

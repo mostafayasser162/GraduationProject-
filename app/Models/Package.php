@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Models\Scopes\SearchScope;
+use App\Models\Scopes\SortScope;
 use Illuminate\Database\Eloquent\Model;
 
 class Package extends Model
@@ -12,4 +14,10 @@ class Package extends Model
         'desc',
         'price',
     ];
+
+    protected static function booted(): void
+    {
+        static::addGlobalScope(new SearchScope);
+        static::addGlobalScope(new SortScope);
+    }
 }

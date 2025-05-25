@@ -23,7 +23,7 @@ class AddressController extends Controller
         $addresses = $user->addresses;
 
         // Return the addresses as a resource collection
-        return response()->success(AddressResource::collection($addresses));
+        return response()->paginate_resource(AddressResource::collection($addresses));
     }
 
     // Store a new address for the authenticated user
@@ -62,41 +62,41 @@ class AddressController extends Controller
         return response()->success(new AddressResource($address));
     }
 
-       // Update an existing address for the authenticated user
-       public function update(Request $request, $id)
-       {
-           // Validate the incoming data
-           $data = $request->validate([
-               'address' => 'required|string',      // For the 'address' field
-               'city' => 'nullable|string',         // For the 'city' field
-               'lat' => 'nullable|numeric',         // For the 'lat' field (latitude)
-               'lng' => 'nullable|numeric',         // For the 'lng' field (longitude)
-           ]);
-       
-           // Ensure user is authenticated
-           $user = Auth::user();
-           if (!$user) {
-               return response()->errors('User not authenticated', 401);
-           }
-       
-           // Find the address by ID and ensure it belongs to the authenticated user
-           $address = $user->addresses()->find($id);
-           if (!$address) {
-               return response()->errors('Address not found or unauthorized', 404);
-           }
-       
-           // Update the address with the new data
-           $address->update([
-               'address' => $data['address'],
-               'city' => $data['city'],
-               'lat' => $data['lat'] ?? null,
-               'lng' => $data['lng'] ?? null,
-           ]);
-       
-           // Return the updated address as a resource
-           return response()->success(new AddressResource($address));
-       }
-       
+    // Update an existing address for the authenticated user
+    public function update(Request $request, $id)
+    {
+        // Validate the incoming data
+        $data = $request->validate([
+            'address' => 'required|string',      // For the 'address' field
+            'city' => 'nullable|string',         // For the 'city' field
+            'lat' => 'nullable|numeric',         // For the 'lat' field (latitude)
+            'lng' => 'nullable|numeric',         // For the 'lng' field (longitude)
+        ]);
+
+        // Ensure user is authenticated
+        $user = Auth::user();
+        if (!$user) {
+            return response()->errors('User not authenticated', 401);
+        }
+
+        // Find the address by ID and ensure it belongs to the authenticated user
+        $address = $user->addresses()->find($id);
+        if (!$address) {
+            return response()->errors('Address not found or unauthorized', 404);
+        }
+
+        // Update the address with the new data
+        $address->update([
+            'address' => $data['address'],
+            'city' => $data['city'],
+            'lat' => $data['lat'] ?? null,
+            'lng' => $data['lng'] ?? null,
+        ]);
+
+        // Return the updated address as a resource
+        return response()->success(new AddressResource($address));
+    }
+
     // Delete an address
     public function destroy(Address $address)
     {

@@ -17,6 +17,7 @@ class User extends Authenticatable implements JWTSubject
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable, SoftDeletes, Traits\Actor;
 
+
     /**
      * The attributes that are mass assignable.
      *
@@ -64,20 +65,14 @@ class User extends Authenticatable implements JWTSubject
     }
     protected static function booted(): void
     {
-        // static::addGlobalScope(new SearchScope);
+        static::addGlobalScope(new SearchScope);
         static::addGlobalScope(new SortScope);
     }
-    public function scopeSearch($query, $term)
-    {
-        return $query->where(function ($q) use ($term) {
-            $q->where('name', 'like', "%$term%")
-                ->orWhere('id', 'like', "%$term%");
-        });
-    }
+
     public function cart()
     {
         return $this->belongsToMany(Product::class, 'cart_product')
-            ->withPivot('quantity' , 'product_size_id')
+            ->withPivot('quantity', 'product_size_id')
             ->withTimestamps();
     }
     // public function wishlist()
@@ -90,9 +85,7 @@ class User extends Authenticatable implements JWTSubject
     //     return $this->hasMany(Review::class);
     // }
     public function addresses()
-{
-    return $this->hasMany(Address::class);
-}
-
-
+    {
+        return $this->hasMany(Address::class);
+    }
 }

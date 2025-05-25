@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Scopes\SortScope;
 use Illuminate\Database\Eloquent\Model;
 
 class Review extends Model
@@ -22,5 +23,10 @@ class Review extends Model
     public function product()
     {
         return $this->belongsTo(Product::class);
+    }
+        protected static function booted(): void
+    {
+        // static::addGlobalScope(new SearchScope);
+        static::addGlobalScope(new SortScope);
     }
 }

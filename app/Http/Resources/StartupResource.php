@@ -11,6 +11,7 @@ class StartupResource extends JsonResource
     {
         return [
             'id' => $this->id,
+            'user' => new UserResource($this->whenLoaded('user')),
             'name' => $this->name,
             'description' => $this->description,
             'logo' => $this->logo,
@@ -19,6 +20,7 @@ class StartupResource extends JsonResource
             'status' => $this->status,
             'package_id' => $this->package_id,
             'categories_id' => $this->categories_id,
+            'products' => ProductResource::collection($this->whenLoaded('products')),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             'deleted_at' => $this->deleted_at,

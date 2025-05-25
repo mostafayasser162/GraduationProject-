@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\Admin;
 
 use App\Enums\User\Role;
 use App\Enums\User\Status;
+use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -14,25 +15,24 @@ class UserController extends Controller
 {
     public function index(Request $request)
     {
-        // $users = User::paginate();
-        $query = User::query();
+        $query = User::query()->whereNot('role', Role::ADMIN())->with('orders' , 'orders.orderItems');
 
         if ($request->has('role') && in_array($request->role, Role::allValues())) {
             $query->where('role', $request->role);
         }
 
         $users = $query->paginate();
-        return response()->success($users);
+        return response()->paginate_resource(UserResource::collection($users));
     }
 
     public function show($id)
     {
-        $user = User::find($id);
+        $user = User::find($id)->load('orders.orderItems' ,'orders');
 
-        if (!$user) {
+        if (!$user || $user->isAdmin()) {
             return response()->errors('User not found');
         }
-        return response()->success($user);
+        return response()->success(new UserResource($user));
     }
 
     public function checkDestroy($id)
@@ -46,7 +46,6 @@ class UserController extends Controller
         }
 
         return response()->success('defult user');
-
     }
     public function destroy($id)
     {
