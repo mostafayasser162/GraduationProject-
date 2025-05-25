@@ -6,14 +6,14 @@ use App\Http\Controllers\Controller;
 use App\Models\Startup;
 use Illuminate\Http\Request;
 use App\Enums\StartUps\Status;
-
+use App\Http\Resources\StartupResource;
 
 class StartUpController extends Controller
 {
     public function index(Request $request)
     {
 
-        $query = Startup::with('user');
+        $query = Startup::with('user' , 'products');
 
         if ($request->has('status')) {
             $status = $request->status;
@@ -26,18 +26,20 @@ class StartUpController extends Controller
         }
 
         $startUps = $query->paginate();
+        $startUps = StartupResource::collection($startUps);
 
-        return response()->success($startUps);
+        return response()->paginate_resource($startUps);
     }
 
     public function show($id)
     {
-        $startUp = Startup::with('user')->find($id);
+        $startUp = Startup::with('user' , 'products')->find($id);
 
         if (!$startUp) {
             return response()->errors('startUp not found');
         }
-        return response()->success($startUp);
+
+        return response()->success(new StartupResource($startUp));
     }
 
     public function destroy($id)

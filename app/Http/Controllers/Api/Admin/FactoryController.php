@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\Admin;
 
+use App\Http\Resources\FactoryResource;
 use App\Models\Factory;
 use Illuminate\Http\Request;
 use App\Enums\Factory\Status;
@@ -21,12 +22,17 @@ class FactoryController extends Controller
         }
 
         $factories = $query->paginate();
+        $factories = FactoryResource::collection($factories);
 
-        return response()->success($factories);
+        return response()->paginate_resource($factories);
     }
 
     public function show(Factory $factory)
     {
+        if (!$factory) {
+            return response()->errors('Factory not found');
+        }
+        $factory = new FactoryResource($factory);
         return response()->success($factory);
     }
 

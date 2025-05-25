@@ -2,10 +2,12 @@
 
 namespace App\Models;
 
+use App\Models\Scopes\SortScope;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use App\Enums\Factory\Status;
+use App\Models\Scopes\SearchScope;
 use Illuminate\Database\Eloquent\Model;
 use Laravel\Sanctum\HasApiTokens;
 use Tymon\JWTAuth\Contracts\JWTSubject;
@@ -46,5 +48,10 @@ class Factory extends Authenticatable implements JWTSubject
     public function getJWTCustomClaims(): array
     {
         return [];
+    }
+        protected static function booted(): void
+    {
+        static::addGlobalScope(new SearchScope);
+        static::addGlobalScope(new SortScope);
     }
 }

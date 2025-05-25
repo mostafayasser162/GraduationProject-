@@ -17,7 +17,7 @@ class CartProductResource extends JsonResource
     // public function toArray(Request $request): array
     // {
 
-            
+
     //     return [
     //         'product_id'     => $this->id,
     //         'name'           => $this->name,
@@ -37,7 +37,7 @@ class CartProductResource extends JsonResource
     //         // 'color'          => $this->pivot->productSize->color ? $this->pivot->productSize->color->color_name : 'N/A', // Ensuring proper color handling
     //     ];
     // }
-    
+
 
 
     public function toArray($request)

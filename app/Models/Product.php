@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Models\Scopes\SearchScope;
+use App\Models\Scopes\SortScope;
 use Illuminate\Database\Eloquent\Model;
 
 class Product extends Model
@@ -51,11 +53,15 @@ class Product extends Model
 public function productSize()
 {
     return $this->belongsToMany(Product_size::class , 'cart_product')
-        ->withPivot('quantity' , 'product_size_id' , 'product_id' ) 
+        ->withPivot('quantity' , 'product_size_id' , 'product_id' )
         ->withTimestamps();
         // ->withTimestamps();
 }
-
+    protected static function booted(): void
+    {
+        static::addGlobalScope(new SearchScope);
+        static::addGlobalScope(new SortScope);
+    }
     // public function variants()
     // {
     //     return $this->hasMany(ProductVariant::class);

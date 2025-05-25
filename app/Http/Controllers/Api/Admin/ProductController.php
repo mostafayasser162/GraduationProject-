@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\ProductResource;
 use App\Models\Product;
 use Illuminate\Http\Request;
 
@@ -12,14 +13,8 @@ class ProductController extends Controller
     {
         $products = Product::with(['startup', 'subCategory.category', 'images'])->paginate();
 
-        // Transform the collection
-        $products->getCollection()->transform(function ($product) {
-            $product->sub_category = $product->subCategory;
-            $product->sub_category->category = $product->sub_category->category;
-            unset($product->subCategory);
-            return $product;
-        });
-        return response()->success($products);
+        $products = ProductResource::collection($products);
+        return response()->paginate_resource($products);
 
     }
 
@@ -30,10 +25,7 @@ class ProductController extends Controller
         if (!$product) {
             return response()->errors('Product not found');
         }
-
-        $product->sub_category = $product->subCategory;
-        $product->sub_category->category = $product->sub_category->category;
-        unset($product->subCategory);
+        $product = new ProductResource($product);
 
         return response()->success($product);
     }

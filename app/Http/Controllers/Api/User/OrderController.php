@@ -19,7 +19,7 @@ class OrderController extends Controller
         $validated = $request->validated();
         $user = auth()->user();
         $cart = $user->cart;
-    
+
         if ($cart->isEmpty()) {
             return response()->errors('Cart is empty');
         }
@@ -27,7 +27,7 @@ class OrderController extends Controller
         if (!$addressId) {
             return response()->errors('Address is required');
         }
-    
+
         $address = $user->addresses()->find($validated['address_id']);
         if (!$address) {
             return response()->errors('Invalid address');
@@ -41,33 +41,33 @@ class OrderController extends Controller
                 return $product->price * $product->pivot->quantity;
             }
         });
-    
+
         DB::beginTransaction();
         try {
             if ($validated['payment_method'] == 'visa') {
                 $cardNumber = $validated['card_number'];
                 $expiryDate = $validated['expiry_date'];
                 $cvv = $validated['cvv'];
-    
+
                 if (!$cardNumber || !$expiryDate || !$cvv) {
                     DB::rollBack();
                     return response()->errors('Invalid card data');
                 }
-    
+
                 sleep(2);
             }
-    
+
             // ✅ إنشاء الأوردر مع ربط العنوان
             $order = Order::create([
                 'user_id' => $user->id,
                 'total_price' => $total,
                 'address_id' => $validated['address_id'], // ✅ أضفنا العنوان
             ]);
-    
+
             foreach ($cart as $product) {
                 if ($product->pivot->product_size_id) {
                     $variant = Product_size::find($product->pivot->product_size_id);
-    
+
                     if ($variant && $variant->stock >= $product->pivot->quantity) {
                         $variant->decrement('stock', $product->pivot->quantity);
                         $product->decrement('stock', $product->pivot->quantity);
@@ -85,7 +85,7 @@ class OrderController extends Controller
                         return response()->errors('Not enough stock for product');
                     }
                 }
-    
+
                 Order_item::create([
                     'order_id' => $order->id,
                     'product_id' => $product->id,
@@ -94,11 +94,11 @@ class OrderController extends Controller
                     'price' => $price,
                 ]);
             }
-    
+
             $user->cart()->detach();
-    
+
             DB::commit();
-    
+
             return response()->success([
                 'message' => $validated['payment_method'] === 'visa' ? 'Payment processed successfully' : 'Order placed with cash',
                 'order' => new OrderResource($order),
@@ -108,7 +108,7 @@ class OrderController extends Controller
             return response()->errors('Order failed: ' . $e->getMessage());
         }
     }
-    
+
 
 
 
@@ -116,14 +116,13 @@ class OrderController extends Controller
 {
     $user = auth()->user();
 
-    $orders = Order::with(['orderItems.product', 'orderItems.productSize'])
+    $orders = Order::with(['orderItems.product','orderItems','orderItems.productSize'])
                     ->where('user_id', $user->id)
                     ->latest()
                     ->get();
 
-    return response()->success([
-        'orders' => OrderResource::collection($orders)
-    ]);
+    $orders = OrderResource::collection($orders);
+    return response()->paginate_resource($orders);
 }
 
 

@@ -56,7 +56,7 @@ class WishlistController extends Controller
         // Get user's wishlist
         $wishlist = Wishlist::with('product')->where('user_id', $user->id)->get();
 
-        return response()->success(WishlistResource::collection($wishlist));
+        return response()->paginate_resource(WishlistResource::collection($wishlist));
     }
 
     // Remove product from wishlist
