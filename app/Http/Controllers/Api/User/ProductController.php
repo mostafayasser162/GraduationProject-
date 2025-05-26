@@ -76,7 +76,7 @@ class ProductController extends Controller
 
         $product->delete();
 
-        return response()->success(['message' => 'Product deleted successfully']);
+        return response()->success(['message' => 'Product deleted successfullyyyyy']);
     }
   
 
