@@ -67,6 +67,17 @@ class ProductController extends Controller
     
         return response()->success($product);
     }
+
+
+    public function destroy($id)
+    {
+        $product = Product::findOrFail($id);
+        $this->authorize('delete', $product); // Ensure the user can delete this product
+
+        $product->delete();
+
+        return response()->success(['message' => 'Product deleted successfully']);
+    }
   
 
 }
