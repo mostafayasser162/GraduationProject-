@@ -26,6 +26,8 @@ Route::controller(AuthController::class)->group(function () {
     Route::post('register', 'register');
     Route::post('login', 'login');
     Route::post('logout', 'logout');
+    // Route::post('register', [AuthController::class, 'register']);
+    Route::post('verify-otp' , 'verifyOtp');
 });
 //             factory login
 Route::controller(\App\Http\Controllers\Api\Factory\AuthController::class)->group(function () {
@@ -96,6 +98,9 @@ Route::middleware('auth:api')->group(function () {
         Route::resource('/addresses', UserAddressController::class)->only(['index', 'store', 'destroy']);
         // route to update address
         Route::put('/addresses/{id}', [UserAddressController::class, 'update']);
+
+        
+
 
     });
 });
