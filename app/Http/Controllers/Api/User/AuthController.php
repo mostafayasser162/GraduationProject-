@@ -135,6 +135,11 @@ class AuthController extends Controller
             return response()->errors('User not found', 404);
         }
     
+        // Check if OTP is null
+        if (is_null($user->otp_code)) {
+            return response()->errors('User is already registered. OTP cannot be resent.', 400);
+        }
+    
         // Generate new OTP
         $otp = rand(100000, 999999);
         $user->update([
@@ -148,4 +153,58 @@ class AuthController extends Controller
     }
 
 
+
+// forget pass 
+public function forgetPassword(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email',
+        ]);
+
+        $user = User::where('email', $request->email)->first();
+
+        if (!$user) {
+            return response()->errors('User not found', 404);
+        }
+
+        // Generate a new OTP for password reset
+        $otp = rand(100000, 999999);
+        $user->update([
+            'otp_code' => $otp,
+            'otp_expires_at' => now()->addMinutes(10),
+        ]);
+
+        Mail::to($user->email)->send(new OtpMail($otp));
+
+        return response()->success('OTP sent to your email for password reset.');
+    }
+public function resetPassword(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email',
+            'otp_code' => 'required|digits:6',
+            'new_password' => 'required|confirmed|min:8',
+            'new_password_confirmation' => 'required|min:8',
+        ]);
+
+        $user = User::where('email', $request->email)
+            ->where('otp_code', $request->otp_code)
+            ->first();
+
+        if (!$user) {
+            return response()->errors('Invalid OTP or email', 400);
+        }
+
+        if (now()->greaterThan($user->otp_expires_at)) {
+            return response()->errors('OTP has expired', 400);
+        }
+
+        $user->update([
+            'password' => Hash::make($request->new_password),
+            'otp_code' => null,
+            'otp_expires_at' => null,
+        ]);
+
+        return response()->success('Password reset successfully');
+    }
 }
