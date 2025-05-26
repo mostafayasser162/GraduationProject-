@@ -7,6 +7,11 @@ use App\Models\Startup;
 use Illuminate\Http\Request;
 use App\Enums\StartUps\Status;
 use App\Http\Resources\StartupResource;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\StartupApprovedMail;
+use App\Mail\StartupRejectedMail;
+
+
 
 class StartUpController extends Controller
 {
@@ -74,32 +79,73 @@ class StartUpController extends Controller
         return response()->success("Startup status changed to {$startup->status}");
     }
 
+    // public function accept($id)
+    // {
+    //     $startup = Startup::find($id);
+
+    //     if (!$startup || $startup->status != Status::PENDING()) {
+    //         return response()->errors('Startup not found or its status not pending');
+    //     }
+
+    //     $startup->status = Status::APPROVED();
+    //     $startup->save();
+
+    //     return response()->success("Startup has been approved");
+    // }
+
+
     public function accept($id)
     {
-        $startup = Startup::find($id);
-
+        $startup = Startup::with('user')->find($id);
+    
         if (!$startup || $startup->status != Status::PENDING()) {
             return response()->errors('Startup not found or its status not pending');
         }
-
+    
         $startup->status = Status::APPROVED();
         $startup->save();
-
+    
+        // Send approval email
+        Mail::to($startup->email)->send(new StartupApprovedMail($startup));
+    
         return response()->success("Startup has been approved");
     }
-    public function reject($id)
-    {
-        $startup = Startup::find($id);
+    
 
-        if (!$startup || $startup->status != Status::PENDING()) {
-            return response()->errors('Startup not found or its status not pending');
-        }
+    // public function reject($id)
+    // {
+    //     $startup = Startup::find($id);
 
-        $startup->status = Status::REJECTED();
-        $startup->save();
-        $startup->delete();
+    //     if (!$startup || $startup->status != Status::PENDING()) {
+    //         return response()->errors('Startup not found or its status not pending');
+    //     }
+
+    //     $startup->status = Status::REJECTED();
+    //     $startup->save();
+    //     $startup->delete();
 
 
-        return response()->success("Startup has been rejected");
+    //     return response()->success("Startup has been rejected");
+    // }
+
+
+public function reject($id)
+{
+    $startup = Startup::with('user')->find($id);
+
+    if (!$startup || $startup->status != Status::PENDING()) {
+        return response()->errors('Startup not found or its status not pending');
     }
+
+    $startup->status = Status::REJECTED();
+    $startup->save();
+
+    // Send rejection email
+    Mail::to($startup->email)->send(new StartupRejectedMail($startup));
+
+    $startup->delete();
+
+    return response()->success("Startup has been rejected");
+}
+
 }
