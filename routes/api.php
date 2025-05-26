@@ -28,6 +28,9 @@ Route::controller(AuthController::class)->group(function () {
     Route::post('logout', 'logout');
     // Route::post('register', [AuthController::class, 'register']);
     Route::post('verify-otp' , 'verifyOtp');
+    Route::post('resend-otp', 'resendOtp');
+    Route::post('forgot-password', 'forgetPassword');
+    Route::post('reset-password', 'resetPassword');
 });
 //             factory login
 Route::controller(\App\Http\Controllers\Api\Factory\AuthController::class)->group(function () {
