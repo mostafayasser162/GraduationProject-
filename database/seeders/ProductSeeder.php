@@ -13,13 +13,14 @@ class ProductSeeder extends Seeder
         $faker = Faker::create();
 
         // Create 10 random products
+        $subCategoryIds = \App\Models\Sub_category::pluck('id')->toArray();
         for ($i = 0; $i < 10; $i++) {
             Product::create([
-                'startup_id' => rand(3, 22), // Random startup_id, assuming there are startups already created
+                'startup_id' => rand(4, 14), // Random startup_id, assuming there are startups already created
                 'name' => $faker->word,
                 'description' => $faker->paragraph,
                 'price' => $faker->randomFloat(2, 100, 1000), // Random price between 100 and 1000
-                'sub_category_id' => rand(1, 20), // Random startup_id, assuming there are startups already created
+                'sub_category_id' => $faker->randomElement($subCategoryIds),
                 'stock' => rand(1, 200), // Random startup_id, assuming there are startups already created
                 'created_at' => now(),
                 'updated_at' => now(),
