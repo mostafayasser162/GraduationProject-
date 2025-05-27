@@ -4,13 +4,14 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\User\AuthController;
 use App\Http\Controllers\Api\User\CartController;
 use App\Http\Controllers\Api\Admin\UserController;
-use App\Http\Controllers\Api\User\AddressController as UserAddressController;
+use App\Http\Controllers\Api\User\ReviewController;
 use App\Http\Controllers\Api\Admin\FactoryController;
 use App\Http\Controllers\Api\Admin\ProductController;
 use App\Http\Controllers\Api\Admin\StartUpController;
 use App\Http\Controllers\Api\Admin\CategoryController;
 use App\Http\Controllers\Api\Admin\SubCategoryController;
 use App\Http\Controllers\Api\User\OrderController as UserOrderController;
+use App\Http\Controllers\Api\User\AddressController as UserAddressController;
 use App\Http\Controllers\Api\User\ProductController as UserProductController;
 use App\Http\Controllers\Api\User\ProfileController as UserProfileController;
 use App\Http\Controllers\Api\User\StartUpController as UserStartUpController;
@@ -60,6 +61,7 @@ Route::middleware('auth:api')->group(function () {
 
         Route::resource('responses', AdminResponseController::class)->only(['index', 'show']);
 
+
     });
 
     Route::prefix('user')->group(function () {
@@ -103,6 +105,8 @@ Route::middleware('auth:api')->group(function () {
         Route::put('/addresses/{id}', [UserAddressController::class, 'update']);
 
         
+        Route::post('/reviews', [ReviewController::class, 'store']);
+        Route::get('/products/{productId}/reviews', [ReviewController::class, 'productReviews']);
 
 
     });
