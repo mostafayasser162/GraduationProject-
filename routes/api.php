@@ -33,21 +33,11 @@ Route::controller(AuthController::class)->group(function () {
     Route::post('forgot-password', 'forgetPassword');
     Route::post('reset-password', 'resetPassword');
 });
-//                     factory login
-Route::controller(\App\Http\Controllers\Api\Factory\AuthController::class)->group(function () {
-    Route::post('factory/login', 'login');
-});
-Route::resource('products', UserProductController::class)->only(['index', 'show']);
-
-//                     startup login
-Route::controller(\App\Http\Controllers\Api\Startup\AuthController::class)->group(function () {
-    Route::post('startup/login', 'login');
-});
 
 
-// admin routes
+//                                    user and admin routes
 Route::middleware('auth:api')->group(function () {
-    //            admin routes
+    //                                   admin routes
     Route::prefix('admin')->group(function () {
         Route::resource('user', UserController::class)->only(['index', 'show', 'destroy']);
         Route::get('user/{id}/checkDestroy', [UserController::class, 'checkDestroy']);
@@ -71,10 +61,8 @@ Route::middleware('auth:api')->group(function () {
 
         Route::resource('responses', AdminResponseController::class)->only(['index', 'show']);
     });
-
+    //                                   user routes
     Route::prefix('user')->group(function () {
-        // Route::get('products', [UserProductController::class, 'index']);
-        // Route::get('user/products/{id}', [ProductController::class,'show']);
 
         Route::resource('products', UserProductController::class)->only(['index', 'show']);
 
@@ -113,12 +101,16 @@ Route::middleware('auth:api')->group(function () {
         Route::get('/products/{productId}/reviews', [ReviewController::class, 'productReviews']);
 
 
-        // Register for startup 
+        // Register for startup
         Route::post('/startup/register', [StartupAuthController::class, 'register']);
     });
 });
 
-// factory routes
+//                                       factory routes
+//                                       factory login
+Route::controller(\App\Http\Controllers\Api\Factory\AuthController::class)->group(function () {
+    Route::post('factory/login', 'login');
+});
 Route::middleware('auth:factory')->group(function () {
     Route::prefix('factory')->group(function () {
         Route::resource('request', FactoryStartupRequestController::class)->only(['index', 'show', 'destroy']);
@@ -129,8 +121,11 @@ Route::middleware('auth:factory')->group(function () {
     });
 });
 
-// startup routes
-
+//                                       startup routes
+//                                       startup login
+Route::controller(StartupAuthController::class)->group(function () {
+    Route::post('startup/login', 'login');
+});
 Route::middleware('auth:startup')->group(function () {
     Route::prefix('startup')->group(function () {
         Route::resource('request', FactoryStartupRequestController::class)->only(['index', 'show', 'destroy']);
@@ -139,4 +134,10 @@ Route::middleware('auth:startup')->group(function () {
 
         Route::post('response/send-offer', [FactoryResponseController::class, 'sendOffer']);
     });
+});
+
+
+//                                       general routes
+Route::prefix('general')->group(function () {
+    Route::resource('products', UserProductController::class)->only(['index', 'show']);
 });
