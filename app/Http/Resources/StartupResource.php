@@ -22,6 +22,7 @@ class StartupResource extends JsonResource
             'package_id' => $this->package_id,
             'categories_id' => $this->categories_id,
             'products' => ProductResource::collection($this->whenLoaded('products')),
+            'orders' => OrderResource::collection($this->whenLoaded('orders')),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             'deleted_at' => $this->deleted_at,

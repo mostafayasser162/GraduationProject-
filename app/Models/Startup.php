@@ -9,10 +9,11 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Laravel\Sanctum\HasApiTokens;
 use Tymon\JWTAuth\Contracts\JWTSubject; // ADD THIS
+use Illuminate\Foundation\Auth\User as Authenticatable;
 
-class Startup extends Model  implements JWTSubject
+class Startup extends Authenticatable implements JWTSubject
 {
-    use SoftDeletes, HasFactory , HasApiTokens;
+    use SoftDeletes, HasFactory, HasApiTokens;
     protected $fillable = [
         'user_id',
         'name',
@@ -76,5 +77,20 @@ class Startup extends Model  implements JWTSubject
     public function getJWTCustomClaims(): array
     {
         return [];
+    }
+
+    //relation ship with order from startup it at product id    
+    public function orders()
+    {
+        return $this->hasManyThrough(
+            Order::class,        // النهاية: الطلبات
+            Order_item::class,   // الوسيط: العناصر
+            'product_id',        // المفتاح في Order_item الذي يشير إلى المنتج
+            'id',                // المفتاح في Order (غالبًا يكون id)
+            'id',                // المفتاح في Startup (أي المنتج مرتبط بستارت أب عن طريق startup_id في product)
+            'order_id'           // المفتاح في Order_item الذي يشير إلى الطلب
+        )->whereHas('product', function ($query) {
+            $query->whereColumn('products.startup_id', 'startups.id');
+        });
     }
 }

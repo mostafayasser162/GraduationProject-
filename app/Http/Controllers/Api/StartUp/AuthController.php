@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Api\StartUp;
 use App\Enums\StartUps\Status;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StartUp\LoginRequest;
-use App\Http\Requests\User\RegisterRequest;
+use App\Http\Requests\StartUp\RegisterRequest;
 use App\Models\Startup;
 use JWTAuth;
 use Illuminate\Http\Request;
