@@ -37,6 +37,7 @@ Route::controller(AuthController::class)->group(function () {
 Route::controller(\App\Http\Controllers\Api\Factory\AuthController::class)->group(function () {
     Route::post('factory/login', 'login');
 });
+Route::resource('products', UserProductController::class)->only(['index', 'show']);
 
 Route::middleware('auth:api')->group(function () {
     //admin routes
@@ -44,6 +45,7 @@ Route::middleware('auth:api')->group(function () {
         Route::resource('user', UserController::class)->only(['index', 'show', 'destroy']);
         Route::get('user/{id}/checkDestroy', [UserController::class, 'checkDestroy']);
         Route::put('user/{id}/block', [UserController::class, 'block']);
+
 
         Route::resource('startups', StartUpController::class)->only(['index', 'show', 'destroy']);
 
@@ -59,6 +61,7 @@ Route::middleware('auth:api')->group(function () {
 
         Route::resource('product', ProductController::class)->only(['index', 'show', 'destroy']);
 
+
         Route::resource('responses', AdminResponseController::class)->only(['index', 'show']);
 
 
@@ -67,9 +70,8 @@ Route::middleware('auth:api')->group(function () {
     Route::prefix('user')->group(function () {
         // Route::get('products', [UserProductController::class, 'index']);
         // Route::get('user/products/{id}', [ProductController::class,'show']);
-
-        Route::resource('products', UserProductController::class)->only(['index', 'show']);
-
+        
+        
 
 
 
