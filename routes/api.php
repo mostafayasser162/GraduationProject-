@@ -2,7 +2,6 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\User\AuthController;
-use App\Http\Controllers\Api\Startup\AuthController as StartupAuthController;
 use App\Http\Controllers\Api\User\CartController;
 use App\Http\Controllers\Api\Admin\UserController;
 use App\Http\Controllers\Api\User\ReviewController;
@@ -11,6 +10,8 @@ use App\Http\Controllers\Api\Admin\ProductController;
 use App\Http\Controllers\Api\Admin\StartUpController;
 use App\Http\Controllers\Api\Admin\CategoryController;
 use App\Http\Controllers\Api\Admin\SubCategoryController;
+use App\Http\Controllers\Api\Startup\AuthController as StartupAuthController;
+use App\Http\Controllers\Api\Startup\ProfileController as StartupProfileController;
 use App\Http\Controllers\Api\User\OrderController as UserOrderController;
 use App\Http\Controllers\Api\User\AddressController as UserAddressController;
 use App\Http\Controllers\Api\User\ProductController as UserProductController;
@@ -133,6 +134,12 @@ Route::middleware('auth:startup')->group(function () {
         Route::resource('response', FactoryResponseController::class)->only(['index', 'show', 'destroy']);
 
         Route::post('response/send-offer', [FactoryResponseController::class, 'sendOffer']);
+        //profile
+        Route::controller(StartupProfileController::class)->group(function () {
+            Route::get('/profile', 'index');
+            Route::put('/profile', 'update');
+            Route::delete('/profile', 'destroy');
+        });
     });
 });
 

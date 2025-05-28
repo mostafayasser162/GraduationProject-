@@ -28,9 +28,15 @@ class RegisterRequest extends FormRequest
             'name' => ['required', ...Rules::get('user.name')],
             'phone' => [
                 'required',
-                'unique:users,phone,',
+                'unique:startups,phone,',
             ],
-            'email' => ['required', new UniqueEmail('users'), ...Rules::get('email')],
+            'description' => 'required|string|max:255',
+            'social_media_links' => 'nullable|array',
+            'social_media_links.*' => 'required|url',
+            'package_id'         => 'required|exists:packages,id',
+            'logo' =>    'required|file|mimes:jpeg,png,jpg' ,
+            'categories_id'      => 'required|exists:categories,id',
+            'email' => ['required', new UniqueEmail('startups'), ...Rules::get('email')],
             'password' => ['required', 'confirmed', 'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/'],
 
         ];
