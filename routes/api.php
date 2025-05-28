@@ -37,6 +37,7 @@ Route::controller(AuthController::class)->group(function () {
 Route::controller(\App\Http\Controllers\Api\Factory\AuthController::class)->group(function () {
     Route::post('factory/login', 'login');
 });
+Route::resource('products', UserProductController::class)->only(['index', 'show']);
 
 //                     startup login
 Route::controller(\App\Http\Controllers\Api\Startup\AuthController::class)->group(function () {
@@ -52,6 +53,7 @@ Route::middleware('auth:api')->group(function () {
         Route::get('user/{id}/checkDestroy', [UserController::class, 'checkDestroy']);
         Route::put('user/{id}/block', [UserController::class, 'block']);
 
+
         Route::resource('startups', StartUpController::class)->only(['index', 'show', 'destroy']);
 
         Route::put('startup/{id}/block', [StartUpController::class, 'block']);
@@ -65,6 +67,7 @@ Route::middleware('auth:api')->group(function () {
         Route::put('factory/{id}/block', [FactoryController::class, 'block']);
 
         Route::resource('product', ProductController::class)->only(['index', 'show', 'destroy']);
+
 
         Route::resource('responses', AdminResponseController::class)->only(['index', 'show']);
     });
