@@ -74,7 +74,7 @@ class AuthController extends Controller
             return response()->success(('logged in succ'), $data);
         }
 
-        return response()->errors(('invalid_data'));
+        return response()->errors(('wrong password or email'));
     }
     public function logout()
     {
