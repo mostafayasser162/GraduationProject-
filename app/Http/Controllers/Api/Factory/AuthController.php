@@ -21,7 +21,7 @@ class AuthController extends Controller
         }
 
         if (!$factory || !\Hash::check($data['password'], $factory->password)) {
-            return response()->errors('invalid_data');
+            return response()->errors('wrong password or email');
         }
 
         $token = JWTAuth::fromUser($factory);
