@@ -48,9 +48,7 @@ class AuthController extends Controller
         $data['user_id'] = auth()->user()->id;
 // image code
         $file = $data['logo'];
-        $path = 'storage/' . now()->format('YmdHis') . '_' . $file->store('images', 'public');
-        $file = $data['logo'];
-        $path = 'storage/' . now()->format('YmdHis') . '_' . $file->store('images', 'public');
+        $path = 'storage/'. $file->store('images', 'public');
         $data['logo'] = $path;
 // end image code
 
