@@ -8,7 +8,7 @@ use App\Enums\Enum;
  * @method static self PENDING()
  * @method static self APPROVED()
  * @method static self REJECTED()
- * @method static self WAITING()
+ * @method static self HOLD()
  * @method static self BLOCKED()
  */
 class Status extends Enum
@@ -19,8 +19,8 @@ class Status extends Enum
             'PENDING' => 'PENDING',
             'APPROVED' => 'APPROVED',
             'REJECTED' => 'REJECTED',
-            'WAITING' => 'WAITING',
             'BLOCKED' => 'BLOCKED',
+            'HOLD' => 'HOLD',
         ];
     }
     public static function allValues(): array

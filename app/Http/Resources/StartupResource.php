@@ -14,6 +14,7 @@ class StartupResource extends JsonResource
             'user' => new UserResource($this->whenLoaded('user')),
             'name' => $this->name,
             'description' => $this->description,
+            'email' => $this->email,
             'logo' => $this->logo,
             'social_media_links' => $this->social_media_links,
             'phone' => $this->phone,

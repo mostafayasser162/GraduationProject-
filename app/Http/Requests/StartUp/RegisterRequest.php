@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Http\Requests\User;
+namespace App\Http\Requests\StartUp;
+
+use Illuminate\Foundation\Http\FormRequest;
 
 use App\Http\Requests\User\Traits\HasUser;
 use App\Rules\Rules;
 use App\Rules\UniqueEmail;
-use Illuminate\Foundation\Http\FormRequest;
 
 /**
  * @property string $phone
@@ -27,14 +28,9 @@ class RegisterRequest extends FormRequest
             'name' => ['required', ...Rules::get('user.name')],
             'phone' => [
                 'required',
-                'unique:startups,phone,',
+                'unique:users,phone,',
             ],
-            'description' => 'required|string|max:255',
-            'social_media_links' => 'nullable|array',
-            'social_media_links.*' => 'required|url',
-            'package_id'         => 'required|exists:packages,id',
-            'categories_id'      => 'required|exists:categories,id',
-            'email' => ['required', new UniqueEmail('startups'), ...Rules::get('email')],
+            'email' => ['required', new UniqueEmail('users'), ...Rules::get('email')],
             'password' => ['required', 'confirmed', 'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/'],
 
         ];

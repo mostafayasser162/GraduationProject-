@@ -7,11 +7,12 @@ use App\Models\Scopes\SortScope;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Laravel\Sanctum\HasApiTokens;
+use Tymon\JWTAuth\Contracts\JWTSubject; // ADD THIS
 
-
-class Startup extends Model
+class Startup extends Model  implements JWTSubject
 {
-    use SoftDeletes ,HasFactory;
+    use SoftDeletes, HasFactory , HasApiTokens;
     protected $fillable = [
         'user_id',
         'name',
@@ -25,7 +26,11 @@ class Startup extends Model
         'created_at',
         'updated_at',
         'deleted_at',
+        'email',
+        'password',
     ];
+    protected $hidden = ['password'];
+
     protected $casts = [
         'social_media_links' => 'array',
         'deleted_at' => 'datetime',
@@ -58,5 +63,18 @@ class Startup extends Model
     public function products()
     {
         return $this->hasMany(Product::class);
+    }
+
+    public function getJWTIdentifier()
+    {
+        return $this->getKey();
+    }
+
+    /**
+     * Return a key value array, containing any custom claims to be added to the JWT.
+     */
+    public function getJWTCustomClaims(): array
+    {
+        return [];
     }
 }
