@@ -48,14 +48,11 @@ class AuthController extends Controller
         $data['user_id'] = auth()->user()->id;
 // image code
         $file = $data['logo'];
-        $path = 'storage/' . now()->format('YmdHis') . '_' . $file->store('images', 'public');
-        $file = $data['logo'];
-        $path = 'storage/' . now()->format('YmdHis') . '_' . $file->store('images', 'public');
+        $path = 'storage/'. $file->store('images', 'public');
         $data['logo'] = $path;
 // end image code
 
         Startup::updateOrCreate(['email' => $data['email']], $data);
-
 
         return response()->success('Startup registered request has been send successfully');
     }
