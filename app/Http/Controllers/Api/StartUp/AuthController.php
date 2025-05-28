@@ -30,7 +30,6 @@ class AuthController extends Controller
         if (!$startup || !\Hash::check($data['password'], $startup->password)) {
             return response()->errors('invalid_data');
         }
-// dd('hena');
         $token = JWTAuth::fromUser($startup);
 
         $data = [
@@ -46,9 +45,17 @@ class AuthController extends Controller
         $data = $request->validated();
         $data['password'] = \Hash::make($data['password']);
         $data['status'] = Status::init();
-        $data['user_id'] = auth()->user()->id ;
+        $data['user_id'] = auth()->user()->id;
+// image code
+        $file = $data['logo'];
+        $path = 'storage/' . now()->format('YmdHis') . '_' . $file->store('images', 'public');
+        $file = $data['logo'];
+        $path = 'storage/' . now()->format('YmdHis') . '_' . $file->store('images', 'public');
+        $data['logo'] = $path;
+// end image code
 
-        $startup = Startup::updateOrCreate(['email' => $data['email']], $data);
+        Startup::updateOrCreate(['email' => $data['email']], $data);
+
 
         return response()->success('Startup registered request has been send successfully');
     }
