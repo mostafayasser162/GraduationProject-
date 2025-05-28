@@ -48,6 +48,10 @@ return [
             'driver' => 'jwt',
             'provider' => 'factories',
         ],
+        'startup' => [
+            'driver' => 'jwt',
+            'provider' => 'startups',
+        ],
     ],
 
     /*
@@ -75,6 +79,10 @@ return [
         'factories' => [
             'driver' => 'eloquent',
             'model' => App\Models\Factory::class,
+        ],
+        'startups' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Startup::class,
         ],
     ],
 

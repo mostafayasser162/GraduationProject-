@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\User\AuthController;
+use App\Http\Controllers\Api\Startup\AuthController as StartupAuthController;
 use App\Http\Controllers\Api\User\CartController;
 use App\Http\Controllers\Api\Admin\UserController;
 use App\Http\Controllers\Api\User\ReviewController;
@@ -27,20 +28,26 @@ Route::controller(AuthController::class)->group(function () {
     Route::post('register', 'register');
     Route::post('login', 'login');
     Route::post('logout', 'logout');
-    // Route::post('register', [AuthController::class, 'register']);
-    Route::post('verify-otp' , 'verifyOtp');
+    Route::post('verify-otp', 'verifyOtp');
     Route::post('resend-otp', 'resendOtp');
     Route::post('forgot-password', 'forgetPassword');
     Route::post('reset-password', 'resetPassword');
 });
-//             factory login
+//                     factory login
 Route::controller(\App\Http\Controllers\Api\Factory\AuthController::class)->group(function () {
     Route::post('factory/login', 'login');
 });
 Route::resource('products', UserProductController::class)->only(['index', 'show']);
 
+//                     startup login
+Route::controller(\App\Http\Controllers\Api\Startup\AuthController::class)->group(function () {
+    Route::post('startup/login', 'login');
+});
+
+
+// admin routes
 Route::middleware('auth:api')->group(function () {
-    //admin routes
+    //            admin routes
     Route::prefix('admin')->group(function () {
         Route::resource('user', UserController::class)->only(['index', 'show', 'destroy']);
         Route::get('user/{id}/checkDestroy', [UserController::class, 'checkDestroy']);
@@ -63,17 +70,13 @@ Route::middleware('auth:api')->group(function () {
 
 
         Route::resource('responses', AdminResponseController::class)->only(['index', 'show']);
-
-
     });
 
     Route::prefix('user')->group(function () {
         // Route::get('products', [UserProductController::class, 'index']);
         // Route::get('user/products/{id}', [ProductController::class,'show']);
-        
-        
 
-
+        Route::resource('products', UserProductController::class)->only(['index', 'show']);
 
         //profile
         Route::controller(UserProfileController::class)->group(function () {
@@ -94,29 +97,42 @@ Route::middleware('auth:api')->group(function () {
         Route::get('/orders', [UserOrderController::class, 'index']);
         Route::get('/orders/{orderId}', [UserOrderController::class, 'show']);
 
-//   Add product to wishlist
+        //   Add product to wishlist
         Route::post('/wishlist/{productId}', [UserWishlistController::class, 'addToWishlist']);
-            
+
         // Get user's wishlist
         Route::get('/wishlist', [UserWishlistController::class, 'getWishlist']);
-        
+
         // Remove product from wishlist
         Route::delete('/wishlist/{productId}', [UserWishlistController::class, 'removeFromWishlist']);
         Route::resource('/addresses', UserAddressController::class)->only(['index', 'store', 'destroy']);
         // route to update address
         Route::put('/addresses/{id}', [UserAddressController::class, 'update']);
 
-        
         Route::post('/reviews', [ReviewController::class, 'store']);
         Route::get('/products/{productId}/reviews', [ReviewController::class, 'productReviews']);
 
 
+        // Register for startup 
+        Route::post('/startup/register', [StartupAuthController::class, 'register']);
     });
 });
 
 // factory routes
 Route::middleware('auth:factory')->group(function () {
     Route::prefix('factory')->group(function () {
+        Route::resource('request', FactoryStartupRequestController::class)->only(['index', 'show', 'destroy']);
+
+        Route::resource('response', FactoryResponseController::class)->only(['index', 'show', 'destroy']);
+
+        Route::post('response/send-offer', [FactoryResponseController::class, 'sendOffer']);
+    });
+});
+
+// startup routes
+
+Route::middleware('auth:startup')->group(function () {
+    Route::prefix('startup')->group(function () {
         Route::resource('request', FactoryStartupRequestController::class)->only(['index', 'show', 'destroy']);
 
         Route::resource('response', FactoryResponseController::class)->only(['index', 'show', 'destroy']);
