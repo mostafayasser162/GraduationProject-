@@ -13,6 +13,7 @@ class Product_size extends Model
         'size_id',
         'price',
         'stock',
+        'discount_percentage',
     ];
 
     public function product()
