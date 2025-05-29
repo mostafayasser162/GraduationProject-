@@ -163,5 +163,7 @@ Route::prefix('general')->group(function () {
     Route::resource('products', UserProductController::class)->only(['index', 'show']);
     Route::get('/best-sellers', [UserProductController::class, 'bestSellers']);
     Route::get('/new_arrivals', [UserProductController::class, 'newArrivals']);
+    Route::get('/discounted', [UserProductController::class, 'discountedProducts']);
+
 
 });
