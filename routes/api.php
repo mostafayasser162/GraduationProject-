@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\StartUp\RequestController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\StartUp\SizeController;
 use App\Http\Controllers\Api\User\AuthController;
@@ -131,11 +132,7 @@ Route::controller(StartupAuthController::class)->group(function () {
 });
 Route::middleware('auth:startup')->group(function () {
     Route::prefix('startup')->group(function () {
-        Route::resource('request', FactoryStartupRequestController::class)->only(['index', 'show', 'destroy']);
-
-        Route::resource('response', FactoryResponseController::class)->only(['index', 'show', 'destroy']);
-
-        Route::post('response/send-offer', [FactoryResponseController::class, 'sendOffer']);
+        Route::resource('request', RequestController::class)->only(['index', 'show', 'destroy' , 'store']);
 
         // sizes
         Route::get('/{startupId}/sizes', [SizeController::class, 'index']);
@@ -143,10 +140,9 @@ Route::middleware('auth:startup')->group(function () {
         Route::post('/sizes', [SizeController::class, 'store']);
         Route::delete('/sizes/{id}', [SizeController::class, 'destroy']);
 
-        // products 
-        Route::post('/products', [StartupProductController::class, 'store']);
-        Route::resource('/products', StartupProductController::class)->only(['index', 'show', 'destroy','update']);
-
+        // products
+        // Route::post('/products', [StartupProductController::class, 'store']);
+        Route::resource('/products', StartupProductController::class)->except(['create', 'edit']);
 
         //profile
         Route::controller(StartupProfileController::class)->group(function () {
