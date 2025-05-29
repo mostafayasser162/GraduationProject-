@@ -93,4 +93,10 @@ class Startup extends Authenticatable implements JWTSubject
             $query->whereColumn('products.startup_id', 'startups.id');
         });
     }
+
+    public function sizes()
+{
+    return $this->hasMany(Size::class);
+}
+
 }

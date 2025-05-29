@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use App\Http\Resources\StartupResource;
 use App\Http\Resources\ProductSizeResource;
+use App\Http\Resources\ProductResource;
 
 class CartProductResource extends JsonResource
 {
@@ -59,6 +60,9 @@ class CartProductResource extends JsonResource
             'image' => $this->mainImage
                 ? asset('storage/' . $this->mainImage->url)
                 : null,
+            'sub_category' => $this->whenLoaded('subCategory', fn () => new SubCategoryResource($this->subCategory)),
+
+            'product' => new ProductResource($this->whenLoaded('product')), // Load product details
             // Alternatively, return all image URLs:
             // 'images' => $this->images->pluck('url')->map(fn($url) => asset('storage/' . $url)),
         ];

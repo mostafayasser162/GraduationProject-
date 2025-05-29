@@ -13,6 +13,7 @@ class Product extends Model
         'name',
         'description',
         'price',
+        'stock',
         'sub_category_id',
     ];
 
@@ -57,6 +58,7 @@ public function productSize()
         ->withTimestamps();
         // ->withTimestamps();
 }
+
     protected static function booted(): void
     {
         static::addGlobalScope(new SearchScope);
@@ -80,6 +82,31 @@ public function productSize()
 public function averageRating()
 {
     return $this->reviews()->avg('rating');
+}
+public function sizes()
+{
+    return $this->hasMany(Product_size::class);
+}
+public function colors()
+{
+    return $this->hasMany(Product_colors::class);
+}
+    public function Order_item()
+    {
+        return $this->hasMany(Order_item::class);
+    }
+
+    public function scopeBestSellers($query)
+{
+    return $query->withSum('Order_item as total_quantity_sold', 'quantity')
+                 ->orderByDesc('total_quantity_sold');
+}
+// This scope retrieves the latest products based on their creation date
+
+    public function scopeNewArrivals($query)
+{
+    return $query->orderBy('created_at', 'desc');       
+
 }
 
 }
