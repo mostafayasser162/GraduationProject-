@@ -20,6 +20,7 @@ class ProductResource extends JsonResource
             'startup'        => new StartupResource($this->whenLoaded('startup')),
             'sub_category'   => new SubCategoryResource($this->whenLoaded('subCategory')),
             'images'         => ImageResource::collection($this->whenLoaded('images')),
+            'reviews' => ReviewResource::collection($this->whenLoaded('reviews')),
 
             'created_at'     => $this->created_at?->toDateTimeString(),
             'updated_at'     => $this->updated_at?->toDateTimeString(),

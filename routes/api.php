@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\StartUp\SizeController;
 use App\Http\Controllers\Api\User\AuthController;
 use App\Http\Controllers\Api\User\CartController;
 use App\Http\Controllers\Api\Admin\UserController;
@@ -10,15 +11,16 @@ use App\Http\Controllers\Api\Admin\ProductController;
 use App\Http\Controllers\Api\Admin\StartUpController;
 use App\Http\Controllers\Api\Admin\CategoryController;
 use App\Http\Controllers\Api\Admin\SubCategoryController;
-use App\Http\Controllers\Api\Startup\AuthController as StartupAuthController;
-use App\Http\Controllers\Api\Startup\ProfileController as StartupProfileController;
 use App\Http\Controllers\Api\User\OrderController as UserOrderController;
+use App\Http\Controllers\Api\Startup\AuthController as StartupAuthController;
+use App\Http\Controllers\Api\Startup\ProductController as StartupProductController;
 use App\Http\Controllers\Api\User\AddressController as UserAddressController;
 use App\Http\Controllers\Api\User\ProductController as UserProductController;
 use App\Http\Controllers\Api\User\ProfileController as UserProfileController;
 use App\Http\Controllers\Api\User\StartUpController as UserStartUpController;
 use App\Http\Controllers\Api\User\WishlistController as UserWishlistController;
 use App\Http\Controllers\Api\Admin\ResponseController as AdminResponseController;
+use App\Http\Controllers\Api\Startup\ProfileController as StartupProfileController;
 use App\Http\Controllers\Api\Factory\ResponseController as FactoryResponseController;
 use App\Http\Controllers\Api\Factory\StartupRequestController as FactoryStartupRequestController;
 
@@ -134,6 +136,18 @@ Route::middleware('auth:startup')->group(function () {
         Route::resource('response', FactoryResponseController::class)->only(['index', 'show', 'destroy']);
 
         Route::post('response/send-offer', [FactoryResponseController::class, 'sendOffer']);
+
+        // sizes
+        Route::get('/{startupId}/sizes', [SizeController::class, 'index']);
+        Route::put('/sizes/{id}', [SizeController::class, 'update']);
+        Route::post('/sizes', [SizeController::class, 'store']);
+        Route::delete('/sizes/{id}', [SizeController::class, 'destroy']);
+
+        // products 
+        Route::post('/products', [StartupProductController::class, 'store']);
+        Route::resource('/products', StartupProductController::class)->only(['index', 'show', 'destroy','update']);
+
+
         //profile
         Route::controller(StartupProfileController::class)->group(function () {
             Route::get('/profile', 'index');
@@ -147,4 +161,7 @@ Route::middleware('auth:startup')->group(function () {
 //                                       general routes
 Route::prefix('general')->group(function () {
     Route::resource('products', UserProductController::class)->only(['index', 'show']);
+    Route::get('/best-sellers', [UserProductController::class, 'bestSellers']);
+    Route::get('/new_arrivals', [UserProductController::class, 'newArrivals']);
+
 });

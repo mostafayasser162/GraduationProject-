@@ -58,5 +58,22 @@ class ProductController extends Controller
         return response()->success($product);
     }
 
-
+    public function bestSellers()
+    {
+        $products = Product::bestSellers()
+                ->with(['images', 'startup' , 'subCategory.category']) // include what you need
+                ->take(10) // top 10 best sellers
+                ->get();
+        
+            return response()->success(ProductResource::collection($products));
+    }
+    public function newArrivals()
+    {
+        $products = Product::newArrivals()
+            ->with(['images', 'startup' , 'subCategory.category']) // include what you need
+            ->take(10) // top 10 new arrivals
+            ->get();
+    
+        return response()->success(ProductResource::collection($products));
+    }    
 }
