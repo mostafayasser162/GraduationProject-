@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\FactoryResponseResource;
 use App\Mail\StartupAcceptResponseMail;
 use App\Mail\StartupRejectedResponseMail;
+use App\Mail\StartupShouldPayDepositMail;
 use App\Models\FactoryResponse;
 use Illuminate\Support\Facades\DB;
 use App\Models\Deal;
@@ -73,20 +74,30 @@ class ResponseController extends Controller
             FactoryResponse::where('request_id', $response->request_id)
                 ->where('id', '!=', $response->id)
                 ->update(['status' => ResponseStatus::REJECTED()]);
-
+            $depositAmount = $response->price * 0.2;
+            $final_payment_amount = $response->price - $depositAmount;
             $response->request->deals()->attach($response->factory_id, [
                 'price' => $response->price,
+                'deposit_amount' => $depositAmount,
+                'final_payment_amount' => $final_payment_amount,
                 'deal_date' => now(),
-                'factory_response_id' => $response->id, 
+                'factory_response_id' => $response->id,
 
             ]);
             // dd($response->factory->email);
-            // Mail::to($response->factory->email)->send(
-            //     new StartupAcceptResponseMail(
-            //         $response->request->startup->name,
-            //         $response->request->description
-            //     )
-            // );
+            Mail::to($response->factory->email)->send(
+                new StartupAcceptResponseMail(
+                    $response->request->startup->name,
+                    $response->request->description
+                )
+            );
+
+            Mail::to($response->request->startup->email)->send(
+                new StartupShouldPayDepositMail(
+                    $response->request->startup->name,
+                    $depositAmount
+                )
+            );
 
             return response()->success(new FactoryResponseResource($response), 'Response accepted and deal created');
         });

@@ -8,6 +8,7 @@ use App\Enums\Enum;
  * @method static self PENDING()
  * @method static self ACCEPTED()
  * @method static self REJECTED()
+ * @method static self DONE()
  */
 class Status extends Enum
 {
@@ -17,6 +18,7 @@ class Status extends Enum
             'PENDING' => 'PENDING',
             'ACCEPTED' => 'ACCEPTED',
             'REJECTED' => 'REJECTED',
+            'DONE' => 'DONE'
         ];
     }
     public static function allValues(): array
