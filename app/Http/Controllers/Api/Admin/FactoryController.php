@@ -21,7 +21,7 @@ class FactoryController extends Controller
             $query->where('status', $request->status);
         }
 
-        $factories = $query->paginate();
+        $factories = $query->get();
         $factories = FactoryResource::collection($factories);
 
         return response()->paginate_resource($factories);

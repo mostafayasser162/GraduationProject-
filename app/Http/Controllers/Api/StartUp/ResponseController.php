@@ -23,7 +23,7 @@ class ResponseController extends Controller
                 $query->where('startup_id', $user->id);
             })
             ->with('request.startup')
-            ->paginate();
+            ->get();
         $factoryResponses = FactoryResponseResource::collection($factoryResponses);
         return response()->paginate_resource($factoryResponses);
     }

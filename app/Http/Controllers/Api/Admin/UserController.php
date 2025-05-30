@@ -21,7 +21,7 @@ class UserController extends Controller
             $query->where('role', $request->role);
         }
 
-        $users = $query->paginate();
+        $users = $query->get();
         return response()->paginate_resource(UserResource::collection($users));
     }
 

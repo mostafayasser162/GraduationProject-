@@ -10,7 +10,7 @@ class ResponseController extends Controller
 {
     public function index()
     {
-        $factories = FactoryResponse::with('factory', 'request')->paginate();
+        $factories = FactoryResponse::with('factory', 'request')->get();
         $factories = FactoryResponseResource::collection($factories);
 
         return response()->paginate_resource($factories);

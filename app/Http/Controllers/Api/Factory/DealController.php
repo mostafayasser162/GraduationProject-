@@ -14,7 +14,7 @@ class DealController extends Controller
         // dd($user);
         $deals = Deal::with(['request.startup', 'factoryResponse'])
             ->where('factory_id', $user->id)
-            ->paginate();
+            ->get();
         if (!$deals) {
             return response()->errors('No deals found');
         }

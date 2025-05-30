@@ -37,7 +37,7 @@ class ProductController extends Controller
 
         $products = $query
             ->with(['startup', 'subCategory.category', 'images'])
-            ->paginate();
+            ->get();
             // dd($products);
 
         $products = ProductResource::collection($products);
@@ -89,7 +89,7 @@ class ProductController extends Controller
                 $q->where('status', Status::APPROVED());
             })
             ->with(['startup', 'subCategory.category', 'images', 'sizes']) // include sizes
-            ->paginate();
+            ->get();
 
         if ($products->isEmpty()) {
             return response()->errors('No discounted products found.');

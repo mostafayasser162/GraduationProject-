@@ -15,7 +15,7 @@ class DealController extends Controller
             ->whereHas('request', function ($query) use ($user) {
                 $query->where('startup_id', $user->id);
             })
-            ->paginate();
+            ->get();
 
         return response()->paginate_resource(DealResource::collection($deals));
     }

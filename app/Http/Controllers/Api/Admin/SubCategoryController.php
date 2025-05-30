@@ -11,7 +11,7 @@ class SubCategoryController extends Controller
 {
     public function index()
     {
-        $subCategories = Sub_category::with('category')->paginate();
+        $subCategories = Sub_category::with('category')->get();
         $subCategories = SubCategoryResource::collection($subCategories);
 
         return response()->paginate_resource($subCategories);

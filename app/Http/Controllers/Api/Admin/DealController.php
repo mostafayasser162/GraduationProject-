@@ -10,7 +10,7 @@ class DealController extends Controller
 {
     public function index()
     {
-        $deals = Deal::with(['request.startup', 'factory', 'factoryResponse'])->paginate();
+        $deals = Deal::with(['request.startup', 'factory', 'factoryResponse'])->get();
         return response()->paginate_resource(DealResource::collection($deals));
     }
 

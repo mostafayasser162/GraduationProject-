@@ -30,7 +30,7 @@ class StartUpController extends Controller
             $query->where('status', $status);
         }
 
-        $startUps = $query->paginate();
+        $startUps = $query->get();
         $startUps = StartupResource::collection($startUps);
 
         return response()->paginate_resource($startUps);

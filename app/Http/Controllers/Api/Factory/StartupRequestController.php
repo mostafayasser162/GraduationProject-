@@ -12,7 +12,7 @@ class StartupRequestController extends Controller
     public function index(Request $request)
     {
         // $factory = auth('factory')->user();
-        $query = \App\Models\Request::where('status' , Status::PENDING())->with('Startup')->paginate();
+        $query = \App\Models\Request::where('status' , Status::PENDING())->with('Startup')->get();
 
         // Todo: dol lel admin
         // if ($request->filled('status') && in_array($request->status, \App\Enums\Request\Status::allValues())) {
