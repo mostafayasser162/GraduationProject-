@@ -64,7 +64,7 @@ class ProductController extends Controller
                 ->with(['images', 'startup' , 'subCategory.category']) // include what you need
                 ->take(10) // top 10 best sellers
                 ->get();
-        
+
             return response()->success(ProductResource::collection($products));
     }
     public function newArrivals()
@@ -73,9 +73,9 @@ class ProductController extends Controller
             ->with(['images', 'startup' , 'subCategory.category']) // include what you need
             ->take(10) // top 10 new arrivals
             ->get();
-    
+
         return response()->success(ProductResource::collection($products));
-    }    
+    }
 
     public function discountedProducts()
     {
@@ -90,13 +90,13 @@ class ProductController extends Controller
             })
             ->with(['startup', 'subCategory.category', 'images', 'sizes']) // include sizes
             ->paginate();
-    
+
         if ($products->isEmpty()) {
-            return response()->error('No discounted products found.', 404);
+            return response()->errors('No discounted products found.');
         }
-    
+
         return response()->success(ProductResource::collection($products));
     }
-    
+
 
 }
