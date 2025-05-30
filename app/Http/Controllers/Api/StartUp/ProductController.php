@@ -100,7 +100,7 @@ class ProductController extends Controller
     {
         $products = Product::with(['startup', 'subCategory.category', 'sizes', 'sizes.size', 'sizes.color'])
             ->where('startup_id', Auth::id())
-            ->paginate();
+            ->get();
 
 
         return response()->paginate_resource(ProductResource::collection($products));

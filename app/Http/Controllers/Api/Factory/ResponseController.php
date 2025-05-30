@@ -45,7 +45,7 @@ class ResponseController extends Controller
     {
 
         $factory = auth()->user();
-        $factories = FactoryResponse::where('factory_id', $factory->id)->paginate();
+        $factories = FactoryResponse::where('factory_id', $factory->id)->get();
 
         return response()->success($factories);
     }
