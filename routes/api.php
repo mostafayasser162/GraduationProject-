@@ -1,28 +1,32 @@
 <?php
 
-use App\Http\Controllers\Api\StartUp\RequestController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Api\StartUp\SizeController;
+use App\Http\Controllers\Api\Admin\DealController as AdminDealController;
+use App\Http\Controllers\Api\Factory\DealController as FactoryDealController;
+use App\Http\Controllers\Api\Startup\DealController as StartupDealController;
 use App\Http\Controllers\Api\User\AuthController;
 use App\Http\Controllers\Api\User\CartController;
 use App\Http\Controllers\Api\Admin\UserController;
 use App\Http\Controllers\Api\User\ReviewController;
+use App\Http\Controllers\Api\StartUp\SizeController;
 use App\Http\Controllers\Api\Admin\FactoryController;
 use App\Http\Controllers\Api\Admin\ProductController;
 use App\Http\Controllers\Api\Admin\StartUpController;
 use App\Http\Controllers\Api\Admin\CategoryController;
+use App\Http\Controllers\Api\StartUp\RequestController;
 use App\Http\Controllers\Api\Admin\SubCategoryController;
 use App\Http\Controllers\Api\User\OrderController as UserOrderController;
 use App\Http\Controllers\Api\Startup\AuthController as StartupAuthController;
-use App\Http\Controllers\Api\Startup\ProductController as StartupProductController;
 use App\Http\Controllers\Api\User\AddressController as UserAddressController;
 use App\Http\Controllers\Api\User\ProductController as UserProductController;
 use App\Http\Controllers\Api\User\ProfileController as UserProfileController;
 use App\Http\Controllers\Api\User\StartUpController as UserStartUpController;
 use App\Http\Controllers\Api\User\WishlistController as UserWishlistController;
 use App\Http\Controllers\Api\Admin\ResponseController as AdminResponseController;
+use App\Http\Controllers\Api\Startup\ProductController as StartupProductController;
 use App\Http\Controllers\Api\Startup\ProfileController as StartupProfileController;
 use App\Http\Controllers\Api\Factory\ResponseController as FactoryResponseController;
+use App\Http\Controllers\Api\Startup\ResponseController as StartupResponseController;
 use App\Http\Controllers\Api\Factory\StartupRequestController as FactoryStartupRequestController;
 
 // use App\Http\Controllers\WishlistController as UserWishlistController;
@@ -62,8 +66,9 @@ Route::middleware('auth:api')->group(function () {
 
         Route::resource('product', ProductController::class)->only(['index', 'show', 'destroy']);
 
-
         Route::resource('responses', AdminResponseController::class)->only(['index', 'show']);
+
+        Route::resource('deals', AdminDealController::class)->only(['index', 'show']);
     });
     //                                   user routes
     Route::prefix('user')->group(function () {
@@ -121,7 +126,9 @@ Route::middleware('auth:factory')->group(function () {
 
         Route::resource('response', FactoryResponseController::class)->only(['index', 'show', 'destroy']);
 
-        Route::post('response/send-offer', [FactoryResponseController::class, 'sendOffer']);
+        Route::post('response/send-offer/{request_id}', [FactoryResponseController::class, 'sendOffer']);
+
+        Route::resource('deals', FactoryDealController::class)->only(['index', 'show']);
     });
 });
 
@@ -132,7 +139,7 @@ Route::controller(StartupAuthController::class)->group(function () {
 });
 Route::middleware('auth:startup')->group(function () {
     Route::prefix('startup')->group(function () {
-        Route::resource('request', RequestController::class)->only(['index', 'show', 'destroy' , 'store']);
+        Route::resource('request', RequestController::class)->only(['index', 'show', 'destroy', 'store']);
 
         // sizes
         Route::get('/{startupId}/sizes', [SizeController::class, 'index']);
@@ -150,6 +157,12 @@ Route::middleware('auth:startup')->group(function () {
             Route::put('/profile', 'update');
             Route::delete('/profile', 'destroy');
         });
+        //fctory responses
+        Route::resource('factory/response', StartupResponseController::class)->only(['index', 'show']);
+        Route::post('/factory-responses/{id}/accept', [StartupResponseController::class, 'acceptFactoryResponse']);
+        Route::post('/factory-responses/{id}/reject', [StartupResponseController::class, 'rejectFactoryResponse']);
+
+        Route::resource('deals', StartupDealController::class)->only(['index', 'show']);
     });
 });
 
@@ -160,6 +173,4 @@ Route::prefix('general')->group(function () {
     Route::get('/best-sellers', [UserProductController::class, 'bestSellers']);
     Route::get('/new_arrivals', [UserProductController::class, 'newArrivals']);
     Route::get('/discounted', [UserProductController::class, 'discountedProducts']);
-
-
 });

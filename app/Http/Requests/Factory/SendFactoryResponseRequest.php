@@ -14,7 +14,7 @@ class SendFactoryResponseRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'request_id' => ['required', 'exists:requests,id'],
+            // 'request_id' => ['required', 'exists:requests,id'],
             'description' => ['required', 'string'],
             'price' => ['required', 'integer'],
             'image' => ['nullable', 'image'],

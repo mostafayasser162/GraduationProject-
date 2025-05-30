@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Models\Scopes\SearchScope;
 use App\Models\Scopes\SortScope;
+
 class Request extends Model
 {
     use HasFactory;
@@ -32,5 +33,12 @@ class Request extends Model
     {
         static::addGlobalScope(new SearchScope);
         static::addGlobalScope(new SortScope);
+    }
+
+    public function deals()
+    {
+        return $this->belongsToMany(Factory::class, 'deals')
+            ->withPivot(['price', 'status', 'deal_date'])
+            ->withTimestamps();
     }
 }

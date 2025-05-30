@@ -2,21 +2,28 @@
 
 namespace App\Http\Controllers\Api\Factory;
 
+use App\Models\Request as RequestModel;
+use App\Models\FactoryResponse;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Factory\SendFactoryResponseRequest;
-use App\Models\FactoryResponse;
 use Illuminate\Http\Request;
 
 class ResponseController extends Controller
 {
-    public function sendOffer(SendFactoryResponseRequest $request)
+    public function sendOffer(SendFactoryResponseRequest $request, $id)
     {
         $data = $request->validated();
         $factory = auth()->user();
+        $data['request_id'] = $id;
+        $requestModel = RequestModel::find($id);
+        
+        if (!$requestModel) {
+            return response()->errors('Request not found');
+        }
 
         $alreadyResponded = FactoryResponse::where('factory_id', $factory->id)
-        ->where('request_id', $data['request_id'])
-        ->exists();
+            ->where('request_id', $data['request_id'])
+            ->exists();
 
         if ($alreadyResponded) {
             return response()->errors('You have already sent a response to this request');
@@ -41,7 +48,6 @@ class ResponseController extends Controller
         $factories = FactoryResponse::where('factory_id', $factory->id)->paginate();
 
         return response()->success($factories);
-
     }
 
     public function show($id)
