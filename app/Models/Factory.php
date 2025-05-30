@@ -14,7 +14,7 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
 
 class Factory extends Authenticatable implements JWTSubject
 {
-    use HasFactory, Notifiable , HasApiTokens ;
+    use HasFactory, Notifiable, HasApiTokens;
 
     protected $table = 'factories';
 
@@ -37,6 +37,15 @@ class Factory extends Authenticatable implements JWTSubject
     {
         return class_basename($this) == 'Factory';
     }
+
+    public function deals()
+    {
+        return $this->belongsToMany(Request::class, 'deals')
+            ->withPivot(['price', 'status', 'deal_date'])
+            ->withTimestamps();
+    }
+
+    
     public function getJWTIdentifier()
     {
         return $this->getKey();
@@ -49,7 +58,7 @@ class Factory extends Authenticatable implements JWTSubject
     {
         return [];
     }
-        protected static function booted(): void
+    protected static function booted(): void
     {
         static::addGlobalScope(new SearchScope);
         static::addGlobalScope(new SortScope);

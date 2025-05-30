@@ -28,4 +28,9 @@ class FactoryResponse extends Model
     {
         return $this->belongsTo(request::class);
     }
+    
+    public function deal()
+    {
+        return $this->hasOne(Deal::class);
+    }
 }

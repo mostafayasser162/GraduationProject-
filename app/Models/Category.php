@@ -12,7 +12,7 @@ class Category extends Model
         'name',
     ];
 
-        protected static function booted(): void
+    protected static function booted(): void
     {
         static::addGlobalScope(new SearchScope);
         static::addGlobalScope(new SortScope);
