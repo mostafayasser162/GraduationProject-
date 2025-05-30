@@ -28,6 +28,7 @@ use App\Http\Controllers\Api\Startup\ProfileController as StartupProfileControll
 use App\Http\Controllers\Api\Factory\ResponseController as FactoryResponseController;
 use App\Http\Controllers\Api\Startup\ResponseController as StartupResponseController;
 use App\Http\Controllers\Api\Factory\StartupRequestController as FactoryStartupRequestController;
+use App\Http\Controllers\Api\StartUp\PaymentController;
 
 // use App\Http\Controllers\WishlistController as UserWishlistController;
 
@@ -129,6 +130,7 @@ Route::middleware('auth:factory')->group(function () {
         Route::post('response/send-offer/{request_id}', [FactoryResponseController::class, 'sendOffer']);
 
         Route::resource('deals', FactoryDealController::class)->only(['index', 'show']);
+        Route::post('deals/{id}/order-done', [FactoryDealController::class, 'orderDone']);
     });
 });
 
@@ -163,6 +165,10 @@ Route::middleware('auth:startup')->group(function () {
         Route::post('/factory-responses/{id}/reject', [StartupResponseController::class, 'rejectFactoryResponse']);
 
         Route::resource('deals', StartupDealController::class)->only(['index', 'show']);
+
+        Route::post('deals/{deal}/pay-deposit', [PaymentController::class, 'payDeposit']);
+        Route::post('deals/{deal}/pay-final', [PaymentController::class, 'payFinal']);
+
     });
 });
 
