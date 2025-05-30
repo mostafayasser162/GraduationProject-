@@ -76,4 +76,27 @@ class ProductController extends Controller
     
         return response()->success(ProductResource::collection($products));
     }    
+
+    public function discountedProducts()
+    {
+        $products = Product::where(function ($query) {
+                $query->whereNotNull('discount_percentage')
+                    ->orWhereHas('sizes', function ($q) {
+                        $q->whereNotNull('discount_percentage');
+                    });
+            })
+            ->whereHas('startup', function ($q) {
+                $q->where('status', Status::APPROVED());
+            })
+            ->with(['startup', 'subCategory.category', 'images', 'sizes']) // include sizes
+            ->paginate();
+    
+        if ($products->isEmpty()) {
+            return response()->error('No discounted products found.', 404);
+        }
+    
+        return response()->success(ProductResource::collection($products));
+    }
+    
+
 }
