@@ -19,7 +19,8 @@ class FactoryResource extends JsonResource
             'description'      => $this->description,
             'created_at'       => $this->created_at?->toDateTimeString(),
             'updated_at'       => $this->updated_at?->toDateTimeString(),
-
+            'deals_count'      => $this->deals_count ?? $this->deals()->count(),
+            'deals'            => DealResource::collection($this->whenLoaded('deals')),
         ];
     }
 }

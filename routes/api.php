@@ -26,6 +26,7 @@ use App\Http\Controllers\Api\Admin\ResponseController as AdminResponseController
 use App\Http\Controllers\Api\Startup\ProductController as StartupProductController;
 use App\Http\Controllers\Api\Startup\ProfileController as StartupProfileController;
 use App\Http\Controllers\Api\Factory\ResponseController as FactoryResponseController;
+use App\Http\Controllers\Api\Factory\ProfileController as FactoryProfileController;
 use App\Http\Controllers\Api\Startup\ResponseController as StartupResponseController;
 use App\Http\Controllers\Api\Factory\StartupRequestController as FactoryStartupRequestController;
 use App\Http\Controllers\Api\StartUp\PaymentController;
@@ -131,6 +132,10 @@ Route::middleware('auth:factory')->group(function () {
 
         Route::resource('deals', FactoryDealController::class)->only(['index', 'show']);
         Route::post('deals/{id}/order-done', [FactoryDealController::class, 'orderDone']);
+
+        Route::get('profile', [FactoryProfileController::class, 'index']);
+        Route::put('profile', [FactoryProfileController::class, 'update']);
+        Route::delete('profile', [FactoryProfileController::class, 'destroy']);
     });
 });
 
@@ -168,7 +173,6 @@ Route::middleware('auth:startup')->group(function () {
 
         Route::post('deals/{deal}/pay-deposit', [PaymentController::class, 'payDeposit']);
         Route::post('deals/{deal}/pay-final', [PaymentController::class, 'payFinal']);
-
     });
 });
 

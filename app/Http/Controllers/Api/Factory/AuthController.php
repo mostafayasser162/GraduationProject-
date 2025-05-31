@@ -15,13 +15,14 @@ class AuthController extends Controller
     {
         $data = $request->validated();
 
-        $factory = Factory::where('phone', $data['phone'])->first();
-        if ($factory->status == Status::BLOCKED()) {
-            return response()->errors('this factory have been blocked');
-        }
+        $factory = Factory::where('phone', $data['phone'])->whereNull('deleted_at')->first();
 
         if (!$factory || !\Hash::check($data['password'], $factory->password)) {
             return response()->errors('wrong password or email');
+        }
+
+        if ($factory->status == Status::BLOCKED()) {
+            return response()->errors('this factory have been blocked');
         }
 
         $token = JWTAuth::fromUser($factory);
