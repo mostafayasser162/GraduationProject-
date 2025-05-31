@@ -10,7 +10,7 @@ class ResponseController extends Controller
 {
     public function index()
     {
-        $factories = FactoryResponse::with('factory', 'request')->get();
+        $factories = FactoryResponse::with('factory', 'request' ,'factory.ratings')->get();
         $factories = FactoryResponseResource::collection($factories);
 
         return response()->paginate_resource($factories);
@@ -18,7 +18,7 @@ class ResponseController extends Controller
 
     public function show($id)
     {
-        $response = FactoryResponse::with('factory', 'request')->findOrFail($id);
+        $response = FactoryResponse::with('factory', 'request' . 'factory.ratings')->findOrFail($id);
         if (!$response) {
             return response()->errors('Response not found');
         }

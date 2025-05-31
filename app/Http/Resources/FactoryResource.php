@@ -21,6 +21,8 @@ class FactoryResource extends JsonResource
             'updated_at'       => $this->updated_at?->toDateTimeString(),
             'deals_count'      => $this->deals_count ?? $this->deals()->count(),
             'deals'            => DealResource::collection($this->whenLoaded('deals')),
+            'ratings'          => RatingResource::collection($this->whenLoaded('ratings')),
+            'average_rating'   => $this->ratings->avg('rate'),
         ];
     }
 }

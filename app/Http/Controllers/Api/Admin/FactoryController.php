@@ -21,7 +21,7 @@ class FactoryController extends Controller
             $query->where('status', $request->status);
         }
 
-        $factories = $query->get();
+        $factories = $query->with('ratings')->get();
         $factories = FactoryResource::collection($factories);
 
         return response()->paginate_resource($factories);
@@ -29,6 +29,8 @@ class FactoryController extends Controller
 
     public function show(Factory $factory)
     {
+        $factory->load('ratings'); // تحميل العلاقة
+
         if (!$factory) {
             return response()->errors('Factory not found');
         }
@@ -74,5 +76,4 @@ class FactoryController extends Controller
 
         return response()->success("Startup status changed to {$startup->status}");
     }
-
 }

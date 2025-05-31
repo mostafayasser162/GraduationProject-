@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\Startup\RatingController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\Admin\DealController as AdminDealController;
 use App\Http\Controllers\Api\Factory\DealController as FactoryDealController;
@@ -173,6 +174,9 @@ Route::middleware('auth:startup')->group(function () {
 
         Route::post('deals/{deal}/pay-deposit', [PaymentController::class, 'payDeposit']);
         Route::post('deals/{deal}/pay-final', [PaymentController::class, 'payFinal']);
+
+        Route::post('rate/deal/{id}', [RatingController::class, 'store']);
+
     });
 });
 
