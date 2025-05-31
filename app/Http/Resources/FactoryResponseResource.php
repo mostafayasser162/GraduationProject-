@@ -11,6 +11,11 @@ class FactoryResponseResource extends JsonResource
         return [
             'id'          => $this->id,
             'factory_id'  => $this->factory_id,
+            // 'factory_rating' => RatingResource::collection($this->whenLoaded('factory.ratings')),
+            //   'factory_ratings' => $this->factory ? RatingResource::collection($this->factory->ratings) : null,
+
+            // 'factory_avg_rating' => $this->factory?->ratings->avg('rate'),
+
             'request_id'  => $this->request_id,
             'description' => $this->description,
             'price'       => $this->price,

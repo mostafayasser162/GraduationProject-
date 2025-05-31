@@ -16,7 +16,7 @@ class ProfileController extends Controller
     {
         $factory = auth()->user();
 
-        $factory->loadCount(['deals']);
+        $factory->loadCount(['deals'])->load(['ratings']);
 
         return response()->success(new FactoryResource($factory));
     }

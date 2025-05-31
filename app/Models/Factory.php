@@ -70,4 +70,14 @@ class Factory extends Authenticatable implements JWTSubject
     {
         return $this->hasMany(Request::class);
     }
+
+    public function ratings()
+    {
+        return $this->hasMany(Rating::class);
+    }
+
+    public function averageRating()
+    {
+        return $this->ratings()->avg('rate');
+    }
 }

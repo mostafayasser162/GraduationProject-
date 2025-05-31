@@ -23,7 +23,7 @@ class ResponseController extends Controller
             ->whereHas('request', function ($query) use ($user) {
                 $query->where('startup_id', $user->id);
             })
-            ->with('request.startup')
+            ->with('request.startup' ,'factory.ratings')
             ->get();
         $factoryResponses = FactoryResponseResource::collection($factoryResponses);
         return response()->paginate_resource($factoryResponses);
@@ -37,7 +37,7 @@ class ResponseController extends Controller
             ->whereHas('request', function ($query) use ($user) {
                 $query->where('startup_id', $user->id);
             })
-            ->with('request.startup') // إذا تحتاج تفاصيل الطلب والشركة الناشئة
+            ->with('request.startup' , 'factory.ratings') // إذا تحتاج تفاصيل الطلب والشركة الناشئة
             ->first();
 
         if (!$factoryResponse) {
