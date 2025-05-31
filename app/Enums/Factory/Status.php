@@ -7,6 +7,7 @@ use App\Enums\Enum;
 /**
  * @method static self APPROVED()
  * @method static self BLOCKED()
+ * @method static self DELETED()
  * @method static self HOLD()
  */
 class Status extends Enum
@@ -16,6 +17,7 @@ class Status extends Enum
         return [
             'APPROVED' => 'APPROVED',
             'BLOCKED' => 'BLOCKED',
+            'DELETED' => 'DELETED',
             'HOLD' => 'HOLD',
         ];
     }

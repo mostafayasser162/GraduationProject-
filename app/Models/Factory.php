@@ -11,10 +11,11 @@ use App\Models\Scopes\SearchScope;
 use Illuminate\Database\Eloquent\Model;
 use Laravel\Sanctum\HasApiTokens;
 use Tymon\JWTAuth\Contracts\JWTSubject;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Factory extends Authenticatable implements JWTSubject
 {
-    use HasFactory, Notifiable, HasApiTokens;
+    use HasFactory, Notifiable, HasApiTokens, SoftDeletes;
 
     protected $table = 'factories';
 
@@ -32,6 +33,7 @@ class Factory extends Authenticatable implements JWTSubject
     protected $hidden = [
         'password',
     ];
+    protected $dates = ['deleted_at'];
 
     public function isFactory(): bool
     {
@@ -45,7 +47,7 @@ class Factory extends Authenticatable implements JWTSubject
             ->withTimestamps();
     }
 
-    
+
     public function getJWTIdentifier()
     {
         return $this->getKey();
@@ -62,5 +64,10 @@ class Factory extends Authenticatable implements JWTSubject
     {
         static::addGlobalScope(new SearchScope);
         static::addGlobalScope(new SortScope);
+    }
+
+    public function requests()
+    {
+        return $this->hasMany(Request::class);
     }
 }
