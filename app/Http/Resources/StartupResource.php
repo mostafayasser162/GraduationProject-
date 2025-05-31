@@ -23,6 +23,8 @@ class StartupResource extends JsonResource
             'categories_id' => $this->categories_id,
             'products' => ProductResource::collection($this->whenLoaded('products')),
             'orders' => OrderResource::collection($this->whenLoaded('orders')),
+            'payment_method' => $this->payment_method,
+            'payment_account' => $this->payment_method,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             'deleted_at' => $this->deleted_at,

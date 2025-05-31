@@ -29,6 +29,8 @@ class Startup extends Authenticatable implements JWTSubject
         'deleted_at',
         'email',
         'password',
+        'payment_method',
+        'payment_account',
     ];
     protected $hidden = ['password'];
 
@@ -79,7 +81,7 @@ class Startup extends Authenticatable implements JWTSubject
         return [];
     }
 
-    //relation ship with order from startup it at product id    
+    //relation ship with order from startup it at product id
     public function orders()
     {
         return $this->hasManyThrough(
@@ -95,8 +97,7 @@ class Startup extends Authenticatable implements JWTSubject
     }
 
     public function sizes()
-{
-    return $this->hasMany(Size::class);
-}
-
+    {
+        return $this->hasMany(Size::class);
+    }
 }
