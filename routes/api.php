@@ -16,6 +16,7 @@ use App\Http\Controllers\Api\Admin\StartUpController;
 use App\Http\Controllers\Api\Admin\CategoryController;
 use App\Http\Controllers\Api\StartUp\RequestController;
 use App\Http\Controllers\Api\Admin\SubCategoryController;
+use App\Http\Controllers\Api\General\SubCategoryController as GeneralSubCategoryController;
 use App\Http\Controllers\Api\User\OrderController as UserOrderController;
 use App\Http\Controllers\Api\Startup\AuthController as StartupAuthController;
 use App\Http\Controllers\Api\User\AddressController as UserAddressController;
@@ -176,7 +177,6 @@ Route::middleware('auth:startup')->group(function () {
         Route::post('deals/{deal}/pay-final', [PaymentController::class, 'payFinal']);
 
         Route::post('rate/deal/{id}', [RatingController::class, 'store']);
-
     });
 });
 
@@ -187,4 +187,6 @@ Route::prefix('general')->group(function () {
     Route::get('/best-sellers', [UserProductController::class, 'bestSellers']);
     Route::get('/new_arrivals', [UserProductController::class, 'newArrivals']);
     Route::get('/discounted', [UserProductController::class, 'discountedProducts']);
+
+    Route::resource('subcategory', GeneralSubCategoryController::class)->only(['index', 'show']);
 });
