@@ -20,7 +20,7 @@ class ProfileController extends Controller
 
         $orderItems = Order_item::whereHas('product', function ($query) use ($startup) {
             $query->where('startup_id', $startup->id);
-        })->with(['product', 'order'])->get();
+        })->with(['product', 'order' , 'order.user'])->get();
 
         return response()->success([
             'startup' => new StartupResource($startup),

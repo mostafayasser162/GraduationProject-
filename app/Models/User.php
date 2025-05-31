@@ -29,9 +29,9 @@ class User extends Authenticatable implements JWTSubject
         'password',
         'role',
         'phone',
-        'otp_code',        
+        'otp_code',
         'otp_expires_at',
-        'remember_token',  
+        'remember_token',
     ];
 
     /**
@@ -42,6 +42,8 @@ class User extends Authenticatable implements JWTSubject
     protected $hidden = [
         'password',
         'remember_token',
+        'otp_code',
+        'otp_expires_at',
     ];
 
     /**
@@ -93,8 +95,7 @@ class User extends Authenticatable implements JWTSubject
     }
 
     public function reviews()
-{
-    return $this->hasMany(Review::class);
-}
-
+    {
+        return $this->hasMany(Review::class);
+    }
 }
