@@ -35,7 +35,7 @@ class RegisterRequest extends FormRequest
             'social_media_links.*' => 'required|url',
             'package_id'         => 'required|exists:packages,id',
             'logo' =>    'required|file|mimes:jpeg,png,jpg',
-            'categories_id'      => 'required|exists:categories,id',
+            // 'categories_id'      => 'required|exists:categories,id',
             'email' => ['required', new UniqueEmail('startups'), ...Rules::get('email')],
             'password' => ['required', 'confirmed', 'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/'],
             'payment_method' => 'required|string|max:255',
