@@ -33,6 +33,7 @@ use App\Http\Controllers\Api\Startup\ResponseController as StartupResponseContro
 use App\Http\Controllers\Api\Factory\StartupRequestController as FactoryStartupRequestController;
 use App\Http\Controllers\Api\StartUp\PaymentController;
 use App\Http\Controllers\GoogleAuthController;
+use App\Http\Controllers\Api\StartUp\OrderController as StartUpOrderController;
 
 // use App\Http\Controllers\WishlistController as UserWishlistController;
 
@@ -180,6 +181,13 @@ Route::middleware('auth:startup')->group(function () {
         Route::post('deals/{deal}/pay-final', [PaymentController::class, 'payFinal']);
 
         Route::post('rate/deal/{id}', [RatingController::class, 'store']);
+        
+        // count new orders
+        // Route::resource('orders', StartUpOrderController::class)->only(['index', 'show']);
+        Route::get('/orders/count/new', [StartUpOrderController::class, 'countNewOrders']);
+        Route::get('/orders', [StartUpOrderController::class, 'index']);
+        Route::get('/orders/{id}', [StartUpOrderController::class, 'show']);
+
     });
 });
 
