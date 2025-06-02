@@ -28,7 +28,8 @@ class RegisterRequest extends FormRequest
             'name' => ['required', ...Rules::get('user.name')],
             'phone' => [
                 'required',
-                'unique:startups,phone,',
+                'regex:/^01[0-9]{9}$/',
+                'unique:startups,phone,'
             ],
             'description' => 'required|string|max:255',
             'social_media_links' => 'nullable|array',

@@ -15,7 +15,7 @@ class UpdateProfileRequest extends FormRequest
         return [
             'name' => 'string|max:255',
             'email' => 'email|unique:users,email,' . $this->user()->id,
-            'phone' => 'string|max:20,unique:users,phone,' . $this->user()->id,
+            'phone' => 'string|regex:/^01[0-9]{9}$/|max:20,unique:users,phone,' . $this->user()->id,
             'password' => 'string|min:8|confirmed',
         ];
     }

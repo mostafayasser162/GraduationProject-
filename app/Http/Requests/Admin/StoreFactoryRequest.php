@@ -17,7 +17,7 @@ class StoreFactoryRequest extends FormRequest
     {
         return [
             'name' => 'required|string|max:255',
-            'phone' => 'required|string|max:20|unique:factories,phone',
+            'phone' => 'required|string|max:20|regex:/^01[0-9]{9}$/|unique:factories,phone',
             'email' => 'nullable|email|unique:factories,email',
             'password' => 'required|string|min:6',
             'payment_methods' => 'required|string',

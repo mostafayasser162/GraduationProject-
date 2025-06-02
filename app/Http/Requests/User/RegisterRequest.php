@@ -27,6 +27,7 @@ class RegisterRequest extends FormRequest
             'name' => ['required', ...Rules::get('user.name')],
             'phone' => [
                 'required',
+                'regex:/^01[0-9]{9}$/',
                 'unique:users,phone,',
             ],
             'email' => ['required', new UniqueEmail('users'), ...Rules::get('email')],

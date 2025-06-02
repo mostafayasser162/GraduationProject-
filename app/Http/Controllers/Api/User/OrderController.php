@@ -33,7 +33,7 @@ class OrderController extends Controller
             return response()->errors('Invalid address');
         }
         // حساب السعر الإجمالي
-        $total = $cart->sum(function($product) {
+        $total = $cart->sum(function ($product) {
             if ($product->pivot->product_size_id) {
                 $variant = Product_size::find($product->pivot->product_size_id);
                 return $variant ? $variant->price * $product->pivot->quantity : $product->price * $product->pivot->quantity;
@@ -62,6 +62,7 @@ class OrderController extends Controller
                 'user_id' => $user->id,
                 'total_price' => $total,
                 'address_id' => $validated['address_id'], // ✅ أضفنا العنوان
+                'second_phone' => $validated['second_phone'],
             ]);
 
             foreach ($cart as $product) {
@@ -109,46 +110,41 @@ class OrderController extends Controller
         }
     }
 
-
-
-
     public function index()
-{
-    $user = auth()->user();
+    {
+        $user = auth()->user();
 
-    $orders = Order::with(['orderItems.product','orderItems','orderItems.productSize'])
-                    ->where('user_id', $user->id)
-                    ->latest()
-                    ->get();
+        $orders = Order::with(['orderItems.product', 'orderItems', 'orderItems.productSize'])
+            ->where('user_id', $user->id)
+            ->latest()
+            ->get();
 
-    $orders = OrderResource::collection($orders);
-    return response()->paginate_resource($orders);
-}
-
-
-
-public function show($orderId)
-{
-    // Get the authenticated user
-    $user = auth()->user() ;
-
-
-    // Fetch the specific order with its items, product details, and product_size (if available)
-    $order = Order::with(['orderItems.product', 'orderItems.productSize']) // Eager load order items, products, and product sizes
-                  ->where('user_id', $user->id)
-                  ->where('id', $orderId)
-                  ->first(); // We use first() because we expect only one order
-
-    // Check if the order exists
-    if (!$order) {
-        return response()->errors('Order not found');
+        $orders = OrderResource::collection($orders);
+        return response()->paginate_resource($orders);
     }
 
-    // Return the order details along with order items and product information
-    return response()->success([
-        'order' => new OrderResource($order) // Pass the order to your resource to format it
-    ]);
-}
 
 
+    public function show($orderId)
+    {
+        // Get the authenticated user
+        $user = auth()->user();
+
+
+        // Fetch the specific order with its items, product details, and product_size (if available)
+        $order = Order::with(['orderItems.product', 'orderItems.productSize']) // Eager load order items, products, and product sizes
+            ->where('user_id', $user->id)
+            ->where('id', $orderId)
+            ->first(); // We use first() because we expect only one order
+
+        // Check if the order exists
+        if (!$order) {
+            return response()->errors('Order not found');
+        }
+
+        // Return the order details along with order items and product information
+        return response()->success([
+            'order' => new OrderResource($order) // Pass the order to your resource to format it
+        ]);
+    }
 }

@@ -44,11 +44,11 @@ class AddressController extends Controller
             return response()->errors('User not authenticated', 401);
         }
 
-        $addressId = $validated['address_id'] ?? null;
+        // $addressId = $validated['address_id'] ?? null;
 
-        if (!$addressId) {
-            return response()->errors('Address is required');
-        }
+        // if (!$addressId) {
+        //     return response()->errors('Address is required');
+        // }
 
         // Create the address for the authenticated user
         $address = $user->addresses()->create([

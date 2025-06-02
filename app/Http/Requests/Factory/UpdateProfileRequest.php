@@ -25,7 +25,7 @@ class UpdateProfileRequest extends FormRequest
 
         return [
             'name'             => 'nullable|string|max:255',
-            'phone'            => 'nullable|string|max:20',
+            'phone'            => 'nullable|regex:/^01[0-9]{9}$/|string|max:20',
             'email'            => 'nullable|email|unique:factories,email,' . $factoryId,
             'payment_methods'  => 'nullable|string',
             'payment_account'  => 'nullable|string',
