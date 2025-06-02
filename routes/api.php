@@ -96,6 +96,7 @@ Route::middleware('auth:api')->group(function () {
         Route::post('/cart/add', [CartController::class, 'addToCart']);
         // Route::put('/cart/update', [CartController::class, 'updateQuantity']);
         Route::post('/cart/remove', [CartController::class, 'removeFromCart']);
+        Route::post('/cart/increase-quantity', [CartController::class, 'addToCartQuantity']);
         Route::delete('/cart/clear', [CartController::class, 'clearCart']);
 
         Route::post('orders/place', [UserOrderController::class, 'placeOrder']);
@@ -181,7 +182,7 @@ Route::middleware('auth:startup')->group(function () {
         Route::post('deals/{deal}/pay-final', [PaymentController::class, 'payFinal']);
 
         Route::post('rate/deal/{id}', [RatingController::class, 'store']);
-        
+
         // count new orders
         // Route::resource('orders', StartUpOrderController::class)->only(['index', 'show']);
         Route::get('/orders/count/new', [StartUpOrderController::class, 'countNewOrders']);
