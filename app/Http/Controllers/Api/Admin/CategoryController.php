@@ -31,7 +31,14 @@ class CategoryController extends Controller
     {
         $data = $request->validate([
             'name' => 'required|string|max:255',
+            'image' =>    'required|file|mimes:jpeg,png,jpg',
+
         ]);
+        // image code
+        $file = $data['image'];
+        $path = 'storage/' . $file->store('images', 'public');
+        $data['image'] = $path;
+        // end image code
         $category = Category::create($data);
 
         return response()->success($category, 'Category created successfully');
@@ -51,7 +58,6 @@ class CategoryController extends Controller
         $category->update($data);
 
         return response()->success($category, 'Category updated successfully');
-
     }
     public function destroy($id)
     {

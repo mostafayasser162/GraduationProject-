@@ -34,7 +34,15 @@ class SubCategoryController extends Controller
         $data = $request->validate([
             'name' => 'required|string|max:255',
             'category_id' => 'required|exists:categories,id',
+            'image' =>    'required|file|mimes:jpeg,png,jpg',
+
         ]);
+
+        // image code
+        $file = $data['image'];
+        $path = 'storage/' . $file->store('images', 'public');
+        $data['image'] = $path;
+        // end image code
 
         $subCategory = Sub_category::create($data);
 
