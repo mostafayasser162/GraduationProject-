@@ -16,6 +16,7 @@ class Status extends Enum
         return [
             'BLOCKED' => 'BLOCKED',
             'APPROVED' => 'APPROVED',
+            'HOLD' => 'HOLD',
         ];
     }
     public static function allValues(): array

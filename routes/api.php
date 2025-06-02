@@ -32,6 +32,7 @@ use App\Http\Controllers\Api\Factory\ProfileController as FactoryProfileControll
 use App\Http\Controllers\Api\Startup\ResponseController as StartupResponseController;
 use App\Http\Controllers\Api\Factory\StartupRequestController as FactoryStartupRequestController;
 use App\Http\Controllers\Api\StartUp\PaymentController;
+use App\Http\Controllers\GoogleAuthController;
 
 // use App\Http\Controllers\WishlistController as UserWishlistController;
 
@@ -45,6 +46,8 @@ Route::controller(AuthController::class)->group(function () {
     Route::post('forgot-password', 'forgetPassword');
     Route::post('reset-password', 'resetPassword');
 });
+Route::get('auth/google/redirect', [GoogleAuthController::class, 'redirectToGoogle']);
+Route::get('auth/google/callback', [GoogleAuthController::class, 'handleGoogleCallback']);
 
 
 //                                    user and admin routes
