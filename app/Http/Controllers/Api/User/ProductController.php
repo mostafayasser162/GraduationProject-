@@ -38,7 +38,6 @@ class ProductController extends Controller
         $products = $query
             ->with(['startup', 'subCategory.category', 'images'])
             ->get();
-            // dd($products);
 
         $products = ProductResource::collection($products);
         return response()->paginate_resource($products);
@@ -51,7 +50,10 @@ class ProductController extends Controller
             ->whereHas('startup', function ($q) {
                 $q->where('status', Status::APPROVED());
             })
-            ->firstOrFail(); // will return 404 if not found
+            ->first(); // will return 404 if not found
+        if (!$product) {
+            return response()->errors('product not found');
+        }
 
         $product = new ProductResource($product);
 
@@ -61,16 +63,16 @@ class ProductController extends Controller
     public function bestSellers()
     {
         $products = Product::bestSellers()
-                ->with(['images', 'startup' , 'subCategory.category']) // include what you need
-                ->take(10) // top 10 best sellers
-                ->get();
+            ->with(['images', 'startup', 'subCategory.category']) // include what you need
+            ->take(10) // top 10 best sellers
+            ->get();
 
-            return response()->success(ProductResource::collection($products));
+        return response()->success(ProductResource::collection($products));
     }
     public function newArrivals()
     {
         $products = Product::newArrivals()
-            ->with(['images', 'startup' , 'subCategory.category']) // include what you need
+            ->with(['images', 'startup', 'subCategory.category']) // include what you need
             ->take(10) // top 10 new arrivals
             ->get();
 
@@ -80,11 +82,11 @@ class ProductController extends Controller
     public function discountedProducts()
     {
         $products = Product::where(function ($query) {
-                $query->whereNotNull('discount_percentage')
-                    ->orWhereHas('sizes', function ($q) {
-                        $q->whereNotNull('discount_percentage');
-                    });
-            })
+            $query->whereNotNull('discount_percentage')
+                ->orWhereHas('sizes', function ($q) {
+                    $q->whereNotNull('discount_percentage');
+                });
+        })
             ->whereHas('startup', function ($q) {
                 $q->where('status', Status::APPROVED());
             })
@@ -97,6 +99,4 @@ class ProductController extends Controller
 
         return response()->success(ProductResource::collection($products));
     }
-
-
 }

@@ -15,7 +15,7 @@ class UserController extends Controller
 {
     public function index(Request $request)
     {
-        $query = User::query()->whereNot('role', Role::ADMIN())->with('orders' , 'orders.orderItems');
+        $query = User::query()->whereNot('role', Role::ADMIN())->with('orders' , 'orders.orderItems' , 'addresses');
 
         if ($request->has('role') && in_array($request->role, Role::allValues())) {
             $query->where('role', $request->role);
@@ -61,7 +61,7 @@ class UserController extends Controller
                 return response()->errors('Cannot delete an admin');
             }
 
-            if ($user->isOwner() && $user->startup) {
+            if ($user->isOwner() || $user->startup) {
                 $user->startup->delete();
             }
             $user->delete(); // Delete the user

@@ -52,10 +52,10 @@ class ResponseController extends Controller
 
     public function show($id)
     {
-        $response = FactoryResponse::findOrFail($id);
+        $response = FactoryResponse::find($id);
 
-        if ($response->factory_id !== auth()->id()) {
-            return response()->errors('Unauthorized access to this response.');
+        if (!$response || $response->factory_id !== auth()->id()) {
+            return response()->errors('Response not found.');
         }
 
         return response()->success($response);
@@ -63,10 +63,10 @@ class ResponseController extends Controller
     public function destroy($id)
     {
         dd(auth()->user()->isFactory());
-        $response = FactoryResponse::findOrFail($id);
+        $response = FactoryResponse::find($id);
 
-        if ($response->factory_id !== auth()->id()) {
-            return response()->errors('Unauthorized access to this response.');
+        if (!$response || $response->factory_id !== auth()->id()) {
+            return response()->errors('Response not found.');
         }
 
         $response->delete();

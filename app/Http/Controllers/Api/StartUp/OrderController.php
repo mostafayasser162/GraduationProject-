@@ -14,7 +14,7 @@ class OrderController extends Controller
     {
         $startupId = auth('startup')->user()->id;
 
-        $orderItems = Order_item::with(['product', 'order'])
+        $orderItems = Order_item::with(['product', 'order', 'order.user.addresses'])
             ->whereHas('product', function ($query) use ($startupId) {
                 $query->where('startup_id', $startupId);
             })
@@ -27,9 +27,9 @@ class OrderController extends Controller
     // 2. View a specific order item & mark it as viewed
     public function show($id)
     {
-        $orderItem = Order_item::with(['product', 'order.user'])->findOrFail($id);
+        $orderItem = Order_item::with(['product', 'order.user' , 'order.user.addresses'])->find($id);
 
-        if (!$orderItem->product) {
+        if (!$orderItem || !$orderItem->product) {
             return response()->errors('Product not found', 404);
         }
 
