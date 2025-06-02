@@ -155,7 +155,7 @@ Route::middleware('auth:startup')->group(function () {
         Route::resource('request', RequestController::class)->only(['index', 'show', 'destroy', 'store']);
 
         // sizes
-        Route::get('/{startupId}/sizes', [SizeController::class, 'index']);
+        Route::get('/sizes', [SizeController::class, 'index']);
         Route::put('/sizes/{id}', [SizeController::class, 'update']);
         Route::post('/sizes', [SizeController::class, 'store']);
         Route::delete('/sizes/{id}', [SizeController::class, 'destroy']);

@@ -33,7 +33,7 @@ class ReviewController extends Controller
 
     public function productReviews($productId)
     {
-        $reviews = Review::with('user')->where('product_id', $productId)->latest()->paginate(10);
+        $reviews = Review::with('user')->where('product_id', $productId)->latest()->get();
 
         return response()->paginate_resource(ReviewResource::collection($reviews));
     }
