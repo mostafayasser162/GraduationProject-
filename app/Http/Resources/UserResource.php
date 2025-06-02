@@ -40,7 +40,7 @@ class UserResource extends JsonResource
             'updated_at' => $this->updated_at,
             'deleted_at' => $this->deleted_at,
             'orders' => OrderResource::collection($this->whenLoaded('orders')),
-            'address' => new AddressResource($this->whenLoaded('address')),
+            'address' => AddressResource::collection($this->whenLoaded('addresses')),
 
         ];
     }

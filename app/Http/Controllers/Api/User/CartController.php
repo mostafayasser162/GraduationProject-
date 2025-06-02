@@ -136,30 +136,6 @@ class CartController extends Controller
         return response()->success('Product added to cart');
     }
 
-
-
-    // public function index(Request $request)
-    // {
-    //     $user = $request->user();
-    //     $cart = $user->cart()->with('subCategory', 'startup', 'images')->get();
-
-    //     $cart->each(function ($product) {
-    //         $productSizeId = $product->pivot->product_size_id;
-    //         $product->pivot->productSize = \App\Models\Product_size::find($productSizeId);
-    //     });
-    //     $data = CartProductResource::collection($cart);
-
-    //     $totalPrice = $cart->sum(fn($product) => $product->price * $product->pivot->quantity);
-    //     $totalItems = $cart->sum(fn($product) => $product->pivot->quantity);
-
-    //     return response()->success([
-    //         'data' =>   $data,
-    //         'totalPrice' => $totalPrice,
-    //         'totalItems' => $totalItems,
-    //     ]);
-    // }
-
-
     public function index(Request $request)
     {
         $user = $request->user();
@@ -222,6 +198,31 @@ class CartController extends Controller
         }
 
         return response()->success('Product quantity updated in cart');
+    }
+
+    public function addToCartQuantity(Request $request)
+    {
+        $user = $request->user();
+        $productId = $request->input('product_id');
+        $productSizeId = $request->input('product_size_id');
+
+        $product = $user->cart()
+            ->wherePivot('product_id', $productId)
+            ->wherePivot('product_size_id', $productSizeId)
+            ->first();
+
+        if (!$product) {
+            return response()->errors('Product not found in cart', 404);
+        }
+
+        $currentQty = $product->pivot->quantity;
+
+        $user->cart()->updateExistingPivot($productId, [
+            'quantity' => $currentQty + 1,
+            'product_size_id' => $productSizeId // مهم جداً لو كنت عامل المفتاح المركب
+        ]);
+
+        return response()->success('Product quantity increased in cart');
     }
 
     public function clearCart(Request $request)

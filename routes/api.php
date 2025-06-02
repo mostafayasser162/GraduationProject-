@@ -33,6 +33,7 @@ use App\Http\Controllers\Api\Startup\ResponseController as StartupResponseContro
 use App\Http\Controllers\Api\Factory\StartupRequestController as FactoryStartupRequestController;
 use App\Http\Controllers\Api\StartUp\PaymentController;
 use App\Http\Controllers\GoogleAuthController;
+use App\Http\Controllers\Api\StartUp\OrderController as StartUpOrderController;
 
 // use App\Http\Controllers\WishlistController as UserWishlistController;
 
@@ -95,6 +96,7 @@ Route::middleware('auth:api')->group(function () {
         Route::post('/cart/add', [CartController::class, 'addToCart']);
         // Route::put('/cart/update', [CartController::class, 'updateQuantity']);
         Route::post('/cart/remove', [CartController::class, 'removeFromCart']);
+        Route::post('/cart/increase-quantity', [CartController::class, 'addToCartQuantity']);
         Route::delete('/cart/clear', [CartController::class, 'clearCart']);
 
         Route::post('orders/place', [UserOrderController::class, 'placeOrder']);
@@ -154,7 +156,7 @@ Route::middleware('auth:startup')->group(function () {
         Route::resource('request', RequestController::class)->only(['index', 'show', 'destroy', 'store']);
 
         // sizes
-        Route::get('/{startupId}/sizes', [SizeController::class, 'index']);
+        Route::get('/sizes', [SizeController::class, 'index']);
         Route::put('/sizes/{id}', [SizeController::class, 'update']);
         Route::post('/sizes', [SizeController::class, 'store']);
         Route::delete('/sizes/{id}', [SizeController::class, 'destroy']);
@@ -180,6 +182,13 @@ Route::middleware('auth:startup')->group(function () {
         Route::post('deals/{deal}/pay-final', [PaymentController::class, 'payFinal']);
 
         Route::post('rate/deal/{id}', [RatingController::class, 'store']);
+
+        // count new orders
+        // Route::resource('orders', StartUpOrderController::class)->only(['index', 'show']);
+        Route::get('/orders/count/new', [StartUpOrderController::class, 'countNewOrders']);
+        Route::get('/orders', [StartUpOrderController::class, 'index']);
+        Route::get('/orders/{id}', [StartUpOrderController::class, 'show']);
+
     });
 });
 
