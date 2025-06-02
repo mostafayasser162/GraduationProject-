@@ -25,7 +25,7 @@ class UpdateProfileRequest extends FormRequest
         return [
             'name' => [...Rules::get('user.name')],
             'email' => 'email|unique:users,email,' . $this->user()->id,
-            'phone' => 'string|max:20,unique:users,phone,' . $this->user()->id,
+            'phone' => 'string|regex:/^01[0-9]{9}$/|max:20,unique:users,phone,' . $this->user()->id,
             'description' => 'string|max:255',
             'social_media_links' => 'nullable|array',
             'social_media_links.*' => 'url',

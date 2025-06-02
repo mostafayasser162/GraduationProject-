@@ -19,6 +19,7 @@ class StoreOrderRequest extends FormRequest
             'card_number' => 'required_if:payment_method,visa|digits:16',
             'expiry_date' => 'required_if:payment_method,visa|date_format:m/y',
             'cvv' => 'required_if:payment_method,visa|digits:3',
+            'second_phone' => ['required', 'regex:/^01[0-9]{9}$/'],
         ];
     }
 }

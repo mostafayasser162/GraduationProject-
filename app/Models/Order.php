@@ -9,7 +9,8 @@ class Order extends Model
         'user_id',
         'total_price',
         'status',
-        'address_id'
+        'address_id',
+        'second_phone'
     ];
 
     public function user()

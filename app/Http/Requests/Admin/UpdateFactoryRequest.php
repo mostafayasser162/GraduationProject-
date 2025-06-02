@@ -19,7 +19,7 @@ class UpdateFactoryRequest extends FormRequest
 
         return [
             'name' => 'string|max:255',
-            'phone' => 'string|max:20',
+            'phone' => 'string|max:20|regex:/^01[0-9]{9}$/',
             'email' => 'nullable|email|unique:factories,email,' . $id,
             'payment_methods' => 'string',
             'payment_account' => 'string',
