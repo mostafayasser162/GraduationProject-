@@ -64,7 +64,7 @@ class ProductController extends Controller
     {
         $products = Product::bestSellers()
             ->with(['images', 'startup', 'subCategory.category']) // include what you need
-            ->take(10) // top 10 best sellers
+            ->take(45) // top 10 best sellers
             ->get();
 
         return response()->success(ProductResource::collection($products));
