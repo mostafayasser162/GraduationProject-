@@ -73,6 +73,8 @@ Route::middleware('auth:api')->group(function () {
         Route::put('factory/{id}/block', [FactoryController::class, 'block']);
 
         Route::resource('product', ProductController::class)->only(['index', 'show', 'destroy']);
+        // for delete review
+        Route::delete('product/{id}/review/{reviewId}', [ProductController::class, 'deleteReview']);
 
         Route::resource('responses', AdminResponseController::class)->only(['index', 'show']);
 
