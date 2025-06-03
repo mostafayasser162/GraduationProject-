@@ -219,10 +219,19 @@ class CartController extends Controller
 
         $user->cart()->updateExistingPivot($productId, [
             'quantity' => $currentQty + 1,
-            'product_size_id' => $productSizeId // مهم جداً لو كنت عامل المفتاح المركب
+            'product_size_id' => $productSizeId
         ]);
 
-        return response()->success('Product quantity increased in cart');
+        // Fetch the updated product with the newest quantity
+        $updatedProduct = $user->cart()
+            ->wherePivot('product_id', $productId)
+            ->wherePivot('product_size_id', $productSizeId)
+            ->first();
+
+        return response()->success([
+            'message' => 'Product quantity increased in cart',
+            'product' => $updatedProduct
+        ]);
     }
 
     public function clearCart(Request $request)
@@ -230,7 +239,7 @@ class CartController extends Controller
         $user = $request->user();
         $user->cart()->detach();
 
-        return response()->errors('Cart cleared');
+        return response()->success('Cart cleared');
     }
 
     //msh mehtagh ahalian 3shan el remove by3ml minus one lel product
