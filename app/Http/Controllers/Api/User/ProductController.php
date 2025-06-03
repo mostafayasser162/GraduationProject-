@@ -73,7 +73,7 @@ class ProductController extends Controller
     {
         $products = Product::newArrivals()
             ->with(['images', 'startup', 'subCategory.category']) // include what you need
-            ->take(10) // top 10 new arrivals
+            ->take(45) // top 10 new arrivals
             ->get();
 
         return response()->success(ProductResource::collection($products));
