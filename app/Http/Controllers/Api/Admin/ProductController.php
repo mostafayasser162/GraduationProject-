@@ -11,7 +11,7 @@ class ProductController extends Controller
 {
     public function index()
     {
-        $products = Product::with(['startup', 'subCategory.category', 'images'])->get();
+        $products = Product::with(['startup', 'subCategory.category', 'images' , 'reviews'])->get();
 
         $products = ProductResource::collection($products);
         return response()->paginate_resource($products);
@@ -20,7 +20,7 @@ class ProductController extends Controller
 
     public function show($id)
     {
-        $product = Product::with(['startup', 'subCategory.category', 'images'])->find($id);
+        $product = Product::with(['startup', 'subCategory.category', 'images' , 'reviews'])->find($id);
 
         if (!$product) {
             return response()->errors('Product not found');
@@ -76,4 +76,23 @@ class ProductController extends Controller
 
     //     return response()->success(new ProductResource($product), 'Product created successfully');
     // }
+    // function to delete reviews
+    public function deleteReview($productId, $reviewId)
+    {
+        $product = Product::find($productId);
+
+        if (!$product) {
+            return response()->errors('Product not found');
+        }
+
+        $review = $product->reviews()->find($reviewId);
+
+        if (!$review) {
+            return response()->errors('Review not found');
+        }
+
+        $review->delete();
+
+        return response()->success('Review deleted successfully');
+    }
 }
