@@ -36,23 +36,23 @@ class ProductController extends Controller
         }
 
         $products = $query
-            ->with(['startup', 'subCategory.category', 'images'])
+            ->with(['startup', 'subCategory.category', 'images' , 'sizes.size', 'sizes.color' ])
             ->get();
 
         $products = ProductResource::collection($products);
         return response()->paginate_resource($products);
     }
-
     public function show($id)
     {
-        $product = Product::with(['startup', 'subCategory.category', 'images'])
-            ->where('id', $id)
-            ->whereHas('startup', function ($q) {
-                $q->where('status', Status::APPROVED());
-            })
-            ->first(); // will return 404 if not found
+        $product = Product::with(['startup', 'subCategory.category', 'images', 'sizes.size', 'sizes.color'])
+        ->where('id', $id)
+        ->whereHas('startup', function ($q) {
+            $q->where('status', Status::APPROVED());
+        })
+        ->first();
+
         if (!$product) {
-            return response()->errors('product not found');
+            return response()->errors('Product not found');
         }
 
         $product = new ProductResource($product);

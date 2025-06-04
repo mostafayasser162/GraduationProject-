@@ -28,15 +28,14 @@ class ProductResource extends JsonResource
             'name'           => $this->name,
             'description'    => $this->description,
             'price'          => $basePrice,
-            'stock'        => $this->stock,
-            // 'startup_id'     => $this->startup_id,
-            // 'sub_category_id'=> $this->sub_category_id,
+            'stock'          => $this->stock,
 
             'startup'        => new StartupResource($this->whenLoaded('startup')),
             'sub_category'   => new SubCategoryResource($this->whenLoaded('subCategory')),
             'images'         => ImageResource::collection($this->whenLoaded('images')),
-            'reviews' => ReviewResource::collection($this->whenLoaded('reviews')),
-
+            'reviews'        => ReviewResource::collection($this->whenLoaded('reviews')),
+            'sizes'          => ProductSizeResource::collection($this->whenLoaded('sizes')),
+            
             'created_at'     => $this->created_at?->toDateTimeString(),
             'updated_at'     => $this->updated_at?->toDateTimeString(),
             'discount_percentage' => $baseDiscount,

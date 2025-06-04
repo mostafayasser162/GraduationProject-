@@ -86,7 +86,9 @@ public function averageRating()
 }
 public function sizes()
 {
-    return $this->hasMany(Product_size::class);
+    // return $this->hasMany(Product_size::class);
+    return $this->hasMany(Product_size::class, 'product_id');
+
 }
 public function colors()
 {
