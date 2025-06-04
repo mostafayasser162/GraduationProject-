@@ -9,7 +9,9 @@ use App\Enums\StartUps\Status;
 use App\Http\Resources\StartupResource;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\StartupApprovedMail;
+// use App\Mail\StartupProfileUpdatedMail;
 use App\Mail\StartupRejectedMail;
+use App\Mail\StartupProfileUpdatedMail;
 
 
 
@@ -147,5 +149,28 @@ public function reject($id)
 
     return response()->success("Startup has been rejected");
 }
+
+
+public function approvePendingUpdate($startupId)
+{
+    $startup = Startup::findOrFail($startupId);
+
+    if (!$startup->pending_update) {
+        return response()->errors('No pending update found.');
+    }
+
+    // Decode JSON string to array
+    $data = json_decode($startup->pending_update, true);
+
+    $startup->update($data);
+    $startup->pending_update = null;
+    $startup->save();
+
+    // Send email
+    Mail::to($startup->email)->send(new StartupProfileUpdatedMail($startup));
+
+    return response()->success('Startup profile updated successfully and email sent.');
+}
+
 
 }

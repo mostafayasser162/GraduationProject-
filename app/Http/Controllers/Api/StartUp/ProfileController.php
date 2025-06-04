@@ -28,32 +28,59 @@ class ProfileController extends Controller
         ]);
     }
 
+    // public function update(UpdateProfileRequest $request)
+    // {
+    //     $data = $request->validated();
+    //     $user = $request->user();
+
+    //     if ($request->hasFile('logo') && $request->file('logo')->isValid()) {
+    //         $file = $request->file('logo');
+    //         $path = 'storage/' . $file->store('images', 'public');
+    //         $data['logo'] = $path;
+    //     }
+
+    //     if (isset($data['social_media_links']) && is_array($data['social_media_links'])) {
+    //         $existingLinks = $user->social_media_links ?? [];
+    //         $data['social_media_links'] = array_merge($existingLinks, $data['social_media_links']);
+    //     }
+
+    //     if (!empty($data['password'])) {
+    //         $data['password'] = bcrypt($data['password']);
+    //     }
+
+    //     $user->update($data);
+
+    //     return response()->success(('Profile updated successfully.'),
+    //         new StartupResource($user)
+    //     );
+    // }
     public function update(UpdateProfileRequest $request)
-    {
-        $data = $request->validated();
-        $user = $request->user();
+{
+    $data = $request->validated();
+    $user = $request->user();
 
-        if ($request->hasFile('logo') && $request->file('logo')->isValid()) {
-            $file = $request->file('logo');
-            $path = 'storage/' . $file->store('images', 'public');
-            $data['logo'] = $path;
-        }
-
-        if (isset($data['social_media_links']) && is_array($data['social_media_links'])) {
-            $existingLinks = $user->social_media_links ?? [];
-            $data['social_media_links'] = array_merge($existingLinks, $data['social_media_links']);
-        }
-
-        if (!empty($data['password'])) {
-            $data['password'] = bcrypt($data['password']);
-        }
-
-        $user->update($data);
-
-        return response()->success(('Profile updated successfully.'),
-            new StartupResource($user)
-        );
+    if ($request->hasFile('logo') && $request->file('logo')->isValid()) {
+        $file = $request->file('logo');
+        $path = 'storage/' . $file->store('images', 'public');
+        $data['logo'] = $path;
     }
+
+    if (isset($data['social_media_links']) && is_array($data['social_media_links'])) {
+        $existingLinks = $user->social_media_links ?? [];
+        $data['social_media_links'] = array_merge($existingLinks, $data['social_media_links']);
+    }
+
+    if (!empty($data['password'])) {
+        $data['password'] = bcrypt($data['password']);
+    }
+
+    // Save updates to pending_update field
+    $user->pending_update = $data;
+    $user->save();
+
+    return response()->success('Your profile update request has been submitted and is pending admin approval.');
+}
+
 
     public function destroy(): JsonResponse
     {
