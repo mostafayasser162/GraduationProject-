@@ -52,7 +52,7 @@ class ProductSizeResource extends JsonResource
                 'stock' => $this->stock,
                 'size' => $this->size ? [
                     'id' => $this->size->id,
-                    'name' => $this->size->name,
+                    'name' => $this->size->size,
                 ] : null,
                 'color' => $this->color ? [
                     'id' => $this->color->id,
