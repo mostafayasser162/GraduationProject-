@@ -100,6 +100,7 @@ Route::middleware('auth:api')->group(function () {
         Route::post('/cart/remove', [CartController::class, 'removeFromCart']);
         Route::post('/cart/increase-quantity', [CartController::class, 'addToCartQuantity']);
         Route::delete('/cart/clear', [CartController::class, 'clearCart']);
+        Route::delete('/cart/remove-product/{id}', [CartController::class, 'removeProductFromCart']);
 
         Route::post('orders/place', [UserOrderController::class, 'placeOrder']);
         Route::get('/orders', [UserOrderController::class, 'index']);

@@ -241,6 +241,49 @@ class CartController extends Controller
 
         return response()->success('Cart cleared');
     }
+    // i wantt function to delete one product from the cart
+
+    public function removeProductFromCart(Request $request , $id)
+    {
+        $user = $request->user();
+        $productId = $id;
+        $productSizeId = $request->input('product_size_id'); // nullable
+    
+        // Check if the product exists in the cart
+        $productInCart = \DB::table('cart_product')
+            ->where('user_id', $user->id)
+            ->where('product_id', $productId)
+            ->when($productSizeId !== null, function ($query) use ($productSizeId) {
+                return $query->where('product_size_id', $productSizeId);
+            }, function ($query) {
+                return $query->whereNull('product_size_id');
+            })
+            ->first();
+    
+        if (!$productInCart) {
+            return response()->errors('Product not found in cart', 404);
+        }
+    
+        // Delete the entry from cart_products
+        $deleted = \DB::table('cart_product')
+            ->where('user_id', $user->id)
+            ->where('product_id', $productId)
+            ->when($productSizeId !== null, function ($query) use ($productSizeId) {
+                return $query->where('product_size_id', $productSizeId);
+            }, function ($query) {
+                return $query->whereNull('product_size_id');
+            })
+            ->delete();
+    
+        if ($deleted) {
+            return response()->success('Product deleted from the cart successfully');
+        } else {
+            return response()->errors('Failed to delete product from cart', 500);
+        }
+    }
+    
+    
+
 
     //msh mehtagh ahalian 3shan el remove by3ml minus one lel product
     // public function updateQuantity(Request $request)
