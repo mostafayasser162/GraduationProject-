@@ -17,7 +17,7 @@ class AuthController extends Controller
         $data = $request->validated();
 
         $startup = Startup::where('email', $data['email'])->first();
-        //if the startup is soft deleted 
+        //if the startup is soft deleted
         if (!$startup) {
             return response()->errors('startup does not exist.');
         }
@@ -53,11 +53,11 @@ class AuthController extends Controller
         $data['password'] = \Hash::make($data['password']);
         $data['status'] = Status::init();
         $data['user_id'] = auth()->user()->id;
-        // image code
-        $file = $data['logo'];
-        $path = 'storage/' . $file->store('images', 'public');
-        $data['logo'] = $path;
-        // end image code
+        // // image code
+        // $file = $data['logo'];
+        // $path = 'storage/' . $file->store('images', 'public');
+        // $data['logo'] = $path;
+        // // end image code
 
         Startup::updateOrCreate(['email' => $data['email']], $data);
 
