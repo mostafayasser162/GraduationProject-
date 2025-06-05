@@ -16,9 +16,9 @@ class StoreOrderRequest extends FormRequest
         return [
             'address_id' => 'required|exists:addresses,id',
             'payment_method' => 'required|in:cash,visa',
-            'card_number' => 'required_if:payment_method,visa|digits:16',
-            'expiry_date' => 'required_if:payment_method,visa|date_format:m/y',
-            'cvv' => 'required_if:payment_method,visa|digits:3',
+            'card_number' => 'digits:16',
+            'expiry_date' => 'date_format:m/y',
+            'cvv' => 'digits:3',
             'second_phone' => ['required', 'regex:/^01[0-9]{9}$/'],
         ];
     }
