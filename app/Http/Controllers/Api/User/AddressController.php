@@ -53,7 +53,7 @@ class AddressController extends Controller
         // Create the address for the authenticated user
         $address = $user->addresses()->create([
             'address' => $data['address'],
-            'city' => $data['city'],
+            'city' => $data['city'] ?? null,
             'lat' => $data['lat'] ?? null,   // Allow null if latitude is not provided
             'lng' => $data['lng'] ?? null,   // Allow null if longitude is not provided
         ]);
