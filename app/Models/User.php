@@ -12,6 +12,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
+
 class User extends Authenticatable implements JWTSubject
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
@@ -68,6 +69,7 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->hasMany(Order::class);
     }
+
     protected static function booted(): void
     {
         static::addGlobalScope(new SearchScope);
@@ -97,5 +99,10 @@ class User extends Authenticatable implements JWTSubject
     public function reviews()
     {
         return $this->hasMany(Review::class);
+    }
+    // order items
+    public function orderItems()
+    {
+        return $this->hasManyThrough(Order_item::class, Order::class);
     }
 }
