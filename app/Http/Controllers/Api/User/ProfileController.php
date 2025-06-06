@@ -7,12 +7,23 @@ use App\Http\Resources\UserResource;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\JsonResponse;
+use App\Models\Order;
 
 class ProfileController extends Controller
 {
     public function index(): JsonResponse
     {
-        $user = auth('api')->user()->load('orders' , 'addresses' , 'orders.orderItems');
+        $user = auth('api')->user()->load([
+            'orders.orderItems.product' => function ($query) {
+            $query->with(['subCategory', 'images']);
+            },
+            'addresses'
+        ]);
+        // $user = auth()->user();
+        // $user = Order::with([ 'orders' , 'addresses' ,'orderItems.product', 'orderItems', 'orderItems.productSize'])
+        //     ->where('user_id', $user->id)
+        //     ->latest()
+        //     ->get();
 
         return response()->success(
             new UserResource($user)
