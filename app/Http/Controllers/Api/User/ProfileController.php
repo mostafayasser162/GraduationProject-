@@ -12,7 +12,7 @@ class ProfileController extends Controller
 {
     public function index(): JsonResponse
     {
-        $user = auth('api')->user()->load('orders' , 'addresses');
+        $user = auth('api')->user()->load('orders' , 'addresses' , 'orders.orderItems');
 
         return response()->success(
             new UserResource($user)
