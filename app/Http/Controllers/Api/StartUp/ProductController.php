@@ -47,7 +47,7 @@ class ProductController extends Controller
                 'description'    => $request->description,
                 'price'          => $request->has_sizes ? null : $request->price,
                 'stock'          => $request->stock,
-                'sub_category_id'=> $request->sub_category_id,
+                'sub_category_id' => $request->sub_category_id,
             ]);
 
             if ($request->has_sizes) {
@@ -75,7 +75,7 @@ class ProductController extends Controller
             }
             foreach ($request->images as $imageData) {
                 $imagePath = 'storage/' . $imageData['file']->store('images', 'public');
-    
+
                 \App\Models\Image::create([
                     'product_id' => $product->id,
                     'url'        => $imagePath,
@@ -83,17 +83,15 @@ class ProductController extends Controller
                 ]);
             }
 
-            
+
             DB::commit();
             return response()->success(('Product added successfully.'),
-            new ProductResource($product->load('startup', 'subCategory.category', 'sizes.color', 'sizes.size', 'images'))
-        );
-            
-    } catch (\Exception $e) {
-        DB::rollBack();
-        return response()->errors($e->getMessage(), 500); // Temporary for debugging
-    }
-    
+                new ProductResource($product->load('startup', 'subCategory.category', 'sizes.color', 'sizes.size', 'images'))
+            );
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->errors($e->getMessage(), 500); // Temporary for debugging
+        }
     }
 
     public function index()
@@ -104,12 +102,10 @@ class ProductController extends Controller
 
 
         return response()->paginate_resource(ProductResource::collection($products));
-        
-
     }
     public function show($id)
     {
-        $product = Product::with(['startup', 'subCategory.category', 'sizes', 'sizes.size', 'sizes.color','images','reviews.user'])
+        $product = Product::with(['startup', 'subCategory.category', 'sizes', 'sizes.size', 'sizes.color', 'images', 'reviews.user'])
             ->where('id', $id)
             ->where('startup_id', Auth::id())
             ->first();
@@ -117,7 +113,6 @@ class ProductController extends Controller
         if (!$product) {
 
             return response()->errors('Product not found', 404);
-            
         }
 
 
@@ -131,7 +126,6 @@ class ProductController extends Controller
 
         if (!$product) {
             return response()->errors('Product not found', 404);
-
         }
 
         $product->delete();
@@ -142,50 +136,50 @@ class ProductController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'name'             => 'required|string|max:255',
+            'name'             => 'string|max:255',
             'description'      => 'nullable|string',
-            'price'            => $request->has_sizes ? 'nullable|numeric|min:0' : 'required|numeric|min:0',
-            'stock'            => 'required|integer|min:0',
-            'sub_category_id'  => 'required|exists:sub_categories,id',
-            'has_sizes'        => 'required|boolean',
+            'price'            => $request->has_sizes ? 'nullable|numeric|min:0' : 'numeric|min:0',
+            'stock'            => 'integer|min:0',
+            'sub_category_id'  => 'exists:sub_categories,id',
+            'has_sizes'        => 'boolean',
             'colors'           => 'array',
-            'colors.*.name'    => 'required_with:colors|string',
+            'colors.*.name' => 'required_with:colors|string',
             'colors.*.code'    => 'nullable|string',
             'sizes'            => 'array',
-            'sizes.*.color_index' => 'required|integer', // index in colors array
-            'sizes.*.size_id'  => 'required|exists:sizes,id',
-            'sizes.*.price'    => 'required|numeric|min:0',
-            'sizes.*.stock'    => 'required|integer|min:0',
-    
-            'images'           => 'required|array|min:1',
-            'images.*.file'    => 'required|file|image|max:2048',
-            'images.*.is_main' => 'required|boolean',
+            'sizes.*.color_index' => 'integer', // index in colors array
+            'sizes.*.size_id'  => 'exists:sizes,id',
+            'sizes.*.price'    => 'numeric|min:0',
+            'sizes.*.stock'    => 'integer|min:0',
+
+            'images'           => 'array|min:1',
+            'images.*.file'    => 'file|image|max:2048',
+            'images.*.is_main' => 'boolean',
         ]);
-    
+
         DB::beginTransaction();
-    
+
         try {
             $product = Product::where('id', $id)->where('startup_id', Auth::id())->first();
-    
+
             if (!$product) {
                 return response()->errors('Product not found', 404);
             }
-    
+
             // Update product details
             $product->update([
                 'name'           => $request->name,
                 'description'    => $request->description,
                 'price'          => $request->has_sizes ? null : $request->price,
                 'stock'          => $request->stock,
-                'sub_category_id'=> $request->sub_category_id,
+                'sub_category_id' => $request->sub_category_id,
             ]);
-    
+
             // Handle colors and sizes
             if ($request->has_sizes) {
                 // Clear existing sizes and colors
                 Product_colors::where('product_id', $product->id)->delete();
                 Product_size::where('product_id', $product->id)->delete();
-    
+
                 // Add colors
                 $colorMap = [];
                 foreach ($request->colors as $index => $color) {
@@ -196,7 +190,7 @@ class ProductController extends Controller
                     ]);
                     $colorMap[$index] = $colorModel->id;
                 }
-    
+
                 // Add sizes
                 foreach ($request->sizes as $size) {
                     Product_size::create([
@@ -212,30 +206,28 @@ class ProductController extends Controller
                 Product_colors::where('product_id', $product->id)->delete();
                 Product_size::where('product_id', $product->id)->delete();
             }
-    
+
             // Handle images
             \App\Models\Image::where('product_id', $product->id)->delete();
             foreach ($request->images as $imageData) {
                 $imagePath = 'storage/' . $imageData['file']->store('images', 'public');
-    
+
                 \App\Models\Image::create([
                     'product_id' => $product->id,
                     'url'        => $imagePath,
                     'is_main'    => $imageData['is_main'],
                 ]);
             }
-    
+
             DB::commit();
-    
-            return response()->success('Product updated successfully.',
+
+            return response()->success(
+                'Product updated successfully.',
                 new ProductResource($product->load('startup', 'subCategory.category', 'sizes.color', 'sizes.size', 'images'))
             );
-    
         } catch (\Exception $e) {
             DB::rollBack();
             return response()->errors('Error updating product', 500);
         }
     }
-    
-
 }
