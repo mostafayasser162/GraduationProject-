@@ -5,6 +5,7 @@ namespace App\Http\Requests\StartUp;
 use Illuminate\Foundation\Http\FormRequest;
 use App\Rules\Rules;
 use App\Rules\UniqueEmail;
+
 class UpdateProfileRequest extends FormRequest
 {
     /**
@@ -22,10 +23,11 @@ class UpdateProfileRequest extends FormRequest
      */
     public function rules(): array
     {
+        $userId = auth()->user()->id;
         return [
             'name' => [...Rules::get('user.name')],
-            'email' => 'email|unique:users,email,' . $this->user()->id,
-            'phone' => 'string|regex:/^01[0-9]{9}$/|max:20,unique:users,phone,' . $this->user()->id,
+            'email' => 'email|unique:startups,email,' . $userId,
+            'phone' => 'string|regex:/^01[0-9]{9}$/|max:20,unique:startups,phone,' . $userId,
             'description' => 'string|max:255',
             'social_media_links' => 'nullable|array',
             'social_media_links.*' => 'url',
