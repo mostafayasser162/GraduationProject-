@@ -28,6 +28,9 @@ class StartupResource extends JsonResource
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             'deleted_at' => $this->deleted_at,
+            'trial_ends_at' => $this->trial_ends_at,
+            'trial_days_left' => intval(now()->diffInDays($this->trial_ends_at, false)),
+
         ];
     }
 }

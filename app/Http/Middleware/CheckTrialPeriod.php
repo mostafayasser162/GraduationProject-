@@ -1,0 +1,29 @@
+<?php
+
+namespace App\Http\Middleware;
+
+use Closure;
+use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\Response;
+
+class CheckTrialPeriod
+{
+    /**
+     * Handle an incoming request.
+     *
+     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
+     */
+
+    public function handle($request, Closure $next)
+    {
+        $startup = auth()->user();
+
+        if ($startup && $startup->isStartup() && $startup->trial_ends_at) {
+            if (now()->gt($startup->trial_ends_at)) {
+                return response()->errors('The trial period has ended. Please pay');
+            }
+        }
+
+        return $next($request);
+    }
+}

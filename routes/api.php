@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\Api\Startup\RatingController;
+use App\Http\Middleware\CheckStartupStatus;
+use App\Http\Middleware\CheckTrialPeriod;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\Admin\DealController as AdminDealController;
 use App\Http\Controllers\Api\Factory\DealController as FactoryDealController;
@@ -156,7 +158,7 @@ Route::middleware('auth:factory')->group(function () {
 Route::controller(StartupAuthController::class)->group(function () {
     Route::post('startup/login', 'login');
 });
-Route::middleware('auth:startup')->group(function () {
+Route::middleware(['auth:startup' , CheckTrialPeriod::class , CheckStartupStatus::class])->group(function () {
     Route::prefix('startup')->group(function () {
         Route::resource('request', RequestController::class)->only(['index', 'show', 'destroy', 'store']);
 

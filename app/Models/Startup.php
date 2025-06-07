@@ -31,12 +31,14 @@ class Startup extends Authenticatable implements JWTSubject
         'password',
         'payment_method',
         'payment_account',
+        'trial_ends_at'
     ];
     protected $hidden = ['password'];
 
     protected $casts = [
         'social_media_links' => 'array',
         'deleted_at' => 'datetime',
+        'trial_ends_at' => 'datetime',
     ];
 
     public function user()

@@ -12,6 +12,7 @@ use App\Mail\StartupApprovedMail;
 // use App\Mail\StartupProfileUpdatedMail;
 use App\Mail\StartupRejectedMail;
 use App\Mail\StartupProfileUpdatedMail;
+use Carbon\Carbon;
 
 
 
@@ -20,7 +21,7 @@ class StartUpController extends Controller
     public function index(Request $request)
     {
 
-        $query = Startup::with('user' , 'products');
+        $query = Startup::with('user', 'products');
 
         if ($request->has('status')) {
             $status = $request->status;
@@ -40,7 +41,7 @@ class StartUpController extends Controller
 
     public function show($id)
     {
-        $startUp = Startup::with('user' , 'products')->find($id);
+        $startUp = Startup::with('user', 'products')->find($id);
 
         if (!$startUp) {
             return response()->errors('startUp not found');
@@ -81,38 +82,25 @@ class StartUpController extends Controller
         return response()->success("Startup status changed to {$startup->status}");
     }
 
-    // public function accept($id)
-    // {
-    //     $startup = Startup::find($id);
-
-    //     if (!$startup || $startup->status != Status::PENDING()) {
-    //         return response()->errors('Startup not found or its status not pending');
-    //     }
-
-    //     $startup->status = Status::APPROVED();
-    //     $startup->save();
-
-    //     return response()->success("Startup has been approved");
-    // }
-
-
     public function accept($id)
     {
         $startup = Startup::with('user')->find($id);
-    
+
         if (!$startup || $startup->status != Status::PENDING()) {
             return response()->errors('Startup not found or its status not pending');
         }
-    
+
         $startup->status = Status::APPROVED();
+        $startup->trial_ends_at = Carbon::now()->addDays(14);
+
         $startup->save();
-    
+
         // Send approval email
         Mail::to($startup->email)->send(new StartupApprovedMail($startup));
-    
+
         return response()->success("Startup has been approved");
     }
-    
+
 
     // public function reject($id)
     // {
@@ -131,46 +119,44 @@ class StartUpController extends Controller
     // }
 
 
-public function reject($id)
-{
-    $startup = Startup::with('user')->find($id);
+    public function reject($id)
+    {
+        $startup = Startup::with('user')->find($id);
 
-    if (!$startup || $startup->status != Status::PENDING()) {
-        return response()->errors('Startup not found or its status not pending');
+        if (!$startup || $startup->status != Status::PENDING()) {
+            return response()->errors('Startup not found or its status not pending');
+        }
+
+        $startup->status = Status::REJECTED();
+        $startup->save();
+
+        // Send rejection email
+        Mail::to($startup->email)->send(new StartupRejectedMail($startup));
+
+        $startup->delete();
+
+        return response()->success("Startup has been rejected");
     }
 
-    $startup->status = Status::REJECTED();
-    $startup->save();
 
-    // Send rejection email
-    Mail::to($startup->email)->send(new StartupRejectedMail($startup));
+    public function approvePendingUpdate($startupId)
+    {
+        $startup = Startup::findOrFail($startupId);
 
-    $startup->delete();
+        if (!$startup->pending_update) {
+            return response()->errors('No pending update found.');
+        }
 
-    return response()->success("Startup has been rejected");
-}
+        // Decode JSON string to array
+        $data = json_decode($startup->pending_update, true);
 
+        $startup->update($data);
+        $startup->pending_update = null;
+        $startup->save();
 
-public function approvePendingUpdate($startupId)
-{
-    $startup = Startup::findOrFail($startupId);
+        // Send email
+        Mail::to($startup->email)->send(new StartupProfileUpdatedMail($startup));
 
-    if (!$startup->pending_update) {
-        return response()->errors('No pending update found.');
+        return response()->success('Startup profile updated successfully and email sent.');
     }
-
-    // Decode JSON string to array
-    $data = json_decode($startup->pending_update, true);
-
-    $startup->update($data);
-    $startup->pending_update = null;
-    $startup->save();
-
-    // Send email
-    Mail::to($startup->email)->send(new StartupProfileUpdatedMail($startup));
-
-    return response()->success('Startup profile updated successfully and email sent.');
-}
-
-
 }
