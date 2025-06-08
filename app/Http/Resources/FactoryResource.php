@@ -23,6 +23,10 @@ class FactoryResource extends JsonResource
             'deals'            => DealResource::collection($this->whenLoaded('deals')),
             'ratings'          => RatingResource::collection($this->whenLoaded('ratings')),
             'average_rating'   => $this->ratings->avg('rate'),
+
+            'number_of_paid_orders' => $this->number_of_paid_orders,
+            'avg_order_value' => round($this->avg_order_value, 2),
+            'total_revenue' => $this->total_revenue,
         ];
     }
 }

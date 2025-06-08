@@ -80,4 +80,29 @@ class Factory extends Authenticatable implements JWTSubject
     {
         return $this->ratings()->avg('rate');
     }
+
+
+    // in app\Models\Factory.php
+
+public function paidDeals()
+{
+    // Deals that have been finally paid
+    return $this->deals()->where('is_final_paid', true);
+}
+
+public function getNumberOfPaidOrdersAttribute()
+{
+    return $this->paidDeals()->count();
+}
+
+public function getAvgOrderValueAttribute()
+{
+    return $this->paidDeals()->avg('final_payment_amount') ?? 0;
+}
+
+public function getTotalRevenueAttribute()
+{
+    return $this->paidDeals()->sum('final_payment_amount');
+}
+
 }
