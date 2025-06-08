@@ -62,7 +62,7 @@ class ResponseController extends Controller
     }
     public function destroy($id)
     {
-        dd(auth()->user()->isFactory());
+        // dd(auth()->user()->isFactory());
         $response = FactoryResponse::find($id);
 
         if (!$response || $response->factory_id !== auth()->id()) {
