@@ -16,6 +16,18 @@ class ProductController extends Controller
 {
     public function store(Request $request)
     {
+        $startup = auth()->user();
+            // Count products created by this startup
+        $productCount = $startup->products()->count();
+// dd($productCount);
+        if ($startup->package_id == 1 && $productCount >= 5) {
+            return response()->errors('You can only add up to 5 products with your current package.');
+        }
+
+        if ($startup->package_id == 2 && $productCount >= 15) {
+            return response()->errors('You can only add up to 15 products with your current package.');
+        }
+
         $request->validate([
             'name'             => 'required|string|max:255',
             'description'      => 'nullable|string',
