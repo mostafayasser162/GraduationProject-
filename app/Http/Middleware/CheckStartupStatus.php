@@ -14,6 +14,10 @@ class CheckStartupStatus
     public function handle(Request $request, Closure $next): Response
     {
         $startup = auth()->user();
+        // Allow access to payment route without blocking
+        if ($request->is('api/startup/pay-package')) {
+            return $next($request);
+        }
 
         if (!$startup) {
             return response()->errors('no startup found');
@@ -29,6 +33,12 @@ class CheckStartupStatus
 
         if ($startup->status == Status::REJECTED()) {
             return response()->errors('Your account status is invalid.');
+        }
+        if ($startup->status == Status::HOLD()) {
+            // Prevent access until payment is done
+            return response()->errors('Your payment is pending. Please complete the payment to access the website.', [
+                'redirect_to' => url('/payment-page') // you can customize the redirect URL
+            ]);
         }
 
         return $next($request);

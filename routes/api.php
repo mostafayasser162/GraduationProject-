@@ -36,6 +36,7 @@ use App\Http\Controllers\Api\Factory\StartupRequestController as FactoryStartupR
 use App\Http\Controllers\Api\StartUp\PaymentController;
 use App\Http\Controllers\GoogleAuthController;
 use App\Http\Controllers\Api\StartUp\OrderController as StartUpOrderController;
+use App\Http\Controllers\Api\StartUp\PackagePaymentController as StartupPackagePaymentController;
 
 // use App\Http\Controllers\WishlistController as UserWishlistController;
 
@@ -157,6 +158,7 @@ Route::middleware('auth:factory')->group(function () {
 //                                       startup login
 Route::controller(StartupAuthController::class)->group(function () {
     Route::post('startup/login', 'login');
+
 });
 Route::middleware(['auth:startup' , CheckTrialPeriod::class , CheckStartupStatus::class])->group(function () {
     Route::prefix('startup')->group(function () {
@@ -195,6 +197,9 @@ Route::middleware(['auth:startup' , CheckTrialPeriod::class , CheckStartupStatus
         Route::get('/orders/count/new', [StartUpOrderController::class, 'countNewOrders']);
         Route::get('/orders', [StartUpOrderController::class, 'index']);
         Route::get('/orders/{id}', [StartUpOrderController::class, 'show']);
+
+    Route::post('/pay-package', [StartupPackagePaymentController::class, 'pay']);
+
 
     });
 });
