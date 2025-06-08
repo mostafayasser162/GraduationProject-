@@ -17,6 +17,7 @@ class FactoryResponse extends Model
         'price',
         'image',
         'status',
+        'estimated_delivery_time',
     ];
 
     public function factory()

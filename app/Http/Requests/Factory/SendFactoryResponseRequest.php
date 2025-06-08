@@ -18,6 +18,7 @@ class SendFactoryResponseRequest extends FormRequest
             'description' => ['required', 'string'],
             'price' => ['required', 'integer'],
             'image' => ['nullable', 'image'],
+            'estimated_delivery_time' => ['required', 'date', 'after:today'],
         ];
     }
 }
