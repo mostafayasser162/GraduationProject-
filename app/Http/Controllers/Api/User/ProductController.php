@@ -60,20 +60,40 @@ class ProductController extends Controller
         return response()->success($product);
     }
 
+    // public function bestSellers()
+    // {
+    //     $products = Product::bestSellers()
+    //         ->with(['images', 'startup', 'subCategory.category']) // include what you need
+    //         ->take(45) 
+    //         ->get();
+
+    //     return response()->success(ProductResource::collection($products));
+    // }
     public function bestSellers()
     {
-        $products = Product::bestSellers()
-            ->with(['images', 'startup', 'subCategory.category']) // include what you need
-            ->take(45) // top 10 best sellers
-            ->get();
-
+        $query = Product::bestSellers()->with(['images', 'startup', 'subCategory.category', 'reviews', 'sizes']);
+    
+        if (request()->has('search')) {
+            $query->search(request()->get('search'));
+        }
+    
+        $products = $query->take(45)->get();
+    
+        // Debug: dump the startup of the first product
+        // dd($products->first()->startup);
+    
         return response()->success(ProductResource::collection($products));
     }
+    
+    
+
+
+
     public function newArrivals()
     {
         $products = Product::newArrivals()
             ->with(['images', 'startup', 'subCategory.category']) // include what you need
-            ->take(45) // top 10 new arrivals
+            ->take(45) 
             ->get();
 
         return response()->success(ProductResource::collection($products));

@@ -21,9 +21,9 @@ class Product extends Model
 
     public function startup()
     {
-        return $this->belongsTo(Startup::class);
+        return $this->belongsTo(Startup::class, 'startup_id', 'id')->withTrashed();
     }
-
+    
     public function subCategory()
     {
         return $this->belongsTo(Sub_category::class, 'sub_category_id');
@@ -60,11 +60,11 @@ class Product extends Model
         // ->withTimestamps();
     }
 
-    protected static function booted(): void
-    {
-        static::addGlobalScope(new SearchScope);
-        static::addGlobalScope(new SortScope);
-    }
+    // protected static function booted(): void
+    // {
+    //     static::addGlobalScope(new SearchScope);
+    //     static::addGlobalScope(new SortScope);
+    // }
     // public function variants()
     // {
     //     return $this->hasMany(ProductVariant::class);
@@ -97,11 +97,24 @@ class Product extends Model
     {
         return $this->hasMany(Order_item::class);
     }
+    public function scopeSearch($query, $term)
+    {
+        return $query->where(function ($q) use ($term) {
+            $q->where('name', 'like', "%{$term}%")
+                ->orWhere('id', 'like', "%{$term}%")
+                ->orWhereHas('startup', function ($q) use ($term) {
+                    $q->where('name', 'like', "%{$term}%");
+                    
+                });
+        });
+    }
+    
 
     public function scopeBestSellers($query)
     {
         return $query->withSum('Order_item as total_quantity_sold', 'quantity')
-            ->orderByDesc('total_quantity_sold');
+            ->orderByDesc('total_quantity_sold')
+            ->orderBy('created_at', 'desc'); // Secondary sort by creation date
     }
     // This scope retrieves the latest products based on their creation date
 
@@ -109,4 +122,6 @@ class Product extends Model
     {
         return $query->orderBy('created_at', 'desc');
     }
+
+
 }
