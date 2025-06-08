@@ -24,6 +24,7 @@ class PackagePaymentController extends Controller
         $startup->update([
             'status' => 'APPROVED',
             'trial_ends_at' => null,
+            'package_ends_at'  => now()->addDays(30),
         ]);
 
         return response()->success('Payment successful. Your account is now active.', $startup);
