@@ -9,9 +9,11 @@ use App\Enums\StartUps\Status;
 use App\Http\Resources\StartupResource;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\StartupApprovedMail;
+use App\Mail\StartupPaymentRequiredMail;
 // use App\Mail\StartupProfileUpdatedMail;
 use App\Mail\StartupRejectedMail;
 use App\Mail\StartupProfileUpdatedMail;
+use App\Mail\StartupTrialMail;
 use Carbon\Carbon;
 
 
@@ -82,25 +84,51 @@ class StartUpController extends Controller
         return response()->success("Startup status changed to {$startup->status}");
     }
 
+    // public function accept($id)
+    // {
+    //     $startup = Startup::with('user')->find($id);
+
+    //     if (!$startup || $startup->status != Status::PENDING()) {
+    //         return response()->errors('Startup not found or its status not pending');
+    //     }
+
+    //     $startup->status = Status::APPROVED();
+    //     $startup->trial_ends_at = Carbon::now()->addDays(14);
+
+    //     $startup->save();
+
+    //     // Send approval email
+    //     Mail::to($startup->email)->send(new StartupApprovedMail($startup));
+
+    //     return response()->success("Startup has been approved");
+    // }
     public function accept($id)
     {
         $startup = Startup::with('user')->find($id);
-
+    
         if (!$startup || $startup->status != Status::PENDING()) {
             return response()->errors('Startup not found or its status not pending');
         }
+    
+        
+        if ($startup->package_id == 1) {
+            $startup->status = Status::APPROVED();
+            $startup->trial_ends_at = Carbon::now()->addDays(14);
+            $startup->save();
+    
+            // Send trial start email with login page
+            Mail::to($startup->email)->send(new StartupTrialMail($startup));
+        } else {
+            $startup->status = Status::HOLD();
 
-        $startup->status = Status::APPROVED();
-        $startup->trial_ends_at = Carbon::now()->addDays(14);
-
-        $startup->save();
-
-        // Send approval email
-        Mail::to($startup->email)->send(new StartupApprovedMail($startup));
-
+            $startup->save();
+    
+            // Send payment required email with payment page
+            Mail::to($startup->email)->send(new StartupPaymentRequiredMail($startup));
+        }
+    
         return response()->success("Startup has been approved");
     }
-
 
     // public function reject($id)
     // {

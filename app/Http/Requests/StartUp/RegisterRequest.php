@@ -34,7 +34,7 @@ class RegisterRequest extends FormRequest
             'description' => 'required|string|max:255',
             'social_media_links' => 'nullable|array',
             'social_media_links.*' => 'required|url',
-            // 'package_id'         => 'required|exists:packages,id',
+            'package_id'         => 'required|exists:packages,id',
             'logo' =>    'file|mimes:jpeg,png,jpg',
             'categories_id'      => 'required|exists:categories,id',
             'email' => ['required', new UniqueEmail('startups'), ...Rules::get('email')],
