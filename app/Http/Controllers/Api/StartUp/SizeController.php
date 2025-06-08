@@ -20,18 +20,21 @@ class SizeController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            // 'startup_id' => 'required|exists:startups,id',
-            'size' => 'required|string|max:255'
+            'sizes' => 'required|array',
+            'sizes.*' => 'required|string|max:255'
         ]);
+
         $startup_id = auth()->user()->id;
 
-        $size = Size::create([
-            'startup_id' => $startup_id,
-            'size'       => $request->size,
-        ]);
+        $sizes = [];
+        foreach ($request->sizes as $sizeValue) {
+            $sizes[] = Size::create([
+                'startup_id' => $startup_id,
+                'size'       => $sizeValue,
+            ]);
+        }
 
-
-        return response()->success('Size created successfully.', ['size' => $size]);
+        return response()->success('Sizes created successfully.', ['sizes' => $sizes]);
     }
 
     public function destroy($id)
