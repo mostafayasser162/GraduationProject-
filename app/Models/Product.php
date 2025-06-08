@@ -35,14 +35,14 @@ class Product extends Model
     }
 
     public function mainImage()
-{
-    return $this->hasOne(Image::class)->where('is_main', 1);
-}
+    {
+        return $this->hasOne(Image::class)->where('is_main', 1);
+    }
 
     public function inCarts()
     {
         return $this->belongsToMany(User::class, 'cart_product')
-            ->withPivot('quantity' , 'product_size_id')
+            ->withPivot('quantity', 'product_size_id')
             ->withTimestamps();
     }
 
@@ -52,13 +52,13 @@ class Product extends Model
     // }
 
     // In App\Models\Product.php
-public function productSize()
-{
-    return $this->belongsToMany(Product_size::class , 'cart_product')
-        ->withPivot('quantity' , 'product_size_id' , 'product_id' )
-        ->withTimestamps();
+    public function productSize()
+    {
+        return $this->belongsToMany(Product_size::class, 'cart_product')
+            ->withPivot('quantity', 'product_size_id', 'product_id')
+            ->withTimestamps();
         // ->withTimestamps();
-}
+    }
 
     protected static function booted(): void
     {
@@ -76,40 +76,37 @@ public function productSize()
     // }
 
     public function reviews()
-{
-    return $this->hasMany(Review::class);
-}
+    {
+        return $this->hasMany(Review::class);
+    }
 
-public function averageRating()
-{
-    return $this->reviews()->avg('rating');
-}
-public function sizes()
-{
-    // return $this->hasMany(Product_size::class);
-    return $this->hasMany(Product_size::class, 'product_id');
-
-}
-public function colors()
-{
-    return $this->hasMany(Product_colors::class);
-}
+    public function averageRating()
+    {
+        return $this->reviews()->avg('rating');
+    }
+    public function sizes()
+    {
+        // return $this->hasMany(Product_size::class);
+        return $this->hasMany(Product_size::class, 'product_id');
+    }
+    public function colors()
+    {
+        return $this->hasMany(Product_colors::class);
+    }
     public function Order_item()
     {
         return $this->hasMany(Order_item::class);
     }
 
     public function scopeBestSellers($query)
-{
-    return $query->withSum('Order_item as total_quantity_sold', 'quantity')
-                 ->orderByDesc('total_quantity_sold');
-}
-// This scope retrieves the latest products based on their creation date
+    {
+        return $query->withSum('Order_item as total_quantity_sold', 'quantity')
+            ->orderByDesc('total_quantity_sold');
+    }
+    // This scope retrieves the latest products based on their creation date
 
     public function scopeNewArrivals($query)
-{
-    return $query->orderBy('created_at', 'desc');       
-
-}
-
+    {
+        return $query->orderBy('created_at', 'desc');
+    }
 }
