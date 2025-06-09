@@ -15,7 +15,7 @@ class UserController extends Controller
 {
     public function index(Request $request)
     {
-        $query = User::query()->whereNot('role', Role::ADMIN())->with('orders' , 'orders.orderItems' , 'addresses');
+        $query = User::query()->whereNot('role', Role::ADMIN())->with('orders.orderItems.product','orders' , 'orders.orderItems' , 'addresses');
 
         if ($request->has('role') && in_array($request->role, Role::allValues())) {
             $query->where('role', $request->role);

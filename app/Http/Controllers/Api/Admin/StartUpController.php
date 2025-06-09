@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Startup;
 use Illuminate\Http\Request;
 use App\Enums\StartUps\Status;
+use App\Enums\User\Role;
 use App\Http\Resources\StartupResource;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\StartupApprovedMail;
@@ -105,28 +106,33 @@ class StartUpController extends Controller
     public function accept($id)
     {
         $startup = Startup::with('user')->find($id);
-    
+
         if (!$startup || $startup->status != Status::PENDING()) {
             return response()->errors('Startup not found or its status not pending');
         }
-    
-        
+
+
         if ($startup->package_id == 1) {
             $startup->status = Status::APPROVED();
             $startup->trial_ends_at = Carbon::now()->addDays(14);
             $startup->save();
-    
+
+            $startup->user->role = Role::OWNER();
+            $startup->user->save();
+
             // Send trial start email with login page
             Mail::to($startup->email)->send(new StartupTrialMail($startup));
         } else {
             $startup->status = Status::HOLD();
 
             $startup->save();
-    
+            $startup->user->role = Role::OWNER();
+            $startup->user->save();
+
             // Send payment required email with payment page
             Mail::to($startup->email)->send(new StartupPaymentRequiredMail($startup));
         }
-    
+
         return response()->success("Startup has been approved");
     }
 
