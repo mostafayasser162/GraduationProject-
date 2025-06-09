@@ -14,7 +14,10 @@ class Request extends Model
 
     protected $fillable = [
         'startup_id',
+        'name',            
         'description',
+        'quantity',        
+        'notes',           
         'image',
         'delivery_date',
         'status',

@@ -18,6 +18,7 @@ use App\Http\Controllers\Api\Admin\StartUpController;
 use App\Http\Controllers\Api\Admin\CategoryController;
 use App\Http\Controllers\Api\Admin\HomeController;
 use App\Http\Controllers\Api\StartUp\RequestController;
+use App\Http\Controllers\Api\Admin\RequestController as AdminRequestController;
 use App\Http\Controllers\Api\Admin\SubCategoryController;
 use App\Http\Controllers\Api\General\SubCategoryController as GeneralSubCategoryController;
 use App\Http\Controllers\Api\User\OrderController as UserOrderController;
@@ -68,6 +69,7 @@ Route::middleware('auth:api')->group(function () {
         Route::get('/overview', [HomeController::class, 'adminOverview']);
 
 
+
         Route::resource('startups', StartUpController::class)->only(['index', 'show', 'destroy']);
 
         Route::put('startup/{id}/block', [StartUpController::class, 'block']);
@@ -85,6 +87,8 @@ Route::middleware('auth:api')->group(function () {
         Route::resource('product', ProductController::class)->only(['index', 'show', 'destroy']);
         // for delete review
         Route::delete('product/{id}/review/{reviewId}', [ProductController::class, 'deleteReview']);
+
+        Route::resource('request', AdminRequestController::class)->only(['index', 'show']);
 
         Route::resource('responses', AdminResponseController::class)->only(['index', 'show']);
 
@@ -188,8 +192,7 @@ Route::middleware(['auth:startup', CheckTrialPeriod::class, CheckStartupStatus::
             Route::get('/orders', [StartUpOrderController::class, 'index']);
             Route::get('/orders/{id}', [StartUpOrderController::class, 'show']);
 
-            Route::get('/subcategories', [GeneralSubCategoryController::class , 'startupSubCategories']);
-
+            Route::get('/subcategories', [GeneralSubCategoryController::class, 'startupSubCategories']);
         });
 
 
