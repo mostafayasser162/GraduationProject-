@@ -19,7 +19,7 @@ class Sub_category extends Model
     {
         return $this->belongsTo(Category::class);
     }
-        protected static function booted(): void
+    protected static function booted(): void
     {
         static::addGlobalScope(new SearchScope);
         static::addGlobalScope(new SortScope);

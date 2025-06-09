@@ -2,13 +2,14 @@
 
 namespace App\Models;
 
+use App\Models\Scopes\SortScope;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Deal extends Model
 {
     use HasFactory;
-    
+
     protected $fillable = [
         'request_id',
         'factory_id',
@@ -45,5 +46,10 @@ class Deal extends Model
     public function factoryResponse()
     {
         return $this->belongsTo(FactoryResponse::class);
+    }
+        protected static function booted(): void
+    {
+        // static::addGlobalScope(new SearchScope);
+        static::addGlobalScope(new SortScope);
     }
 }

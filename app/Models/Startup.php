@@ -46,6 +46,15 @@ class Startup extends Authenticatable implements JWTSubject
         return $this->belongsTo(User::class);
     }
 
+    public function package()
+    {
+        return $this->belongsTo(Package::class);
+    }
+
+    public function category()
+    {
+        return $this->belongsTo(Category::class, 'categories_id');
+    }
     public function requests()
     {
         return $this->hasMany(Request::class);

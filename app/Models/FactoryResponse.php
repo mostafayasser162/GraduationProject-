@@ -2,9 +2,10 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
+use App\Models\Scopes\SortScope;
 use App\Enums\FactoryResponse\Status;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class FactoryResponse extends Model
 {
@@ -29,9 +30,15 @@ class FactoryResponse extends Model
     {
         return $this->belongsTo(request::class);
     }
-    
+
     public function deal()
     {
         return $this->hasOne(Deal::class);
+    }
+
+        protected static function booted(): void
+    {
+        // static::addGlobalScope(new SearchScope);
+        static::addGlobalScope(new SortScope);
     }
 }

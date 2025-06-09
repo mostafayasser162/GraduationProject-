@@ -24,7 +24,7 @@ class StartUpController extends Controller
     public function index(Request $request)
     {
 
-        $query = Startup::with('user', 'products');
+        $query = Startup::with('user', 'products' , 'category', 'package');
 
         if ($request->has('status')) {
             $status = $request->status;
