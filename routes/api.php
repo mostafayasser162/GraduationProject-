@@ -160,9 +160,8 @@ Route::middleware('auth:factory')->group(function () {
 //                                       startup login
 Route::controller(StartupAuthController::class)->group(function () {
     Route::post('startup/login', 'login');
-
 });
-Route::middleware(['auth:startup' , CheckTrialPeriod::class , CheckStartupStatus::class])->group(function () {
+Route::middleware(['auth:startup', CheckTrialPeriod::class, CheckStartupStatus::class])->group(function () {
     Route::prefix('startup')->group(function () {
         Route::controller(StartupProfileController::class)->group(function () {
             Route::get('/profile', 'index');
@@ -172,7 +171,7 @@ Route::middleware(['auth:startup' , CheckTrialPeriod::class , CheckStartupStatus
         Route::post('/pay-package', [StartupPackagePaymentController::class, 'pay']);
 
         Route::middleware(AllowPackageOneTwoOnly::class)->group(function () {
-        // sizes
+            // sizes
             Route::get('/sizes', [SizeController::class, 'index']);
             Route::put('/sizes/{id}', [SizeController::class, 'update']);
             Route::post('/sizes', [SizeController::class, 'store']);
@@ -185,24 +184,25 @@ Route::middleware(['auth:startup' , CheckTrialPeriod::class , CheckStartupStatus
             Route::get('/orders/count/new', [StartUpOrderController::class, 'countNewOrders']);
             Route::get('/orders', [StartUpOrderController::class, 'index']);
             Route::get('/orders/{id}', [StartUpOrderController::class, 'show']);
-         });
+
+            Route::get('/subcategories', [GeneralSubCategoryController::class , 'startupSubCategories']);
+
+        });
 
 
-         Route::middleware(CheckPackageId::class)->group(function () {
+        Route::middleware(CheckPackageId::class)->group(function () {
             Route::resource('request', RequestController::class)->only(['index', 'show', 'destroy', 'store']);
             Route::resource('factory/response', StartupResponseController::class)->only(['index', 'show']);
             Route::post('/factory-responses/{id}/accept', [StartupResponseController::class, 'acceptFactoryResponse']);
             Route::post('/factory-responses/{id}/reject', [StartupResponseController::class, 'rejectFactoryResponse']);
-        
+
             Route::resource('deals', StartupDealController::class)->only(['index', 'show']);
-        
+
             Route::post('deals/{deal}/pay-deposit', [PaymentController::class, 'payDeposit']);
             Route::post('deals/{deal}/pay-final', [PaymentController::class, 'payFinal']);
-        
-            Route::post('rate/deal/{id}', [RatingController::class, 'store']);
-        
-        });
 
+            Route::post('rate/deal/{id}', [RatingController::class, 'store']);
+        });
     });
 });
 
