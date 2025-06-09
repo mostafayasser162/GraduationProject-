@@ -10,6 +10,7 @@
     <p>Thank you for being a part of our platform!</p>
     <br>
     <p>Best regards,</p>
-    <p>The Team</p>
+    <p>Hatch Team</p>
+
 </body>
 </html>

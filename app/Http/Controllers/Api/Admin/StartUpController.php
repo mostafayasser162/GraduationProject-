@@ -14,6 +14,7 @@ use App\Mail\StartupPaymentRequiredMail;
 // use App\Mail\StartupProfileUpdatedMail;
 use App\Mail\StartupRejectedMail;
 use App\Mail\StartupProfileUpdatedMail;
+use App\Mail\StartupProfileUpdatedMailRej;
 use App\Mail\StartupTrialMail;
 use Carbon\Carbon;
 
@@ -192,5 +193,26 @@ class StartUpController extends Controller
         Mail::to($startup->email)->send(new StartupProfileUpdatedMail($startup));
 
         return response()->success('Startup profile updated successfully and email sent.');
+    }
+    // decline pending update
+    public function declinePendingUpdate($startupId)
+    {
+        $startup = Startup::findOrFail($startupId);
+        if (!$startup) {
+            return response()->errors('Startup not found.');
+        }
+
+        if (!$startup->pending_update) {
+            return response()->errors('No pending update found.');
+        }
+
+        // Clear the pending update
+        $startup->pending_update = null;
+        $startup->save();
+
+        // Send email
+        Mail::to($startup->email)->send(new StartupProfileUpdatedMailRej($startup));
+
+        return response()->success('Pending update declined and email sent.');
     }
 }

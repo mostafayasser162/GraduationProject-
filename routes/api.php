@@ -77,6 +77,7 @@ Route::middleware('auth:api')->group(function () {
         Route::post('startup/{id}/reject', [StartUpController::class, 'reject']);
         // approvePendingUpdate
         Route::put('startup/{id}/approve', [StartUpController::class, 'approvePendingUpdate']);
+        Route::post('startup/{id}/decline', [StartUpController::class, 'declinePendingUpdate']);
 
         Route::resource('category', CategoryController::class)->except(['create', 'edit']);
         Route::resource('subcategory', SubCategoryController::class)->except(['create', 'edit']);
