@@ -16,6 +16,7 @@ use App\Http\Controllers\Api\Admin\FactoryController;
 use App\Http\Controllers\Api\Admin\ProductController;
 use App\Http\Controllers\Api\Admin\StartUpController;
 use App\Http\Controllers\Api\Admin\CategoryController;
+use App\Http\Controllers\Api\Admin\HomeController;
 use App\Http\Controllers\Api\StartUp\RequestController;
 use App\Http\Controllers\Api\Admin\SubCategoryController;
 use App\Http\Controllers\Api\General\SubCategoryController as GeneralSubCategoryController;
@@ -63,6 +64,8 @@ Route::middleware('auth:api')->group(function () {
         Route::resource('user', UserController::class)->only(['index', 'show', 'destroy']);
         Route::get('user/{id}/checkDestroy', [UserController::class, 'checkDestroy']);
         Route::put('user/{id}/block', [UserController::class, 'block']);
+
+        Route::get('/overview', [HomeController::class, 'adminOverview']);
 
 
         Route::resource('startups', StartUpController::class)->only(['index', 'show', 'destroy']);
