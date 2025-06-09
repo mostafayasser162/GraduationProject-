@@ -62,7 +62,7 @@ class Product extends Model
 
     protected static function booted(): void
     {
-        static::addGlobalScope(new SearchScope);
+        static::addGlobalScope(new SearchScope); 
         static::addGlobalScope(new SortScope);
     }
     // public function variants()

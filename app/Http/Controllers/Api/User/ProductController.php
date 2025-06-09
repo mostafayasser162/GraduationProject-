@@ -36,7 +36,7 @@ class ProductController extends Controller
         }
 
         $products = $query
-            ->with(['startup', 'subCategory.category', 'images' , 'sizes.size', 'sizes.color' ])
+            ->with(['startup', 'subCategory.category', 'images', 'sizes.size', 'sizes.color'])
             ->get();
 
         $products = ProductResource::collection($products);
@@ -45,11 +45,11 @@ class ProductController extends Controller
     public function show($id)
     {
         $product = Product::with(['startup', 'subCategory.category', 'images', 'sizes.size', 'sizes.color'])
-        ->where('id', $id)
-        ->whereHas('startup', function ($q) {
-            $q->where('status', Status::APPROVED());
-        })
-        ->first();
+            ->where('id', $id)
+            ->whereHas('startup', function ($q) {
+                $q->where('status', Status::APPROVED());
+            })
+            ->first();
 
         if (!$product) {
             return response()->errors('Product not found');
@@ -60,27 +60,81 @@ class ProductController extends Controller
         return response()->success($product);
     }
 
+    // public function bestSellers()
+    // {
+    //     $products = Product::bestSellers()
+    //         ->with(['images', 'startup', 'subCategory.category']) // include what you need
+    //         ->take(45) // top 10 best sellers
+    //         ->get();
+
+    //     return response()->success(ProductResource::collection($products));
+    // }
+    // public function newArrivals()
+    // {
+    //     $products = Product::newArrivals()
+    //         ->with(['images', 'startup', 'subCategory.category']) // include what you need
+    //         ->take(45) // top 10 new arrivals
+    //         ->get();
+
+    //     return response()->success(ProductResource::collection($products));
+    // }
+
+    // public function discountedProducts()
+    // {
+    //     $products = Product::where(function ($query) {
+    //         $query->whereNotNull('discount_percentage')
+    //             ->orWhereHas('sizes', function ($q) {
+    //                 $q->whereNotNull('discount_percentage');
+    //             });
+    //     })
+    //         ->whereHas('startup', function ($q) {
+    //             $q->where('status', Status::APPROVED());
+    //         })
+    //         ->with(['startup', 'subCategory.category', 'images', 'sizes']) // include sizes
+    //         ->get();
+
+    //     if ($products->isEmpty()) {
+    //         return response()->errors('No discounted products found.');
+    //     }
+
+    //     return response()->success(ProductResource::collection($products));
+    // }
+
+
     public function bestSellers()
     {
+        $search = request('search');
+
         $products = Product::bestSellers()
-            ->with(['images', 'startup', 'subCategory.category']) // include what you need
-            ->take(45) // top 10 best sellers
+            ->when($search, function ($query, $search) {
+                $query->where('name', 'like', '%' . $search . '%');
+            })
+            ->with(['images', 'startup', 'subCategory.category'])
+            ->take(45)
             ->get();
 
         return response()->success(ProductResource::collection($products));
     }
+
     public function newArrivals()
     {
+        $search = request('search');
+
+
         $products = Product::newArrivals()
-            ->with(['images', 'startup', 'subCategory.category']) // include what you need
-            ->take(45) // top 10 new arrivals
+            ->when($search, function ($query, $search) {
+                $query->where('name', 'like', '%' . $search . '%');
+            })
+            ->with(['images', 'startup', 'subCategory.category'])
+            ->take(45)
             ->get();
 
         return response()->success(ProductResource::collection($products));
     }
-
     public function discountedProducts()
     {
+        $search = request('search');
+
         $products = Product::where(function ($query) {
             $query->whereNotNull('discount_percentage')
                 ->orWhereHas('sizes', function ($q) {
@@ -90,7 +144,10 @@ class ProductController extends Controller
             ->whereHas('startup', function ($q) {
                 $q->where('status', Status::APPROVED());
             })
-            ->with(['startup', 'subCategory.category', 'images', 'sizes']) // include sizes
+            ->when($search, function ($query, $search) {
+                $query->where('name', 'like', '%' . $search . '%');
+            })
+            ->with(['startup', 'subCategory.category', 'images', 'sizes'])
             ->get();
 
         if ($products->isEmpty()) {
