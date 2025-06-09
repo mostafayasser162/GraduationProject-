@@ -20,11 +20,13 @@ class StartupResource extends JsonResource
             'phone' => $this->phone,
             'status' => $this->status,
             'package_id' => $this->package_id,
+            'package_ends_at' => $this->package_ends_at,
             'package' => new PackageResource($this->whenLoaded('package')),
             'categories_id' => $this->categories_id,
             'category' => new CategoryResource($this->whenLoaded('category')),
             'products' => ProductResource::collection($this->whenLoaded('products')),
             'orders' => OrderResource::collection($this->whenLoaded('orders')),
+            // 'orders' => OrderResource::collection($this->orders),
             'payment_method' => $this->payment_method,
             'payment_account' => $this->payment_method,
             'created_at' => $this->created_at,
@@ -32,7 +34,7 @@ class StartupResource extends JsonResource
             'deleted_at' => $this->deleted_at,
             'trial_ends_at' => $this->trial_ends_at,
             'trial_days_left' => intval(now()->diffInDays($this->trial_ends_at, false)),
-
+            'total_revenue' => $this->total_revenue,
         ];
     }
 }
