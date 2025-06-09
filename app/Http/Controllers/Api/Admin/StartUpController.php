@@ -45,7 +45,8 @@ class StartUpController extends Controller
 
     public function show($id)
     {
-        $startUp = Startup::with('user', 'products')->find($id);
+        $startUp = Startup::with('user', 'products' , 'category' , 'package' )
+        ->find($id);
 
         if (!$startUp) {
             return response()->errors('startUp not found');
@@ -53,6 +54,7 @@ class StartUpController extends Controller
 
         return response()->success(new StartupResource($startUp));
     }
+
 
     public function destroy($id)
     {

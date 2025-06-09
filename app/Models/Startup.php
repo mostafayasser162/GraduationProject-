@@ -102,13 +102,46 @@ class Startup extends Authenticatable implements JWTSubject
             'id',                // المفتاح في Order (غالبًا يكون id)
             'id',                // المفتاح في Startup (أي المنتج مرتبط بستارت أب عن طريق startup_id في product)
             'order_id'           // المفتاح في Order_item الذي يشير إلى الطلب
-        )->whereHas('product', function ($query) {
+        )
+        ->whereHas('product', function ($query) {
             $query->whereColumn('products.startup_id', 'startups.id');
         });
     }
+    // public function getOrdersAttribute()
+    // {
+    //     $orders = Order::whereHas('orderItems.product', function ($query) {
+    //         $query->where('startup_id', $this->id);
+    //     })->with(['orderItems.product'])->get();
+    
+    //     // فلترة order_items لكل order لإبقاء فقط المنتجات الخاصة بهذا الـ startup
+    //     $orders->each(function ($order) {
+    //         $order->order_items = $order->order_items
+    //             ->filter(function ($item) {
+    //                 return $item->product && $item->product->startup_id == $this->id;
+    //             })
+    //             ->values(); // reset keys
+    //     });
+    //     return $orders->filter(function ($order) {
+    //         return $order->order_items->isNotEmpty();
+    //     })->values();
+    // }
+    
+
 
     public function sizes()
     {
         return $this->hasMany(Size::class);
     }
+
+    // function to get the total revenue of the startup
+    public function getTotalRevenueAttribute()
+    {
+        return Order_item::with('product')
+            ->whereHas('product', function ($query) {
+                $query->where('startup_id', $this->id);
+            })
+            ->sum('price');
+    }
+    
+    
 }
