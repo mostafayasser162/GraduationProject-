@@ -37,7 +37,10 @@ class ProductController extends Controller
 
         $products = $query
             ->with(['startup', 'subCategory.category', 'images', 'sizes.size', 'sizes.color'])
-            ->get();
+            ->get()
+            ->sortByDesc(function ($product) {
+                return $product->startup->package_id;
+            });
 
         $products = ProductResource::collection($products);
         return response()->paginate_resource($products);
@@ -111,7 +114,14 @@ class ProductController extends Controller
             })
             ->with(['images', 'startup', 'subCategory.category'])
             ->take(45)
-            ->get();
+            ->get()
+            // ->sortByDesc(function ($product) {
+            //     return $product->startup->package_id;
+            // });
+            ->sortByDesc(function ($product) {
+                return optional($product->startup)->package_id ?? PHP_INT_MIN;
+            });
+
 
         return response()->success(ProductResource::collection($products));
     }
@@ -127,7 +137,11 @@ class ProductController extends Controller
             })
             ->with(['images', 'startup', 'subCategory.category'])
             ->take(45)
-            ->get();
+            ->get() 
+            ->sortByDesc(function ($product) {
+                return optional($product->startup)->package_id ?? PHP_INT_MIN;
+            });
+
 
         return response()->success(ProductResource::collection($products));
     }
@@ -148,7 +162,10 @@ class ProductController extends Controller
                 $query->where('name', 'like', '%' . $search . '%');
             })
             ->with(['startup', 'subCategory.category', 'images', 'sizes'])
-            ->get();
+            ->get()
+            ->sortByDesc(function ($product) {
+                return $product->startup->package_id;
+            });
 
         if ($products->isEmpty()) {
             return response()->errors('No discounted products found.');
