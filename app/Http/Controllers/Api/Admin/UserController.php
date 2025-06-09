@@ -27,7 +27,7 @@ class UserController extends Controller
 
     public function show($id)
     {
-        $user = User::find($id)->load('orders.orderItems' ,'orders');
+        $user = User::find($id)->load('orders.orderItems' ,'orders' , 'orders.orderItems.product');
 
         if (!$user || $user->isAdmin()) {
             return response()->errors('User not found');
