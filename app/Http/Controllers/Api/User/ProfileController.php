@@ -15,17 +15,19 @@ class ProfileController extends Controller
     {
         $user = auth('api')->user()->load([
             'orders.orderItems.product' => function ($query) {
-            $query->with(['subCategory', 'images']);
+                $query->with(['subCategory', 'images']);
             },
-            'addresses'
+            'addresses',
+            'startup' // Include the startup relationship
         ]);
-        // $user = auth()->user();
-        // $user = Order::with([ 'orders' , 'addresses' ,'orderItems.product', 'orderItems', 'orderItems.productSize'])
-        //     ->where('user_id', $user->id)
-        //     ->latest()
-        //     ->get();
+
+        if ($user->startup) {
+            // Ensure the startup relationship is loaded and visible
+            $user->startup->makeVisible(['name', 'description']);
+        }
 
         return response()->success(
+            'User profile retrieved successfully.',
             new UserResource($user)
         );
     }
