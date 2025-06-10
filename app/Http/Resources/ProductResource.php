@@ -40,6 +40,15 @@ class ProductResource extends JsonResource
             'updated_at'     => $this->updated_at?->toDateTimeString(),
             'discount_percentage' => $baseDiscount,
             'discounted_price' => $discountedPrice,
+
+            'total_revenue' => $this->total_revenue,
+            // 'total_sales' => $this->total_sales ?? 0,
+            
+
+
+
+
+
         ];
     }
 }
