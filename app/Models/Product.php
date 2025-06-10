@@ -116,11 +116,12 @@ class Product extends Model
             ->selectRaw('SUM(price * quantity) as total')
             ->value('total') ?? 0;
     }
-    // public function getTotalSoldAttribute()
-    // {
-    //     return $this->order_item()
-    //         ->sum('quantity') ?? 0;
+    
+    public function getTotalSoldAttribute()
+    {
+        return $this->order_item()
+            ->sum('quantity') ?? 0;
             
-    // }
+    }
 
 }
