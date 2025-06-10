@@ -17,21 +17,21 @@ class PackagePaymentController extends Controller
 
         // Ensure the user exists
         if (!$user) {
-            return response()->error('Unauthorized or invalid user.', 401);
+            return response()->errors('Unauthorized or invalid user.', 401);
         }
 
         // Check if the user has a related startup with status HOLD
         $startup = $user->startup; // Assuming the user has a related startup model
 
         if (!$startup || !in_array($startup->status, ['HOLD'])) {
-            return response()->error('Unauthorized or invalid user.', 401);
+            return response()->errors('Unauthorized or invalid user.', 401);
         }
 
         // Retrieve the package details
         $package = $startup->package; // Assuming the startup has a related package model
 
         if (!$package) {
-            return response()->error('Package not found.', 404);
+            return response()->errors('Package not found.', 404);
         }
 
         // Calculate the date after 30 days
@@ -76,14 +76,14 @@ class PackagePaymentController extends Controller
 
         // Ensure the user exists
         if (!$user) {
-            return response()->error('Unauthorized or invalid user.', 401);
+            return response()->errors('Unauthorized or invalid user.', 401);
         }
 
         // Check if the user has a related startup with status HOLD
         $startup = $user->startup; // Assuming the user has a related startup model
 
         if (!$startup || $startup->status !== 'HOLD') {
-            return response()->error('This action is only allowed when payment is pending.', 403);
+            return response()->errors('This action is only allowed when payment is pending.', 403);
         }
 
         // Mark startup as APPROVED and clear trial if any
