@@ -106,6 +106,11 @@ Route::middleware('auth:api')->group(function () {
             Route::put('/profile', 'update');
             Route::delete('/profile', 'destroy');
         });
+        // pay packages
+        
+        Route::post('/pay-package', [StartupPackagePaymentController::class, 'pay']);
+        Route::get('/package-id', [StartupPackagePaymentController::class, 'getPackageDetails']);
+        
 
         Route::resource('startup', UserStartUpController::class)->only(['index', 'show']);
 
@@ -176,7 +181,6 @@ Route::middleware(['auth:startup', CheckTrialPeriod::class, CheckStartupStatus::
             Route::put('/profile', 'update');
             Route::delete('/profile', 'destroy');
         });
-        Route::post('/pay-package', [StartupPackagePaymentController::class, 'pay']);
 
         Route::middleware(AllowPackageOneTwoOnly::class)->group(function () {
             // sizes
@@ -223,4 +227,6 @@ Route::prefix('general')->group(function () {
 
     Route::resource('subcategory', GeneralSubCategoryController::class)->only(['index', 'show']);
     Route::resource('category', GeneralCategoryController::class)->only(['index', 'show']);
+
+
 });
