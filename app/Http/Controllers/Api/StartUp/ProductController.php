@@ -108,7 +108,7 @@ class ProductController extends Controller
 
     public function index()
     {
-        $products = Product::with(['startup', 'subCategory.category', 'sizes', 'sizes.size', 'sizes.color'])
+        $products = Product::with(['startup', 'subCategory.category', 'sizes', 'sizes.size', 'sizes.color' , 'images'])
             ->where('startup_id', Auth::id())
             ->get();
 
