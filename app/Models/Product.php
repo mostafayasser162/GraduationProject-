@@ -109,4 +109,18 @@ class Product extends Model
     {
         return $query->orderBy('created_at', 'desc');
     }
+
+    public function getTotalRevenueAttribute()
+    {
+        return $this->order_item()
+            ->selectRaw('SUM(price * quantity) as total')
+            ->value('total') ?? 0;
+    }
+    // public function getTotalSoldAttribute()
+    // {
+    //     return $this->order_item()
+    //         ->sum('quantity') ?? 0;
+            
+    // }
+
 }
