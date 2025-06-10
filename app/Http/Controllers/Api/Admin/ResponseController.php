@@ -18,7 +18,7 @@ class ResponseController extends Controller
 
     public function show($id)
     {
-        $response = FactoryResponse::with('factory', 'request' . 'factory.ratings')->find($id);
+        $response = FactoryResponse::with('factory', 'request' , 'factory.ratings' , 'request.startup' )->find($id);
         if (!$response) {
             return response()->errors('Response not found');
         }
