@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\Startup\RatingController;
 use App\Http\Middleware\CheckStartupStatus;
 use App\Http\Middleware\CheckTrialPeriod;
+use App\Http\Middleware\CheckPackageId;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\Admin\DealController as AdminDealController;
 use App\Http\Controllers\Api\Factory\DealController as FactoryDealController;
@@ -21,6 +22,7 @@ use App\Http\Controllers\Api\StartUp\RequestController;
 use App\Http\Controllers\Api\Admin\RequestController as AdminRequestController;
 use App\Http\Controllers\Api\Admin\SubCategoryController;
 use App\Http\Controllers\Api\General\SubCategoryController as GeneralSubCategoryController;
+use App\Http\Controllers\Api\General\CategoryController as GeneralCategoryController; // Ensure this controller exists in the specified namespace
 use App\Http\Controllers\Api\User\OrderController as UserOrderController;
 use App\Http\Controllers\Api\Startup\AuthController as StartupAuthController;
 use App\Http\Controllers\Api\User\AddressController as UserAddressController;
@@ -40,8 +42,6 @@ use App\Http\Controllers\GoogleAuthController;
 use App\Http\Controllers\Api\StartUp\OrderController as StartUpOrderController;
 use App\Http\Controllers\Api\StartUp\PackagePaymentController as StartupPackagePaymentController;
 use App\Http\Middleware\AllowPackageOneTwoOnly;
-use App\Http\Middleware\CheckPackageId;
-
 // use App\Http\Controllers\WishlistController as UserWishlistController;
 
 //login for user and admin
@@ -222,4 +222,5 @@ Route::prefix('general')->group(function () {
     Route::get('/discounted', [UserProductController::class, 'discountedProducts']);
 
     Route::resource('subcategory', GeneralSubCategoryController::class)->only(['index', 'show']);
+    Route::resource('category', GeneralCategoryController::class)->only(['index', 'show']);
 });

@@ -2,8 +2,10 @@
 namespace App\Http\Controllers\Api\StartUp;
 
 use App\Http\Controllers\Controller;
+use App\Mail\StartupActiveMail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 
 class PackagePaymentController extends Controller
 {
@@ -27,6 +29,8 @@ class PackagePaymentController extends Controller
             'package_ends_at'  => now()->addDays(30),
         ]);
 
+        // Send confirmation email
+        Mail::to($startup->user->email)->send(new StartupActiveMail($startup));
         return response()->success('Payment successful. Your account is now active.', $startup);
     }
 }
