@@ -38,7 +38,7 @@ class ProductResource extends JsonResource
                 
             'created_at'     => $this->created_at?->toDateTimeString(),
             'updated_at'     => $this->updated_at?->toDateTimeString(),
-            'discount_percentage' => $baseDiscount,
+            'discount_percentage' =>  $baseDiscount,
             'discounted_price' => $discountedPrice,
 
             'total_revenue' => $this->total_revenue,

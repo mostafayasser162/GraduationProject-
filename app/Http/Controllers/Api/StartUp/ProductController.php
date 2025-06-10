@@ -17,9 +17,8 @@ class ProductController extends Controller
     public function store(Request $request)
     {
         $startup = auth()->user();
-            // Count products created by this startup
+        // Count products created by this startup
         $productCount = $startup->products()->count();
-// dd($productCount);
         if ($startup->package_id == 1 && $productCount >= 5) {
             return response()->errors('You can only add up to 5 products with your current package.');
         }
@@ -35,6 +34,7 @@ class ProductController extends Controller
             'stock'            => 'required|integer|min:0',
             'sub_category_id'  => 'required|exists:sub_categories,id',
             'has_sizes'        => 'required|boolean',
+            'discount_percentage' => 'nullable|numeric|min:0|max:100',
             'colors'           => 'array',
             'colors.*.name'    => 'required_with:colors|string',
             'colors.*.code'    => 'nullable|string',
@@ -54,12 +54,13 @@ class ProductController extends Controller
         try {
             // Create the product
             $product = Product::create([
-                'startup_id'     => Auth::id(),
-                'name'           => $request->name,
-                'description'    => $request->description,
-                'price'          => $request->has_sizes ? null : $request->price,
-                'stock'          => $request->stock,
-                'sub_category_id' => $request->sub_category_id,
+                'startup_id'         => Auth::id(),
+                'name'               => $request->name,
+                'description'        => $request->description,
+                'price'              => $request->has_sizes ? null : $request->price,
+                'stock'              => $request->stock,
+                'sub_category_id'    => $request->sub_category_id,
+                'discount_percentage' => $request->discount_percentage, 
             ]);
 
             if ($request->has_sizes) {
@@ -77,11 +78,12 @@ class ProductController extends Controller
                 // Add sizes
                 foreach ($request->sizes as $size) {
                     Product_size::create([
-                        'product_id' => $product->id,
-                        'color_id'   => $colorMap[$size['color_index']],
-                        'size_id'    => $size['size_id'],
-                        'price'      => $size['price'],
-                        'stock'      => $size['stock'],
+                        'product_id'          => $product->id,
+                        'color_id'            => $colorMap[$size['color_index']],
+                        'size_id'             => $size['size_id'],
+                        'price'               => $size['price'],
+                        'stock'               => $size['stock'],
+                        'discount_percentage' => $request->discount_percentage,
                     ]);
                 }
             }
@@ -94,7 +96,6 @@ class ProductController extends Controller
                     'is_main'    => $imageData['is_main'],
                 ]);
             }
-
 
             DB::commit();
             return response()->success(('Product added successfully.'),
@@ -154,6 +155,7 @@ class ProductController extends Controller
             'stock'            => 'integer|min:0',
             'sub_category_id'  => 'exists:sub_categories,id',
             'has_sizes'        => 'boolean',
+            'discount_percentage' => 'nullable|numeric|min:0|max:100',
             'colors'           => 'array',
             'colors.*.name' => 'required_with:colors|string',
             'colors.*.code'    => 'nullable|string',
