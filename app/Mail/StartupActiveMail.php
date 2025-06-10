@@ -19,6 +19,6 @@ class StartupActiveMail extends Mailable
     public function build()
     {
         return $this->subject('Your Startup Has Been Active')
-                    ->view('emails.startup_active');
+                    ->view('emails.startup_Active');
     }
 }
