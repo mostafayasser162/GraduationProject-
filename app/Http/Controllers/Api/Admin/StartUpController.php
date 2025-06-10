@@ -25,7 +25,7 @@ class StartUpController extends Controller
     public function index(Request $request)
     {
 
-        $query = Startup::with('user', 'products' , 'category', 'package');
+        $query = Startup::with('user', 'products', 'category', 'package');
 
         if ($request->has('status')) {
             $status = $request->status;
@@ -45,8 +45,8 @@ class StartUpController extends Controller
 
     public function show($id)
     {
-        $startUp = Startup::with('user', 'products' , 'category' , 'package' )
-        ->find($id);
+        $startUp = Startup::with('user', 'products', 'category', 'package')
+            ->find($id);
 
         if (!$startUp) {
             return response()->errors('startUp not found');
@@ -77,15 +77,19 @@ class StartUpController extends Controller
 
         if ($startup->status == Status::APPROVED()) {
             $startup->status = Status::BLOCKED();
+            $isBlocked = true;
         } elseif ($startup->status == Status::BLOCKED()) {
             $startup->status = Status::APPROVED();
+            $isBlocked = false;
         } else {
             return response()->errors('You can only toggle status between APPROVED and BLOCKED');
         }
 
         $startup->save();
 
-        return response()->success("Startup status changed to {$startup->status}");
+        return response()->success("Startup status changed to {$startup->status}", [
+            'is_blocked' => $isBlocked,
+        ]);
     }
 
     // public function accept($id)

@@ -15,7 +15,7 @@ class UserController extends Controller
 {
     public function index(Request $request)
     {
-        $query = User::query()->whereNot('role', Role::ADMIN())->with('orders.orderItems.product','orders' , 'orders.orderItems' , 'addresses');
+        $query = User::query()->whereNot('role', Role::ADMIN())->with('orders.orderItems.product', 'orders', 'orders.orderItems', 'addresses');
 
         if ($request->has('role') && in_array($request->role, Role::allValues())) {
             $query->where('role', $request->role);
@@ -27,7 +27,7 @@ class UserController extends Controller
 
     public function show($id)
     {
-        $user = User::find($id)->load('orders.orderItems' ,'orders' , 'orders.orderItems.product');
+        $user = User::find($id)->load('orders.orderItems', 'orders', 'orders.orderItems.product');
 
         if (!$user || $user->isAdmin()) {
             return response()->errors('User not found');
@@ -80,14 +80,19 @@ class UserController extends Controller
 
         if ($user->status == Status::APPROVED()) {
             $user->status = Status::BLOCKED();
+            $isBlocked = true;
         } elseif ($user->status == Status::BLOCKED()) {
             $user->status = Status::APPROVED();
+            $isBlocked = false;
         } else {
             return response()->errors('You can only toggle status between APPROVED and BLOCKED');
         }
 
         $user->save();
 
-        return response()->success("User status changed to {$user->status}");
+        return response()->success(
+            "user status changed to {$startup->status}",
+            ['is_blocked' => $isBlocked]
+        );
     }
 }

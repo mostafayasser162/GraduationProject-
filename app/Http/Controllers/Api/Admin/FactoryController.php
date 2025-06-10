@@ -66,14 +66,19 @@ class FactoryController extends Controller
 
         if ($startup->status == Status::APPROVED()) {
             $startup->status = Status::BLOCKED();
+            $isBlocked = true;
         } elseif ($startup->status == Status::BLOCKED()) {
             $startup->status = Status::APPROVED();
+            $isBlocked = false;
         } else {
             return response()->errors('You can only toggle status between APPROVED and BLOCKED');
         }
 
         $startup->save();
 
-        return response()->success("Startup status changed to {$startup->status}");
+        return response()->success("Startup status changed to {$startup->status}"
+            , [
+                'is_blocked' => $isBlocked,
+            ]);
     }
 }
