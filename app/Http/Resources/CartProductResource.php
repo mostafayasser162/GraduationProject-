@@ -57,9 +57,14 @@ class CartProductResource extends JsonResource
                 ? new ProductSizeResource($this->pivot->productSize)
                 : null,
             'startup' => new StartupResource($this->startup),
-            'image' => $this->mainImage
-                ? asset('storage/' . $this->mainImage->url)
-                : null,
+            // 'image' => $this->mainImage
+            //     ? asset('storage/' . $this->mainImage->url)
+            //     : null,
+            'image' => str_starts_with($this->mainImage->url, 'storage/')
+                ? $this->mainImage->url
+                : 'storage/' . $this->mainImage->url,
+
+
             'sub_category' => $this->whenLoaded('subCategory', fn () => new SubCategoryResource($this->subCategory)),
 
             'product' => new ProductResource($this->whenLoaded('product')), // Load product details
