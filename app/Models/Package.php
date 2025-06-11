@@ -11,8 +11,9 @@ class Package extends Model
     //
     protected $fillable = [
         'name',
-        'desc',
+        'description',
         'price',
+        'duration',
     ];
 
     protected static function booted(): void

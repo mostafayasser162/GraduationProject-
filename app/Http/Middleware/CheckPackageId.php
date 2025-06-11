@@ -5,9 +5,12 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
+use App\Traits\PackageHelper;
 
 class CheckPackageId
 {
+    use PackageHelper;
+
     public function handle(Request $request, Closure $next): Response
     {
         $startup = auth()->user();
@@ -16,8 +19,8 @@ class CheckPackageId
             return response()->errors('No startup found.');
         }
 
-        // Allow only package_id 3 or 4
-        if (!in_array($startup->package_id, [3, 4])) {
+        // Allow only Pro Marketing packages (3 or 4)
+        if (!self::isProSupplychainPackage($startup->package_id)) {
             return response()->errors('Access denied. Your package does not allow this action.');
         }
 

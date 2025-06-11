@@ -5,25 +5,31 @@ namespace App\Http\Controllers\Api\StartUp;
 use App\Http\Controllers\Controller;
 use App\Models\Product;
 use App\Models\Product_colors;
-use App\Models\Product_size; // Ensure the correct class name matches the file name
+use App\Models\Product_size;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use App\Http\Resources\ProductResource;
+use App\Traits\PackageHelper;
 
 
 class ProductController extends Controller
 {
+    use PackageHelper;
+
     public function store(Request $request)
     {
         $startup = auth()->user();
         // Count products created by this startup
         $productCount = $startup->products()->count();
-        if ($startup->package_id == 1 && $productCount >= 20) {
+
+        // Get the base package ID to check limits
+        // $basePackageId = self::getBasePackageId($startup->package_id);
+        if (self::isBasicPackage($startup->package_id) && $productCount >= 20) {
             return response()->errors('You can only add up to 5 products with your current package.');
         }
 
-        if ($startup->package_id == 2 && $productCount >= 35) {
+        if (self::isProMarketingPackage($startup->package_id) && $productCount >= 35) {
             return response()->errors('You can only add up to 15 products with your current package.');
         }
 
@@ -60,7 +66,7 @@ class ProductController extends Controller
                 'price'              => $request->has_sizes ? null : $request->price,
                 'stock'              => $request->stock,
                 'sub_category_id'    => $request->sub_category_id,
-                'discount_percentage' => $request->discount_percentage, 
+                'discount_percentage' => $request->discount_percentage,
             ]);
 
             if ($request->has_sizes) {
