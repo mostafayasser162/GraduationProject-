@@ -19,11 +19,11 @@ class ProductController extends Controller
         $startup = auth()->user();
         // Count products created by this startup
         $productCount = $startup->products()->count();
-        if ($startup->package_id == 1 && $productCount >= 5) {
+        if ($startup->package_id == 1 && $productCount >= 20) {
             return response()->errors('You can only add up to 5 products with your current package.');
         }
 
-        if ($startup->package_id == 2 && $productCount >= 15) {
+        if ($startup->package_id == 2 && $productCount >= 35) {
             return response()->errors('You can only add up to 15 products with your current package.');
         }
 
