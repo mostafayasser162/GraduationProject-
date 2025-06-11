@@ -26,11 +26,11 @@ class ProductController extends Controller
         // Get the base package ID to check limits
         // $basePackageId = self::getBasePackageId($startup->package_id);
         
-        if (self::isBasicPackage($startup->package_id) && $productCount >= 5) {
+        if (self::isBasicPackage($startup->package_id) && $productCount >= 20) {
             return response()->errors('You can only add up to 5 products with your current package.');
         }
 
-        if (self::isProMarketingPackage($startup->package_id) && $productCount >= 15) {
+        if (self::isProMarketingPackage($startup->package_id) && $productCount >= 35) {
             return response()->errors('You can only add up to 15 products with your current package.');
         }
 
