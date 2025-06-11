@@ -26,7 +26,7 @@ class StartUpController extends Controller
     public function index(Request $request)
     {
 
-        $query = Startup::with('user', 'products', 'category', 'package');
+        $query = Startup::with('user', 'products', 'category', 'package' , 'products.images');
 
         if ($request->has('status')) {
             $status = $request->status;
@@ -46,7 +46,7 @@ class StartUpController extends Controller
 
     public function show($id)
     {
-        $startUp = Startup::with('user', 'products', 'category', 'package')
+        $startUp = Startup::with('user', 'products', 'category', 'package' ,'products.images')
             ->find($id);
 
         if (!$startUp) {
