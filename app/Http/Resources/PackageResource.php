@@ -15,10 +15,11 @@ class PackageResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id'    => $this->id,
-            'name'  => $this->name,
-            'desc'  => $this->desc,
+            'id' => $this->id,
+            'name' => $this->name,
+            'description' => $this->description,
             'price' => $this->price,
+            'duration' => $this->duration,
         ];
     }
 }

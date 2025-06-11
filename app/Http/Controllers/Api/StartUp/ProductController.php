@@ -5,25 +5,32 @@ namespace App\Http\Controllers\Api\StartUp;
 use App\Http\Controllers\Controller;
 use App\Models\Product;
 use App\Models\Product_colors;
-use App\Models\Product_size; // Ensure the correct class name matches the file name
+use App\Models\Product_size; 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use App\Http\Resources\ProductResource;
+use App\Traits\PackageHelper;
 
 
 class ProductController extends Controller
 {
+    use PackageHelper;
+
     public function store(Request $request)
     {
         $startup = auth()->user();
         // Count products created by this startup
         $productCount = $startup->products()->count();
-        if ($startup->package_id == 1 && $productCount >= 5) {
+        
+        // Get the base package ID to check limits
+        // $basePackageId = self::getBasePackageId($startup->package_id);
+        
+        if (self::isBasicPackage($startup->package_id) && $productCount >= 5) {
             return response()->errors('You can only add up to 5 products with your current package.');
         }
 
-        if ($startup->package_id == 2 && $productCount >= 15) {
+        if (self::isProMarketingPackage($startup->package_id) && $productCount >= 15) {
             return response()->errors('You can only add up to 15 products with your current package.');
         }
 

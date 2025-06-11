@@ -6,6 +6,7 @@ use App\Mail\StartupActiveMail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
+use Carbon\Carbon;
 
 class PackagePaymentController extends Controller
 {
@@ -34,14 +35,17 @@ class PackagePaymentController extends Controller
             return response()->errors('Package not found.', 404);
         }
 
-        // Calculate the date after 30 days
-        $repaymentDate = now()->addDays(30)->toDateString();
+        // Calculate the date based on package duration
+        $repaymentDate = $package->duration === 'quarterly' 
+            ? now()->addDays(90)->toDateString()
+            : now()->addDays(365)->toDateString();
 
-        return response()->success( [
+        return response()->success([
             'package_id' => $package->id,
             'package_name' => $package->name,
             'price' => $package->price,
-            'repayment_date' => $repaymentDate, // Display the repayment date
+            'duration' => $package->duration,
+            'repayment_date' => $repaymentDate,
         ]);
     }
     // public function pay(Request $request)
@@ -80,17 +84,28 @@ class PackagePaymentController extends Controller
         }
 
         // Check if the user has a related startup with status HOLD
-        $startup = $user->startup; // Assuming the user has a related startup model
+        $startup = $user->startup;
 
         if (!$startup || $startup->status !== 'HOLD') {
             return response()->errors('This action is only allowed when payment is pending.', 403);
         }
 
-        // Mark startup as APPROVED and clear trial if any
+        // Get the package to check duration
+        $package = $startup->package;
+        if (!$package) {
+            return response()->errors('Package not found.', 404);
+        }
+
+        // Calculate package end date based on duration
+        $packageEndDate = $package->duration === 'quarterly' 
+            ? now()->addDays(90)
+            : now()->addDays(365);
+
+        // Mark startup as APPROVED and set package end date
         $startup->update([
             'status' => 'APPROVED',
             'trial_ends_at' => null,
-            'package_ends_at' => now()->addDays(30),
+            'package_ends_at' => $packageEndDate,
         ]);
 
         // Send confirmation email
@@ -100,6 +115,7 @@ class PackagePaymentController extends Controller
             'startup_id' => $startup->id,
             'status' => $startup->status,
             'package_ends_at' => $startup->package_ends_at,
+            'duration' => $package->duration,
         ]);
     }
 

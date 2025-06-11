@@ -17,11 +17,12 @@ use App\Mail\StartupProfileUpdatedMail;
 use App\Mail\StartupProfileUpdatedMailRej;
 use App\Mail\StartupTrialMail;
 use Carbon\Carbon;
-
-
+use App\Traits\PackageHelper;
 
 class StartUpController extends Controller
 {
+    use PackageHelper;
+
     public function index(Request $request)
     {
 
@@ -92,24 +93,6 @@ class StartUpController extends Controller
         ]);
     }
 
-    // public function accept($id)
-    // {
-    //     $startup = Startup::with('user')->find($id);
-
-    //     if (!$startup || $startup->status != Status::PENDING()) {
-    //         return response()->errors('Startup not found or its status not pending');
-    //     }
-
-    //     $startup->status = Status::APPROVED();
-    //     $startup->trial_ends_at = Carbon::now()->addDays(14);
-
-    //     $startup->save();
-
-    //     // Send approval email
-    //     Mail::to($startup->email)->send(new StartupApprovedMail($startup));
-
-    //     return response()->success("Startup has been approved");
-    // }
     public function accept($id)
     {
         $startup = Startup::with('user')->find($id);
@@ -118,8 +101,7 @@ class StartUpController extends Controller
             return response()->errors('Startup not found or its status not pending');
         }
 
-
-        if ($startup->package_id == 1) {
+        if (self::isBasicPackage($startup->package_id)) {
             $startup->status = Status::APPROVED();
             $startup->trial_ends_at = Carbon::now()->addDays(14);
             $startup->save();
@@ -131,7 +113,6 @@ class StartUpController extends Controller
             Mail::to($startup->email)->send(new StartupTrialMail($startup));
         } else {
             $startup->status = Status::HOLD();
-
             $startup->save();
             $startup->user->role = Role::OWNER();
             $startup->user->save();
@@ -142,23 +123,6 @@ class StartUpController extends Controller
 
         return response()->success("Startup has been approved");
     }
-
-    // public function reject($id)
-    // {
-    //     $startup = Startup::find($id);
-
-    //     if (!$startup || $startup->status != Status::PENDING()) {
-    //         return response()->errors('Startup not found or its status not pending');
-    //     }
-
-    //     $startup->status = Status::REJECTED();
-    //     $startup->save();
-    //     $startup->delete();
-
-
-    //     return response()->success("Startup has been rejected");
-    // }
-
 
     public function reject($id)
     {
