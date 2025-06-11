@@ -17,8 +17,6 @@ class AddressResource extends JsonResource
         return [
             'id' => $this->id,
             'user_id' => $this->user_id,
-            'lat' => $this->lat,
-            'lng' => $this->lng,
             'address' => $this->address,
             'city' => $this->city,
             'created_at' => $this->created_at?->format('Y-m-d H:i:s'),

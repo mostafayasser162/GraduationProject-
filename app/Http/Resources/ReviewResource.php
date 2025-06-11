@@ -12,6 +12,7 @@ class ReviewResource extends JsonResource
             'id'        => $this->id,
             'user'      => new UserResource($this->whenLoaded('user')),
             'rating'    => $this->rating,
+            'product'   => new ProductResource($this->whenLoaded('product')),
             'comments'  => $this->comments,
             'created_at' => $this->created_at,
             'time_ago' => optional($this->created_at)->diffForHumans(),
