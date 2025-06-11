@@ -53,8 +53,8 @@ class WishlistController extends Controller
             return response()->errors('User not authenticated', 401);
         }
 
-        // Get user's wishlist
-        $wishlist = Wishlist::with('product')->where('user_id', $user->id)->get();
+        // Get user's wishlist with product and product images
+        $wishlist = Wishlist::with(['product', 'product.images'])->where('user_id', $user->id)->get();
 
         return response()->paginate_resource(WishlistResource::collection($wishlist));
     }
