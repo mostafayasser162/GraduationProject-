@@ -51,7 +51,7 @@ class ProductController extends Controller
             'sizes.*.stock'    => 'required|integer|min:0',
 
             'images'           => 'required|array|min:1',
-            'images.*.file'    => 'required|file|image|max:2048',
+            'images.*.file'    => 'required|file|image',
             'images.*.is_main' => 'required|boolean',
         ]);
 
