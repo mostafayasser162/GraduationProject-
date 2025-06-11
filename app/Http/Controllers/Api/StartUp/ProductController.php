@@ -172,7 +172,7 @@ class ProductController extends Controller
             'sizes.*.stock'    => 'integer|min:0',
 
             'images'           => 'array|min:1',
-            'images.*.file'    => 'file|image|max:2048',
+            'images.*.file'    => 'file|image',
             'images.*.is_main' => 'boolean',
         ]);
 
