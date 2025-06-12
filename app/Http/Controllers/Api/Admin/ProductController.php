@@ -12,14 +12,14 @@ class ProductController extends Controller
     public function index()
     {
         $products = Product::with(['startup', 'subCategory.category', 'images', 'reviews'])
+            ->get()
             ->sortByDesc(function ($product) {
                 return optional($product->startup)->package_id ?? PHP_INT_MIN;
-            })
-            ->get();
+            });
 
-        $products = ProductResource::collection($products);
-        return response()->paginate_resource($products);
+        return response()->paginate_resource(ProductResource::collection($products));
     }
+
     public function show($id)
     {
         $product = Product::with(['startup', 'subCategory.category', 'images' , 'reviews'])->find($id);

@@ -36,7 +36,7 @@ class ProductController extends Controller
         }
 
         $products = $query
-            ->with(['startup', 'subCategory.category', 'images', 'sizes.size', 'sizes.color'])
+            ->with(['startup', 'subCategory.category', 'images', 'sizes.size'])
             ->get()
             ->sortByDesc(function ($product) {
                 return $product->startup->package_id;
@@ -47,7 +47,7 @@ class ProductController extends Controller
     }
     public function show($id)
     {
-        $product = Product::with(['startup', 'subCategory.category', 'images', 'sizes.size', 'sizes.color'])
+        $product = Product::with(['startup', 'subCategory.category', 'images', 'sizes.size'])
             ->where('id', $id)
             ->whereHas('startup', function ($q) {
                 $q->where('status', Status::APPROVED());

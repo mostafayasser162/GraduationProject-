@@ -54,12 +54,6 @@ class ProductSizeResource extends JsonResource
                     'id' => $this->size->id,
                     'name' => $this->size->size,
                 ] : null,
-                'color' => $this->color ? [
-                    'id' => $this->color->id,
-                    'name' => $this->color->color_name,
-                    'code' => $this->color->color_code,
-                ] : null,
-
                 'discount_percentage' => $this->discount_percentage,
                 'discounted_price' => $this->discount_percentage
                         ? round($this->price - ($this->price * $this->discount_percentage / 100), 2)
