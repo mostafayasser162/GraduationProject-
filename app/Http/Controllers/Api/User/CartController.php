@@ -37,39 +37,105 @@ class CartController extends Controller
     // }
     public function addToCart(Request $request)
     {
-        $request->validate([
-            'product_id' => 'required|exists:products,id',
-            'product_size_id' => 'required|exists:product_sizes,id',
-            'quantity' => 'required|integer|min:1'
-        ]);
+        $user = $request->user();
+        $productId = $request->input('product_id');
+        $quantity = (int) $request->input('quantity', 1);
 
-        $productSize = Product_size::findOrFail($request->product_size_id);
-
-        // Verify the product size belongs to the requested product
-        if ($productSize->product_id !== $request->product_id) {
-            return response()->errors('Invalid product size for this product', 400);
+        $product = Product::find($productId);
+        if (!$product) {
+            return response()->errors('Product not found');
         }
 
-        // Check if product is already in cart
-        $cartItem = Cart::where('user_id', Auth::id())
-            ->where('product_id', $request->product_id)
-            ->where('product_size_id', $request->product_size_id)
-            ->first();
+        // Check if product has variants
+        $hasVariants = Product_size::where('product_id', $productId)->exists();
 
-        if ($cartItem) {
-            $cartItem->quantity += $request->quantity;
-            $cartItem->save();
+        if ($hasVariants) {
+            $productSizeId = $request->input('product_size_id');
+
+            // If product_size_id not sent, try resolving using size_id + color_id
+            if (!$productSizeId) {
+                $sizeId = $request->input('size_id');
+
+                if (!$sizeId) {
+                    return response()->errors('You must choose both size for this product');
+                }
+
+                $variant = Product_size::where('product_id', $productId)
+                    ->where('size_id', $sizeId)
+                    ->first();
+
+                if (!$variant) {
+                    return response()->errors('Invalid size combination');
+                }
+
+                $productSizeId = $variant->id;
+            } else {
+                $variant = Product_size::find($productSizeId);
+
+                if (!$variant || $variant->product_id != $productId) {
+                    return response()->errors('Invalid product variant');
+                }
+            }
+
+            if ($variant->stock < $quantity) {
+                return response()->errors('Not enough stock for this variant');
+            }
+
+            $existing = $user->cart()
+                ->wherePivot('product_id', $productId)
+                ->wherePivot('product_size_id', $productSizeId)
+                ->first();
+
+            if ($existing) {
+                $newQty = $existing->pivot->quantity + $quantity;
+
+                if ($newQty > $variant->stock) {
+                    return response()->errors('Cannot exceed available stock');
+                }
+
+                $user->cart()->updateExistingPivot($productId, [
+                    'quantity' => $newQty,
+                    'product_size_id' => $productSizeId
+                ]);
+            } else {
+                $user->cart()->attach($productId, [
+                    'quantity' => $quantity,
+                    'product_size_id' => $productSizeId
+                ]);
+            }
         } else {
-            Cart::create([
-                'user_id' => Auth::id(),
-                'product_id' => $request->product_id,
-                'product_size_id' => $request->product_size_id,
-                'quantity' => $request->quantity
-            ]);
+            // Product has no variants
+            if ($product->stock < $quantity) {
+                return response()->errors('Not enough stock');
+            }
+
+            $existing = $user->cart()
+                ->wherePivot('product_id', $productId)
+                ->wherePivotNull('product_size_id')
+                ->first();
+
+            if ($existing) {
+                $newQty = $existing->pivot->quantity + $quantity;
+
+                if ($newQty > $product->stock) {
+                    return response()->errors('Cannot exceed available stock');
+                }
+
+                $user->cart()->updateExistingPivot($productId, [
+                    'quantity' => $newQty,
+                    'product_size_id' => null
+                ]);
+            } else {
+                $user->cart()->attach($productId, [
+                    'quantity' => $quantity,
+                    'product_size_id' => null
+                ]);
+            }
         }
 
-        return response()->success('Product added to cart successfully');
+        return response()->success('Product added to cart');
     }
+
 
     public function index(Request $request)
     {
@@ -83,7 +149,7 @@ class CartController extends Controller
         // Don't forget to eager load productSize relations if used:
         $cart->each(function ($product) {
             if ($product->pivot->product_size_id) {
-                $product->pivot->productSize = \App\Models\Product_size::with(['size', 'color'])->find($product->pivot->product_size_id);
+                $product->pivot->productSize = \App\Models\Product_size::with(['size'])->find($product->pivot->product_size_id);
             }
         });
         $data = CartProductResource::collection($cart);
@@ -154,7 +220,7 @@ class CartController extends Controller
 
         $user->cart()->updateExistingPivot($productId, [
             'quantity' => $currentQty + 1,
-            'product_size_id' => $productSizeId
+            'product_size_id' => $productSizeId 
         ]);
 
         // Fetch the updated product with the newest quantity
