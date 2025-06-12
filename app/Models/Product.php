@@ -86,13 +86,9 @@ class Product extends Model
     }
     public function sizes()
     {
-        // return $this->hasMany(Product_size::class);
-        return $this->hasMany(Product_size::class, 'product_id');
+        return $this->hasMany(Product_size::class);
     }
-    public function colors()
-    {
-        return $this->hasMany(Product_colors::class);
-    }
+
     public function Order_item()
     {
         return $this->hasMany(Order_item::class);

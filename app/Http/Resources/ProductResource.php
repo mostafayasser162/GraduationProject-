@@ -24,31 +24,23 @@ class ProductResource extends JsonResource
             : null;
 
         return [
-            'id'             => $this->id,
-            'name'           => $this->name,
-            'description'    => $this->description,
-            'price'          => $basePrice,
-            'stock'          => $this->stock,
-
-            'startup'        => new StartupResource($this->whenLoaded('startup')),
-            'sub_category'   => new SubCategoryResource($this->whenLoaded('subCategory')),
-            'images'         => ImageResource::collection($this->whenLoaded('images')),
-            'reviews'        => ReviewResource::collection($this->whenLoaded('reviews')),
-            'sizes'          => ProductSizeResource::collection($this->whenLoaded('sizes')),
-                
-            'created_at'     => $this->created_at?->toDateTimeString(),
-            'updated_at'     => $this->updated_at?->toDateTimeString(),
-            'discount_percentage' =>  $baseDiscount,
-            'discounted_price' => $discountedPrice,
-
-            'total_revenue' => $this->total_revenue,
-            'total_sales' => $this->total_sold,
-            
-
-
-
-
-
+            'id'                  => $this->id,
+            'name'                => $this->name,
+            'description'         => $this->description,
+            'price'               => $basePrice,
+            'stock'               => $this->stock,
+            'has_sizes'           => $this->has_sizes,
+            'startup'             => new StartupResource($this->whenLoaded('startup')),
+            'sub_category'        => new SubCategoryResource($this->whenLoaded('subCategory')),
+            'images'              => ImageResource::collection($this->whenLoaded('images')),
+            'reviews'             => ReviewResource::collection($this->whenLoaded('reviews')),
+            'sizes'               => ProductSizeResource::collection($this->whenLoaded('sizes')),
+            'created_at'          => $this->created_at?->toDateTimeString(),
+            'updated_at'          => $this->updated_at?->toDateTimeString(),
+            'discount_percentage' => $baseDiscount,
+            'discounted_price'    => $discountedPrice,
+            'total_revenue'       => $this->total_revenue,
+            'total_sales'         => $this->total_sold,
         ];
     }
 }
