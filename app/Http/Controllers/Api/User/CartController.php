@@ -176,11 +176,11 @@ class CartController extends Controller
     {
         $user = $request->user();
         $productId = $request->input('product_id');
-        $productSizeId = $request->input('product_size_id');
+        // $productSizeId = $request->input('product_size_id');
 
         $product = $user->cart()
             ->wherePivot('product_id', $productId)
-            ->wherePivot('product_size_id', $productSizeId)
+            // ->wherePivot('product_size_id', $productSizeId)
             ->first();
 
 
@@ -205,11 +205,10 @@ class CartController extends Controller
     {
         $user = $request->user();
         $productId = $request->input('product_id');
-        $productSizeId = $request->input('product_size_id');
+        // $productSizeId = $request->input('product_size_id');
 
         $product = $user->cart()
             ->wherePivot('product_id', $productId)
-            ->wherePivot('product_size_id', $productSizeId)
             ->first();
 
         if (!$product) {
@@ -220,13 +219,13 @@ class CartController extends Controller
 
         $user->cart()->updateExistingPivot($productId, [
             'quantity' => $currentQty + 1,
-            'product_size_id' => $productSizeId 
+            // 'product_size_id' => $productSizeId 
         ]);
 
         // Fetch the updated product with the newest quantity
         $updatedProduct = $user->cart()
             ->wherePivot('product_id', $productId)
-            ->wherePivot('product_size_id', $productSizeId)
+            // ->wherePivot('product_size_id', $productSizeId)
             ->first();
 
         return response()->success([
