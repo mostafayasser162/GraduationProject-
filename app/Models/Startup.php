@@ -32,7 +32,8 @@ class Startup extends Authenticatable implements JWTSubject
         'payment_method',
         'payment_account',
         'trial_ends_at',
-        'package_ends_at'
+        'package_ends_at',
+        'commercial_register'
     ];
     protected $hidden = ['password'];
 

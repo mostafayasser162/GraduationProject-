@@ -41,6 +41,8 @@ class RegisterRequest extends FormRequest
             'password' => ['required', 'confirmed', 'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/'],
             'payment_method' => 'required|string|max:255',
             'payment_account' => 'required|string|max:255',
+            'commercial_register' => 'required|file|mimes:pdf|max:4000',
+
         ];
     }
 }

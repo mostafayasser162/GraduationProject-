@@ -53,11 +53,11 @@ class AuthController extends Controller
         $data['password'] = \Hash::make($data['password']);
         $data['status'] = Status::init();
         $data['user_id'] = auth()->user()->id;
-        // // image code
-        // $file = $data['logo'];
-        // $path = 'storage/' . $file->store('images', 'public');
-        // $data['logo'] = $path;
-        // // end image code
+        // image code
+        $file = $data['commercial_register'];
+        $path = 'storage/' . $file->store('commercial_register', 'public');
+        $data['commercial_register'] = $path;
+        // end commercial_register code
 
         Startup::updateOrCreate(['email' => $data['email']], $data);
 

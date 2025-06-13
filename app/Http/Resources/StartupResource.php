@@ -36,6 +36,7 @@ class StartupResource extends JsonResource
             'trial_days_left' => intval(now()->diffInDays($this->trial_ends_at, false)),
             'total_revenue' => $this->total_revenue,
             'pending_updates' => $this->pending_updates,
+            'commercial_register' => $this->commercial_register,
 
         ];
     }
