@@ -156,10 +156,20 @@ class CartController extends Controller
 
         $totalPrice = $cart->sum(function ($product) {
             $price = $product->pivot->product_size_id
-                ? $product->pivot->productSize->price
-                : $product->price;
-            return $price * $product->pivot->quantity;
+            ? $product->pivot->productSize->price
+            : $product->price;
+
+            $discountPercentage = $product->pivot->product_size_id
+            ? $product->pivot->productSize->discount_percentage
+            : $product->discount_percentage;
+
+            $discountedPrice = $discountPercentage 
+            ? $price * (1 - $discountPercentage / 100) 
+            : $price;
+
+            return $discountedPrice * $product->pivot->quantity;
         });
+        
 
         $totalItems = $cart->sum(fn($product) => $product->pivot->quantity);
 

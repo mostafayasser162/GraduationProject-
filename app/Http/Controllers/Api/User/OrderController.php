@@ -35,12 +35,22 @@ class OrderController extends Controller
         // حساب السعر الإجمالي
         $total = $cart->sum(function ($product) {
             if ($product->pivot->product_size_id) {
-                $variant = Product_size::find($product->pivot->product_size_id);
-                return $variant ? $variant->price * $product->pivot->quantity : $product->price * $product->pivot->quantity;
+            $variant = Product_size::find($product->pivot->product_size_id);
+            if ($variant) {
+                $discountedPrice = $variant->discount_percentage 
+                ? $variant->price * (1 - $variant->discount_percentage / 100) 
+                : $variant->price;
+                return $discountedPrice * $product->pivot->quantity;
+            }
+            return $product->price * $product->pivot->quantity;
             } else {
-                return $product->price * $product->pivot->quantity;
+            $discountedPrice = $product->discount_percentage 
+                ? $product->price * (1 - $product->discount_percentage / 100) 
+                : $product->price;
+            return $discountedPrice * $product->pivot->quantity;
             }
         });
+        
 
         DB::beginTransaction();
         try {
