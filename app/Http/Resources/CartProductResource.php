@@ -68,6 +68,11 @@ class CartProductResource extends JsonResource
             'sub_category' => $this->whenLoaded('subCategory', fn () => new SubCategoryResource($this->subCategory)),
 
             'product' => new ProductResource($this->whenLoaded('product')), // Load product details
+            'discount_percentage' => $this->discount_percentage ?? 0, // Assuming discount_percentage is a field in the Product model
+            // 'dicounted_price' => $this->pivot->product_size_id
+            //     ? optional($this->pivot->productSize)->discountedPrice()
+            //     : $this->discountedPrice(),
+            
             // Alternatively, return all image URLs:
             // 'images' => $this->images->pluck('url')->map(fn($url) => asset('storage/' . $url)),
         ];
