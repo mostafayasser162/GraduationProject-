@@ -42,6 +42,8 @@ use App\Http\Controllers\GoogleAuthController;
 use App\Http\Controllers\Api\StartUp\OrderController as StartUpOrderController;
 use App\Http\Controllers\Api\StartUp\PackagePaymentController as StartupPackagePaymentController;
 use App\Http\Middleware\AllowPackageOneTwoOnly;
+use App\Http\Middleware\CheckStartupPayment;
+
 // use App\Http\Controllers\WishlistController as UserWishlistController;
 
 //login for user and admin
@@ -174,7 +176,7 @@ Route::middleware('auth:factory')->group(function () {
 Route::controller(StartupAuthController::class)->group(function () {
     Route::post('startup/login', 'login');
 });
-Route::middleware(['auth:startup', CheckTrialPeriod::class, CheckStartupStatus::class])->group(function () {
+Route::middleware(['auth:startup', CheckTrialPeriod::class, CheckStartupStatus::class , CheckStartupPayment::class])->group(function () {
     Route::prefix('startup')->group(function () {
         Route::controller(StartupProfileController::class)->group(function () {
             Route::get('/profile', 'index');
