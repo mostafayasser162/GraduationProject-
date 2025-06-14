@@ -20,7 +20,7 @@ class AllowPackageOneTwoOnly
         }
 
         // Allow only Basic packages (1 or 2)
-        if (!self::isBasicPackage($startup->package_id)) {
+        if (!self::isBasicPackage($startup->package_id) && !self::isProMarketingPackage($startup->package_id)) {
             return response()->errors('Access denied: Your package does not allow this action.', [], 403);
         }
 
